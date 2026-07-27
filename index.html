@@ -37,6 +37,12 @@
     padding:9px 12px;border-radius:10px;display:flex;align-items:center;gap:6px;cursor:pointer;
   }
   .date-btn input[type=date]{display:none;}
+  .header-right{display:flex;align-items:center;gap:8px;}
+  .lang-toggle{
+    background:rgba(255,255,255,0.08);border:1px solid rgba(239,234,217,0.4);
+    color:#EFEAD9;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;
+    padding:9px 11px;border-radius:10px;cursor:pointer;
+  }
 
   /* Calendar overlay */
   .cal-overlay{position:fixed;inset:0;background:rgba(27,42,32,0.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
@@ -69,6 +75,7 @@
   .big-time-btn .bts{font-size:11px;font-family:'IBM Plex Mono',monospace;opacity:0.9;}
   .visit-list{margin-top:8px;}
   .pair-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid #F0EDE3;font-family:'IBM Plex Mono',monospace;}
+  .pair-row.drive-row{color:var(--accent);font-style:italic;padding-left:10px;}
   .pair-row:last-child{border-bottom:none;}
   .pair-row .dur{color:var(--primary-dark);font-weight:700;}
   .pair-row .open{color:var(--accent);font-weight:700;}
@@ -304,6 +311,102 @@ const MENU = {
 const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const MENU_DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
 const PAYMENT_METHODS = ["Square","Zelle","Venmo","Credit Card","Cash","Owed"];
+
+const CAT_ES = {
+  "Salads":"Ensaladas","Sandwiches":"Sándwiches","Wraps":"Wraps","Hot Plates":"Platos calientes",
+  "Sushi":"Sushi","Protein Plates":"Platos de proteína","Treats":"Postres","Drinks":"Bebidas"
+};
+const PAY_ES = { "Credit Card":"Tarjeta de crédito", "Cash":"Efectivo", "Owed":"Debe" };
+
+const TRANSLATIONS = {
+  en: {
+    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary",
+    revenue_today:"revenue today", commission_label:"your commission (30%)",
+    menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
+    auto_weekday:"Auto ({wd})",
+    stop_of:"STOP {n} OF {total}", total_stops_row:"Total stops on this route today:",
+    top_sellers_at:"Top sellers at {stop} — tap fast", top_sellers_generic:"Top sellers — tap fast",
+    no_menu:"No menu selected for {wd}. Pick a menu above.",
+    arrive_tap:"Tap when you arrive", leave_tap:"Tap when you leave", here_since:"Here since {t}",
+    here_today:"{d} here today", now_label:"now",
+    req_label:"Customer asked for something you didn't have", req_placeholder:"e.g. more Salmon, or Iced Coffee", req_add:"Add",
+    pay_label:"Payment collected at this stop", sold_here:"Sold here", collected:"Collected",
+    still_to_collect:"Still to collect", over_collected:"Over-collected", settled:"Settled",
+    amount_ph:"Amount ($)", add_btn:"Add", pay_remaining:"Pay remaining {amt} by {method}",
+    fee_note:"+ {fee} fee auto-added for Square",
+    cash_pouch:"Cash pouch", cash_sub:"should be in your pouch right now",
+    float_prompt:"Starting change you loaded today:", float_ph:"e.g. 60.00", set_btn:"Set",
+    started_with:"Started with", cash_sales:"+ Cash sales", added_cash:"+ Added", change_given:"− Change given",
+    change_edit:"Change starting amount", change_ph:"Amount ($)", give_btn:"− Give", add2_btn:"+ Add",
+    arrivals_log:"Today's time log (all stops)", no_arrivals:"No arrivals logged yet today.",
+    total_time:"Total time on site", drive_to:"Driving to {stop}", total_drive:"Total driving time",
+    unsold_label:"What came back unsold today (all stops)", sold_today:"sold today: {n}",
+    across_days:"Across {n} logged day{s}", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
+    waste_value:"WASTE VALUE", time_on_site:"TIME ON SITE", square_fees:"SQUARE FEES",
+    payment_methods:"Payment methods (all days)", best_sellers:"Best sellers",
+    waste_title:"Consistently coming back (waste)", lost_sales:"Requested but not carried (lost sales)",
+    export_title:"Export", export_day:"Download day-by-day CSV", export_item:"Download item-by-item CSV",
+    export_copy:"Copy summary as text", export_note:"CSV files open in Excel or Google Sheets. One row per day, or one row per item per stop.",
+    reset_title:"Reset", reset_btn:"Clear all logged data", reset_confirm:"Tap again to confirm — this deletes everything",
+    reset_note:"Wipes every logged day. Download your CSVs first if you want to keep the history.",
+    no_data_yet:"No data logged yet. Start tapping sales on the Log Stop tab.",
+    toast_sale:"Sale logged", toast_arrival:"Arrival logged", toast_departure:"Departure logged",
+    toast_departure_advance:"Departure logged — next stop", toast_no_arrival:"Log an arrival first",
+    toast_already_arrived:"Already arrived — log departure first",
+    toast_stop_cleared:"Stop items cleared", toast_confirm_clear:"Tap clear again to confirm",
+    toast_square:"Square {amt} logged", toast_payment:"Payment logged", toast_change:"Change logged",
+    toast_topup:"Top-up logged", toast_copied:"Copied to clipboard", toast_copy_fail:"Could not copy — select manually",
+    toast_downloaded:"Downloaded {f}", toast_download_fail:"Download blocked — use Copy instead",
+    toast_reset_done:"All data cleared", brand_footer:"GreenLife Fit Foods — route log"
+  },
+  es: {
+    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen",
+    revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
+    menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
+    auto_weekday:"Auto ({wd})",
+    stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas en la ruta hoy:",
+    top_sellers_at:"Más vendidos en {stop} — toque rápido", top_sellers_generic:"Más vendidos — toque rápido",
+    no_menu:"No hay menú para {wd}. Elige uno arriba.",
+    arrive_tap:"Toca al llegar", leave_tap:"Toca al salir", here_since:"Aquí desde las {t}",
+    here_today:"{d} aquí hoy", now_label:"ahora",
+    req_label:"El cliente pidió algo que no tenías", req_placeholder:"ej. más Salmón, o Café helado", req_add:"Agregar",
+    pay_label:"Pago recibido en esta parada", sold_here:"Vendido aquí", collected:"Cobrado",
+    still_to_collect:"Falta por cobrar", over_collected:"Cobrado de más", settled:"Saldado",
+    amount_ph:"Monto ($)", add_btn:"Agregar", pay_remaining:"Pagar {amt} restante con {method}",
+    fee_note:"+ {fee} cargo automático de Square",
+    cash_pouch:"Bolsa de cambio", cash_sub:"debería estar en tu bolsa ahora mismo",
+    float_prompt:"Cambio inicial que cargaste hoy:", float_ph:"ej. 60.00", set_btn:"Confirmar",
+    started_with:"Empezaste con", cash_sales:"+ Ventas en efectivo", added_cash:"+ Agregado", change_given:"− Cambio entregado",
+    change_edit:"Cambiar monto inicial", change_ph:"Monto ($)", give_btn:"− Dar", add2_btn:"+ Agregar",
+    arrivals_log:"Registro de tiempo de hoy (todas las paradas)", no_arrivals:"Aún no hay llegadas registradas hoy.",
+    total_time:"Tiempo total en el lugar", drive_to:"Manejando a {stop}", total_drive:"Tiempo total manejando",
+    unsold_label:"Lo que no se vendió hoy (todas las paradas)", sold_today:"vendido hoy: {n}",
+    across_days:"En {n} día{s} registrado{s}", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
+    waste_value:"VALOR DESPERDICIADO", time_on_site:"TIEMPO EN SITIO", square_fees:"CARGOS DE SQUARE",
+    payment_methods:"Métodos de pago (todos los días)", best_sellers:"Más vendidos",
+    waste_title:"Siempre regresa (desperdicio)", lost_sales:"Pedido pero no disponible (ventas perdidas)",
+    export_title:"Exportar", export_day:"Descargar CSV por día", export_item:"Descargar CSV por artículo",
+    export_copy:"Copiar resumen como texto", export_note:"Los archivos CSV se abren en Excel o Google Sheets. Una fila por día, o una fila por artículo por parada.",
+    reset_title:"Reiniciar", reset_btn:"Borrar todos los datos", reset_confirm:"Toca de nuevo para confirmar — esto borra todo",
+    reset_note:"Borra cada día registrado. Descarga tus CSV primero si quieres conservar el historial.",
+    no_data_yet:"Aún no hay datos. Empieza a registrar ventas en Registrar parada.",
+    toast_sale:"Venta registrada", toast_arrival:"Llegada registrada", toast_departure:"Salida registrada",
+    toast_departure_advance:"Salida registrada — siguiente parada", toast_no_arrival:"Registra una llegada primero",
+    toast_already_arrived:"Ya llegaste — registra la salida primero",
+    toast_stop_cleared:"Artículos de la parada borrados", toast_confirm_clear:"Toca borrar de nuevo para confirmar",
+    toast_square:"Square {amt} registrado", toast_payment:"Pago registrado", toast_change:"Cambio registrado",
+    toast_topup:"Recarga registrada", toast_copied:"Copiado al portapapeles", toast_copy_fail:"No se pudo copiar — selecciona manualmente",
+    toast_downloaded:"Descargado {f}", toast_download_fail:"Descarga bloqueada — usa Copiar",
+    toast_reset_done:"Todos los datos borrados", brand_footer:"GreenLife Fit Foods — registro de ruta"
+  }
+};
+function T(key, vars){
+  let s = (TRANSLATIONS[state.lang] && TRANSLATIONS[state.lang][key]) || TRANSLATIONS.en[key] || key;
+  if(vars) Object.entries(vars).forEach(([k,v])=>{ s = s.split('{'+k+'}').join(v); });
+  return s;
+}
+function TC(cat){ return state.lang==='es' ? (CAT_ES[cat]||cat) : cat; }
+function TP(method){ return state.lang==='es' ? (PAY_ES[method]||method) : method; }
 const DEFAULT_STOP_COUNT = 10;
 const COMMISSION_RATE = 0.30;
 
@@ -318,7 +421,9 @@ let state = {
   activeMethod: 'Cash',
   timingOpen: false,
   calOpen: false,
-  calMonth: todayStr().slice(0,7)
+  calMonth: todayStr().slice(0,7),
+  lang: 'en',
+  sellerName: ''
 };
 
 function todayStr(){
@@ -425,6 +530,26 @@ async function storageList(prefix, shared){
   return { keys };
 }
 
+async function loadPrefs(){
+  try{
+    const r = await storageGet('lang', false);
+    state.lang = r.value === 'es' ? 'es' : 'en';
+  }catch(e){}
+  try{
+    const r = await storageGet('seller_name', false);
+    state.sellerName = r.value || '';
+  }catch(e){}
+}
+async function setLang(lang){
+  state.lang = lang === 'es' ? 'es' : 'en';
+  try{ await storageSet('lang', state.lang, false); }catch(e){}
+  render();
+}
+async function setSellerName(name){
+  state.sellerName = (name||'').trim();
+  try{ await storageSet('seller_name', state.sellerName, false); }catch(e){}
+}
+
 async function loadDefaultStopNames(){
   try{
     const r = await storageGet('stopnames_default', false);
@@ -485,7 +610,7 @@ function addChangeGiven(amountStr){
   const stop = state.day.stops[state.stopIndex];
   stop.cashMoves.push({ type:'change', amount: Math.round(amount*100)/100, time: nowTime() });
   persistDay();
-  toast('Change logged');
+  toast(T('toast_change'));
 }
 function addCashTopUp(amountStr){
   const amount = parseFloat(amountStr);
@@ -493,7 +618,7 @@ function addCashTopUp(amountStr){
   const stop = state.day.stops[state.stopIndex];
   stop.cashMoves.push({ type:'topup', amount: Math.round(amount*100)/100, time: nowTime() });
   persistDay();
-  toast('Top-up logged');
+  toast(T('toast_topup'));
 }
 function removeCashMove(idx){
   const stop = state.day.stops[state.stopIndex];
@@ -537,18 +662,20 @@ function openVisit(stop){
 }
 function logArrival(){
   const stop = state.day.stops[state.stopIndex];
-  if(openVisit(stop)){ toast('Already arrived — log departure first'); return; }
+  if(openVisit(stop)){ toast(T('toast_already_arrived')); return; }
   stop.visits.push({ arrive: nowTime(), depart: null });
   persistDay();
-  toast('Arrival logged');
+  toast(T('toast_arrival'));
 }
 function logDeparture(){
   const stop = state.day.stops[state.stopIndex];
   const v = openVisit(stop);
-  if(!v){ toast('Log an arrival first'); return; }
+  if(!v){ toast(T('toast_no_arrival')); return; }
   v.depart = nowTime();
+  const canAdvance = state.stopIndex < state.day.stopNames.length - 1;
+  if(canAdvance) state.stopIndex += 1;
   persistDay();
-  toast('Departure logged');
+  toast(canAdvance ? T('toast_departure_advance') : T('toast_departure'));
 }
 function removeVisit(idx){
   const stop = state.day.stops[state.stopIndex];
@@ -587,6 +714,27 @@ function dayDwellMinutes(day){
   });
   return total;
 }
+function dayDriveSegments(day){
+  const segs = [];
+  const names = day.stopNames||[];
+  for(let i=0;i<names.length-1;i++){
+    const curStop = day.stops[i], nextStop = day.stops[i+1];
+    if(!curStop || !nextStop) continue;
+    const curVisits = curStop.visits||[], nextVisits = nextStop.visits||[];
+    if(!curVisits.length || !nextVisits.length) continue;
+    const lastDepart = curVisits[curVisits.length-1].depart;
+    const firstArrive = nextVisits[0].arrive;
+    if(!lastDepart || !firstArrive) continue;
+    const a = parseTime(lastDepart), b = parseTime(firstArrive);
+    if(a===null || b===null) continue;
+    let diff = b-a; if(diff<0) diff += 24*60;
+    segs.push({ mins:diff, fromStop:names[i], toStop:names[i+1] });
+  }
+  return segs;
+}
+function dayDriveMinutes(day){
+  return dayDriveSegments(day).reduce((s,x)=>s+x.mins,0);
+}
 function addRequest(text){
   if(!text.trim()) return;
   const stop = state.day.stops[state.stopIndex];
@@ -609,7 +757,7 @@ function addPayment(amountStr){
   if(fee > 0) entry.fee = fee;
   stop.payments.push(entry);
   persistDay();
-  toast(fee>0 ? 'Square '+fmtMoney(total)+' logged' : 'Payment logged');
+  toast(fee>0 ? T('toast_square',{amt:fmtMoney(total)}) : T('toast_payment'));
 }
 function removePayment(idx){
   const stop = state.day.stops[state.stopIndex];
@@ -694,24 +842,38 @@ function dayUncollected(day){
   return gap;
 }
 
-function computeTopSellers(weekday, n){
+function computeTopSellers(weekday, n, stopName){
   const menu = MENU[weekday];
   if(!menu) return [];
   const allItems = Object.values(menu).flat();
   const menuNames = new Set(allItems.map(x=>x[0]));
-  const agg = {};
+  const norm = s => (s||'').trim().toLowerCase();
+  const localAgg = {}, globalAgg = {};
   Object.values(state.allDays||{}).forEach(d=>{
-    Object.values(d.stops||{}).forEach(st=>{
-      Object.entries(st.items||{}).forEach(([name,v])=>{
-        if(menuNames.has(name)) agg[name] = (agg[name]||0) + (v.sold||0);
+    (d.stopNames||[]).forEach((name,i)=>{
+      const st = (d.stops||{})[i];
+      if(!st) return;
+      Object.entries(st.items||{}).forEach(([itemName,v])=>{
+        if(!menuNames.has(itemName)) return;
+        const qty = v.sold||0;
+        globalAgg[itemName] = (globalAgg[itemName]||0) + qty;
+        if(stopName && norm(name)===norm(stopName)){
+          localAgg[itemName] = (localAgg[itemName]||0) + qty;
+        }
       });
     });
   });
-  let ranked = Object.entries(agg).filter(([,q])=>q>0).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+  const rankOf = agg => Object.entries(agg).filter(([,q])=>q>0).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+  let ranked = rankOf(localAgg);
+  const localHasEnough = ranked.length >= n;
+  rankOf(globalAgg).forEach(name=>{ if(!ranked.includes(name)) ranked.push(name); });
   const hotPlates = (menu['Hot Plates']||[]).map(x=>x[0]);
   hotPlates.forEach(name=>{ if(!ranked.includes(name)) ranked.push(name); });
   allItems.forEach(([name])=>{ if(!ranked.includes(name)) ranked.push(name); });
-  return ranked.slice(0,n).map(name=>allItems.find(x=>x[0]===name)).filter(Boolean);
+  return {
+    items: ranked.slice(0,n).map(name=>allItems.find(x=>x[0]===name)).filter(Boolean),
+    isLocal: localHasEnough
+  };
 }
 
 function dayItemsSold(day){
@@ -750,7 +912,7 @@ async function render(){
   const stopName = state.day.stopNames[state.stopIndex];
   const stop = state.day.stops[state.stopIndex];
 
-  let menuOptionsHtml = '<option value="">Auto ('+weekdayOf(state.date)+')</option>';
+  let menuOptionsHtml = '<option value="">'+T('auto_weekday',{wd:weekdayOf(state.date)})+'</option>';
   MENU_DAYS.forEach(d=>{
     menuOptionsHtml += '<option value="'+d+'" '+(state.day.menuOverride===d?'selected':'')+'>'+d+'</option>';
   });
@@ -760,31 +922,32 @@ async function render(){
     + '<div class="stub-top">'
     +   '<div class="brand">'
     +     '<svg class="logo-mark" viewBox="0 0 100 100" aria-hidden="true">'
-    +       '<circle cx="50" cy="46" r="34" fill="none" stroke="currentColor" stroke-width="5"/>'
-    +       '<path d="M50 82 L50 40" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>'
-    +       '<path d="M39 24 L39 42 Q39 48 44 49 L50 50 M44 24 L44 42 M50 24 L50 40 M56 24 L56 42" '
-    +         'stroke="currentColor" stroke-width="4.5" stroke-linecap="round" fill="none"/>'
-    +       '<path d="M52 74 Q52 46 78 38 Q80 66 54 72 Z" fill="currentColor"/>'
+    +       '<circle cx="50" cy="50" r="36" fill="none" stroke="currentColor" stroke-width="5"/>'
+    +       '<text x="50" y="68" text-anchor="middle" font-family="\'Space Grotesk\',sans-serif" font-size="52" font-weight="600" fill="currentColor">g</text>'
     +     '</svg>'
-    +     '<div><h1>GreenLife</h1><div class="sub">'+weekday.toUpperCase()+' MENU</div></div>'
+    +     '<div><h1>GreenLife</h1><div class="sub">'+weekday.toUpperCase()+'</div></div>'
     +   '</div>'
-    +   '<button class="date-btn'+(state.date!==todayStr()?' past':'')+'" id="dateBtn"><span class="cal-icon">📅</span><span>'
-    +     (state.date===todayStr() ? 'Today' : fmtDateShort(state.date))+'</span></button>'
+    +   '<div class="header-right">'
+    +     '<button class="lang-toggle" id="langToggle">'+(state.lang==='es'?'EN':'ES')+'</button>'
+    +     '<button class="date-btn'+(state.date!==todayStr()?' past':'')+'" id="dateBtn"><span class="cal-icon">📅</span><span>'
+    +       (state.date===todayStr() ? (state.lang==='es'?'Hoy':'Today') : fmtDateShort(state.date))+'</span></button>'
+    +   '</div>'
     + '</div>'
     + '<div class="stub-controls">'
-    +   '<div class="ctrl"><label>Menu</label><select id="menuSelect">'+menuOptionsHtml+'</select></div>'
-    +   '<div class="ctrl"><label>Stops today</label><input type="number" id="stopCountInput" min="1" max="30" value="'+state.day.stopNames.length+'"></div>'
+    +   '<div class="ctrl"><label>'+T('menu_label')+'</label><select id="menuSelect">'+menuOptionsHtml+'</select></div>'
+    +   '<div class="ctrl"><label>'+T('stops_label')+'</label><input type="number" id="stopCountInput" min="1" max="30" value="'+state.day.stopNames.length+'"></div>'
+    +   '<div class="ctrl"><label>'+T('seller_label')+'</label><input type="text" id="sellerInput" placeholder="'+T('seller_label')+'" value="'+escapeAttr(state.sellerName)+'"></div>'
     + '</div>'
     + '<div class="stub-kpis">'
-    +   '<div class="stub-kpi"><div class="amt">'+fmtMoney(rev)+'</div><div class="lbl">revenue today</div></div>'
-    +   '<div class="stub-kpi commission"><div class="amt">'+fmtMoney(commission)+'</div><div class="lbl">your commission (30%)</div></div>'
+    +   '<div class="stub-kpi"><div class="amt">'+fmtMoney(rev)+'</div><div class="lbl">'+T('revenue_today')+'</div></div>'
+    +   '<div class="stub-kpi commission"><div class="amt">'+fmtMoney(commission)+'</div><div class="lbl">'+T('commission_label')+'</div></div>'
     + '</div>'
   + '</div>';
 
   html += '<div class="tabs">'
-    + '<div class="tab '+(state.tab==='log'?'active':'')+'" data-tab="log">Log Stop</div>'
-    + '<div class="tab '+(state.tab==='unsold'?'active':'')+'" data-tab="unsold">Unsold</div>'
-    + '<div class="tab '+(state.tab==='summary'?'active':'')+'" data-tab="summary">Summary</div>'
+    + '<div class="tab '+(state.tab==='log'?'active':'')+'" data-tab="log">'+T('tab_log')+'</div>'
+    + '<div class="tab '+(state.tab==='unsold'?'active':'')+'" data-tab="unsold">'+T('tab_unsold')+'</div>'
+    + '<div class="tab '+(state.tab==='summary'?'active':'')+'" data-tab="summary">'+T('tab_summary')+'</div>'
   + '</div>';
 
   if(state.tab==='log'){
@@ -792,11 +955,11 @@ async function render(){
     html += '<div class="stopper">'
       + '<div class="stopper-top">'
       +   '<button class="nav" id="prevStop">‹</button>'
-      +   '<div class="stop-mid"><div class="stop-idx">STOP '+(state.stopIndex+1)+' OF '+state.day.stopNames.length+'</div>'
+      +   '<div class="stop-mid"><div class="stop-idx">'+T('stop_of',{n:state.stopIndex+1,total:state.day.stopNames.length})+'</div>'
       +     '<input class="stop-name-input" id="stopNameInput" value="'+escapeAttr(stopName)+'"></div>'
       +   '<button class="nav" id="nextStop">›</button>'
       + '</div>'
-      + '<div class="stopcount-row"><label>Total stops on this route today:</label>'
+      + '<div class="stopcount-row"><label>'+T('total_stops_row')+'</label>'
       +   '<input type="number" id="stopCountInput2" min="1" max="30" value="'+state.day.stopNames.length+'"></div>';
 
     const open = openVisit(stop);
@@ -805,12 +968,12 @@ async function render(){
     html += '<div class="timing">';
     if(open){
       html += '<button class="big-time-btn leaving" id="timeToggle">'
-        + '<span class="btl">Tap when you leave</span>'
-        + '<span class="bts">Here since '+open.arrive+'</span></button>';
+        + '<span class="btl">'+T('leave_tap')+'</span>'
+        + '<span class="bts">'+T('here_since',{t:open.arrive})+'</span></button>';
     } else {
       html += '<button class="big-time-btn arriving" id="timeToggle">'
-        + '<span class="btl">Tap when you arrive</span>'
-        + (stop.visits.length ? '<span class="bts">'+fmtDur(stopMins)+' here today</span>' : '')
+        + '<span class="btl">'+T('arrive_tap')+'</span>'
+        + (stop.visits.length ? '<span class="bts">'+T('here_today',{d:fmtDur(stopMins)})+'</span>' : '')
         + '</button>';
     }
     if(stop.visits.length){
@@ -827,7 +990,7 @@ async function render(){
     html += '</div></div>';
 
     if(!menu){
-      html += '<div class="empty">No menu selected for '+weekday+'. Pick a menu above.</div>';
+      html += '<div class="empty">'+T('no_menu',{wd:weekday})+'</div>';
     } else {
       const sRev = stopRevenue(stop, weekday);
       const sCount = stopItemCount(stop);
@@ -838,9 +1001,13 @@ async function render(){
         + (sCount>0 ? '<button class="ob-clear" id="clearStop">clear</button>' : '')
         + '</div></div>';
 
-      const topSellers = computeTopSellers(weekday, 4);
+      const topResult = computeTopSellers(weekday, 4, stopName);
+      const topSellers = topResult.items;
       if(topSellers.length){
-        html += '<div class="cat-label top-label">Top sellers — tap fast</div>';
+        const topLabelText = topResult.isLocal
+          ? T('top_sellers_at').replace('{stop}', stopName)
+          : T('top_sellers_generic');
+        html += '<div class="cat-label top-label">'+topLabelText+'</div>';
         topSellers.forEach(([name, price])=>{
           const sold = (stop.items[name] && stop.items[name].sold) || 0;
           html += '<div class="item top">'
@@ -855,7 +1022,7 @@ async function render(){
       }
 
       Object.entries(menu).forEach(([cat, items])=>{
-        html += '<div class="cat-label">'+cat+'</div>';
+        html += '<div class="cat-label">'+TC(cat)+'</div>';
         items.forEach(([name, price])=>{
           const sold = (stop.items[name] && stop.items[name].sold) || 0;
           html += '<div class="item">'
@@ -870,8 +1037,8 @@ async function render(){
       });
     }
 
-    html += '<div class="req-box"><div class="lbl">Customer asked for something you didn\'t have</div>'
-      + '<div class="req-input-row"><input type="text" id="reqInput" placeholder="e.g. more Salmon, or Iced Coffee"><button id="reqAdd">Add</button></div>'
+    html += '<div class="req-box"><div class="lbl">'+T('req_label')+'</div>'
+      + '<div class="req-input-row"><input type="text" id="reqInput" placeholder="'+T('req_placeholder')+'"><button id="reqAdd">'+T('req_add')+'</button></div>'
       + '<div id="reqChips">';
     stop.requests.forEach((r,i)=>{
       html += '<span class="chip">'+escapeHtml(r)+' <button data-idx="'+i+'" class="reqRemove">×</button></span>';
@@ -882,26 +1049,26 @@ async function render(){
     const collectedNow = stopCollectedTotal(stop);
     const remaining = Math.round((sRevNow - collectedNow)*100)/100;
 
-    html += '<div class="pay-box"><div class="lbl">Payment collected at this stop</div>';
+    html += '<div class="pay-box"><div class="lbl">'+T('pay_label')+'</div>';
 
     html += '<div class="pay-ledger">'
-      + '<div><span>Sold here</span><span>'+fmtMoney(sRevNow)+'</span></div>'
-      + '<div><span>Collected</span><span>'+fmtMoney(collectedNow)+'</span></div>'
+      + '<div><span>'+T('sold_here')+'</span><span>'+fmtMoney(sRevNow)+'</span></div>'
+      + '<div><span>'+T('collected')+'</span><span>'+fmtMoney(collectedNow)+'</span></div>'
       + '<div class="'+(Math.abs(remaining)<0.005?'settled':(remaining>0?'owing':'over'))+'">'
-      +   '<span>'+(remaining>0?'Still to collect':(remaining<0?'Over-collected':'Settled'))+'</span>'
+      +   '<span>'+(remaining>0?T('still_to_collect'):(remaining<0?T('over_collected'):T('settled')))+'</span>'
       +   '<span>'+fmtMoney(Math.abs(remaining))+'</span></div>'
       + '</div>';
 
     html += '<div class="method-row">';
     PAYMENT_METHODS.forEach(m=>{
-      html += '<div class="method-chip '+(state.activeMethod===m?'active':'')+'" data-method="'+m+'">'+m+'</div>';
+      html += '<div class="method-chip '+(state.activeMethod===m?'active':'')+'" data-method="'+m+'">'+TP(m)+'</div>';
     });
     html += '</div>'
-      + '<div class="pay-add-row"><input type="number" step="0.01" inputmode="decimal" id="payAmount" placeholder="Amount ($)"><button id="payAdd">Add</button></div>'
-      + (state.activeMethod==='Square' ? '<div class="fee-note">+ $'+SQUARE_FEE.toFixed(2)+' fee auto-added for Square</div>' : '');
+      + '<div class="pay-add-row"><input type="number" step="0.01" inputmode="decimal" id="payAmount" placeholder="'+T('amount_ph')+'"><button id="payAdd">'+T('add_btn')+'</button></div>'
+      + (state.activeMethod==='Square' ? '<div class="fee-note">'+T('fee_note',{fee:fmtMoney(SQUARE_FEE)})+'</div>' : '');
 
     if(remaining > 0.005){
-      html += '<button class="pay-fill" id="payFill">Pay remaining '+fmtMoney(remaining)+' by '+state.activeMethod+'</button>';
+      html += '<button class="pay-fill" id="payFill">'+T('pay_remaining',{amt:fmtMoney(remaining),method:TP(state.activeMethod)})+'</button>';
     }
 
     let stopCollected = 0;
@@ -914,30 +1081,30 @@ async function render(){
     const exp = expectedCash(state.day);
     const stopChange = stopChangeGiven(stop);
     html += '<div class="cash-box">'
-      + '<div class="cash-head"><span class="lbl">Cash pouch</span>'
+      + '<div class="cash-head"><span class="lbl">'+T('cash_pouch')+'</span>'
       +   '<span class="cash-amt">'+fmtMoney(exp)+'</span></div>'
-      + '<div class="cash-sub">should be in your pouch right now</div>';
+      + '<div class="cash-sub">'+T('cash_sub')+'</div>';
 
     if(state.day.startFloat === null){
       html += '<div class="float-prompt">'
-        + '<span>Starting change you loaded today:</span>'
+        + '<span>'+T('float_prompt')+'</span>'
         + '<div class="pay-add-row" style="margin-top:6px;">'
-        +   '<input type="number" step="0.01" inputmode="decimal" id="floatInput" placeholder="e.g. 60.00">'
-        +   '<button id="floatSet">Set</button></div></div>';
+        +   '<input type="number" step="0.01" inputmode="decimal" id="floatInput" placeholder="'+T('float_ph')+'">'
+        +   '<button id="floatSet">'+T('set_btn')+'</button></div></div>';
     } else {
       html += '<div class="cash-breakdown">'
-        + '<div><span>Started with</span><span>'+fmtMoney(state.day.startFloat)+'</span></div>'
-        + '<div><span>+ Cash sales</span><span>'+fmtMoney(dayCashSales(state.day))+'</span></div>'
-        + (dayCashTopUps(state.day)>0 ? '<div><span>+ Added</span><span>'+fmtMoney(dayCashTopUps(state.day))+'</span></div>' : '')
-        + '<div><span>− Change given</span><span>'+fmtMoney(dayChangeGiven(state.day))+'</span></div>'
-        + '<div class="edit-float"><button id="floatEdit">Change starting amount</button></div>'
+        + '<div><span>'+T('started_with')+'</span><span>'+fmtMoney(state.day.startFloat)+'</span></div>'
+        + '<div><span>'+T('cash_sales')+'</span><span>'+fmtMoney(dayCashSales(state.day))+'</span></div>'
+        + (dayCashTopUps(state.day)>0 ? '<div><span>'+T('added_cash')+'</span><span>'+fmtMoney(dayCashTopUps(state.day))+'</span></div>' : '')
+        + '<div><span>'+T('change_given')+'</span><span>'+fmtMoney(dayChangeGiven(state.day))+'</span></div>'
+        + '<div class="edit-float"><button id="floatEdit">'+T('change_edit')+'</button></div>'
         + '</div>';
     }
 
     html += '<div class="change-row">'
-      + '<input type="number" step="0.01" inputmode="decimal" id="changeInput" placeholder="Amount ($)">'
-      + '<button id="changeAdd">− Give</button>'
-      + '<button id="topupAdd" class="topup">+ Add</button></div>'
+      + '<input type="number" step="0.01" inputmode="decimal" id="changeInput" placeholder="'+T('change_ph')+'">'
+      + '<button id="changeAdd">'+T('give_btn')+'</button>'
+      + '<button id="topupAdd" class="topup">'+T('add2_btn')+'</button></div>'
       + '<div class="quick-change">';
     [1,5,10,20].forEach(v=>{
       html += '<button class="qc" data-qc="'+v+'">$'+v+'</button>';
@@ -959,17 +1126,30 @@ async function render(){
 
     const visits = dayVisitsList(state.day);
     const totalDwell = dayDwellMinutes(state.day);
-    html += '<div class="card"><h3>Today\'s time log (all stops)</h3>';
+    const driveSegs = dayDriveSegments(state.day);
+    const totalDrive = dayDriveMinutes(state.day);
+    const driveByFrom = {};
+    driveSegs.forEach(s=>{ driveByFrom[s.fromStop] = s; });
+
+    html += '<div class="card"><h3>'+T('arrivals_log')+'</h3>';
     if(visits.length===0){
-      html += '<div class="empty">No arrivals logged yet today.</div>';
+      html += '<div class="empty">'+T('no_arrivals')+'</div>';
     } else {
-      visits.forEach(v=>{
-        html += '<div class="pair-row"><span>'+escapeHtml(v.stop)+'</span>'
-          + '<span>'+v.arrive+' → '+(v.depart||'<span class="open">open</span>')
-          + '  <span class="dur">'+(v.mins!==null?fmtDur(v.mins):'')+'</span></span></div>';
+      state.day.stopNames.forEach(name=>{
+        visits.filter(v=>v.stop===name).forEach(v=>{
+          html += '<div class="pair-row"><span>'+escapeHtml(v.stop)+'</span>'
+            + '<span>'+v.arrive+' → '+(v.depart||'<span class="open">'+T('now_label')+'</span>')
+            + '  <span class="dur">'+(v.mins!==null?fmtDur(v.mins):'')+'</span></span></div>';
+        });
+        const seg = driveByFrom[name];
+        if(seg){
+          html += '<div class="pair-row drive-row"><span>'+T('drive_to',{stop:escapeHtml(seg.toStop)})+'</span>'
+            + '<span class="dur">'+fmtDur(seg.mins)+'</span></div>';
+        }
       });
       html += '<div class="pair-row" style="border-top:2px solid var(--border);margin-top:6px;padding-top:8px;">'
-        + '<span><strong>Total time on site</strong></span><span class="dur">'+fmtDur(totalDwell)+'</span></div>';
+        + '<span><strong>'+T('total_time')+'</strong></span><span class="dur">'+fmtDur(totalDwell)+'</span></div>';
+      html += '<div class="pair-row"><span><strong>'+T('total_drive')+'</strong></span><span class="dur">'+fmtDur(totalDrive)+'</span></div>';
     }
     html += '</div>';
 
@@ -979,14 +1159,14 @@ async function render(){
   if(state.tab==='unsold'){
     html += '<div class="panel">';
     if(!menu){
-      html += '<div class="empty">No menu selected for '+weekday+'.</div>';
+      html += '<div class="empty">'+T('no_menu',{wd:weekday})+'</div>';
     } else {
-      html += '<div class="cat-label">What came back unsold today (all stops)</div>';
+      html += '<div class="cat-label">'+T('unsold_label')+'</div>';
       const sold = dayItemsSold(state.day);
       Object.values(menu).flat().forEach(([name])=>{
         const s = sold[name] || 0;
         const ret = state.day.returns[name] || 0;
-        html += '<div class="eod-item"><div><div class="item-name">'+name+'</div><div class="eod-sold-hint">sold today: '+s+'</div></div>'
+        html += '<div class="eod-item"><div><div class="item-name">'+name+'</div><div class="eod-sold-hint">'+T('sold_today',{n:s})+'</div></div>'
           + '<div class="counter">'
           +   '<button class="minus" data-ritem="'+escapeAttr(name)+'" data-rdelta="-1">−</button>'
           +   '<span class="count">'+ret+'</span>'
@@ -1041,9 +1221,9 @@ function renderCalendar(){
 function renderSummary(){
   const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?1:-1);
   if(days.length===0){
-    return '<div class="panel"><div class="empty">No data logged yet. Start tapping sales on the Log Stop tab.</div></div>';
+    return '<div class="panel"><div class="empty">'+T('no_data_yet')+'</div></div>';
   }
-  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0, totalFees = 0;
+  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0, totalFees = 0, totalDrive = 0;
   const soldAgg = {}, returnedAgg = {}, requestAgg = {}, paymentAgg = {};
   PAYMENT_METHODS.forEach(m=>paymentAgg[m]=0);
 
@@ -1055,6 +1235,7 @@ function renderSummary(){
     totalRevenue += rev;
     totalCommission += rev * COMMISSION_RATE;
     totalDwell += dayDwellMinutes(d);
+    totalDrive += dayDriveMinutes(d);
     totalFees += dayFeesTotal(d);
     const sold = dayItemsSold(d);
     Object.entries(sold).forEach(([k,v])=>{ soldAgg[k]=(soldAgg[k]||0)+v; });
@@ -1070,20 +1251,21 @@ function renderSummary(){
   });
 
   let html = '<div class="panel">';
-  html += '<div class="card"><h3>Across '+days.length+' logged day'+(days.length>1?'s':'')+'</h3>'
+  html += '<div class="card"><h3>'+T('across_days',{n:days.length,s:days.length>1?'s':''})+'</h3>'
     + '<div class="kpi-row">'
-    +   '<div class="kpi"><div class="v">'+fmtMoney(totalRevenue)+'</div><div class="k">TOTAL REVENUE</div></div>'
-    +   '<div class="kpi gold"><div class="v">'+fmtMoney(totalCommission)+'</div><div class="k">YOUR COMMISSION</div></div>'
-    +   '<div class="kpi warn"><div class="v">'+fmtMoney(totalReturnedValue)+'</div><div class="k">WASTE VALUE</div></div>'
-    +   '<div class="kpi"><div class="v">'+fmtDur(totalDwell)+'</div><div class="k">TIME ON SITE</div></div>'
-    +   '<div class="kpi"><div class="v">'+fmtMoney(totalFees)+'</div><div class="k">SQUARE FEES</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+    +   '<div class="kpi gold"><div class="v">'+fmtMoney(totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+    +   '<div class="kpi warn"><div class="v">'+fmtMoney(totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtDur(totalDwell)+'</div><div class="k">'+T('time_on_site')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtDur(totalDrive)+'</div><div class="k">'+T('total_drive').toUpperCase()+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
     + '</div></div>';
 
-  html += '<div class="card"><h3>Payment methods (all days)</h3>';
+  html += '<div class="card"><h3>'+T('payment_methods')+'</h3>';
   const payTotal = Object.values(paymentAgg).reduce((a,b)=>a+b,0) || 1;
   PAYMENT_METHODS.forEach(m=>{
     const amt = paymentAgg[m] || 0;
-    html += '<div class="bar-row"><div class="top"><span>'+m+'</span><span>'+fmtMoney(amt)+'</span></div>'
+    html += '<div class="bar-row"><div class="top"><span>'+TP(m)+'</span><span>'+fmtMoney(amt)+'</span></div>'
       + '<div class="bar-track"><div class="bar-fill" style="width:'+((amt/payTotal*100).toFixed(0))+'%"></div></div></div>';
   });
   html += '</div>';
@@ -1091,7 +1273,7 @@ function renderSummary(){
   const soldSorted = Object.entries(soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(soldSorted.length){
     const maxSold = soldSorted[0][1];
-    html += '<div class="card"><h3>Best sellers</h3>';
+    html += '<div class="card"><h3>'+T('best_sellers')+'</h3>';
     soldSorted.forEach(([name,qty])=>{
       html += '<div class="bar-row"><div class="top"><span>'+name+'</span><span>'+qty+'</span></div>'
         + '<div class="bar-track"><div class="bar-fill" style="width:'+((qty/maxSold*100).toFixed(0))+'%"></div></div></div>';
@@ -1102,7 +1284,7 @@ function renderSummary(){
   const retSorted = Object.entries(returnedAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(retSorted.length){
     const maxRet = retSorted[0][1];
-    html += '<div class="card"><h3>Consistently coming back (waste)</h3>';
+    html += '<div class="card"><h3>'+T('waste_title')+'</h3>';
     retSorted.forEach(([name,qty])=>{
       html += '<div class="bar-row"><div class="top"><span>'+name+'</span><span>'+qty+'</span></div>'
         + '<div class="bar-track"><div class="bar-fill waste" style="width:'+((qty/maxRet*100).toFixed(0))+'%"></div></div></div>';
@@ -1112,32 +1294,29 @@ function renderSummary(){
 
   const reqSorted = Object.entries(requestAgg).sort((a,b)=>b[1]-a[1]);
   if(reqSorted.length){
-    html += '<div class="card"><h3>Requested but not carried (lost sales)</h3>';
+    html += '<div class="card"><h3>'+T('lost_sales')+'</h3>';
     reqSorted.forEach(([name,qty])=>{
       html += '<span class="chip">'+escapeHtml(name)+' × '+qty+'</span>';
     });
     html += '</div>';
   }
 
-  html += '<div class="card"><h3>Export</h3>'
-    + '<button class="export-btn" id="exportDayCsv">Download day-by-day CSV</button>'
-    + '<button class="export-btn alt" id="exportDetailCsv">Download item-by-item CSV</button>'
-    + '<button class="export-btn ghost" id="exportBtn">Copy summary as text</button>'
-    + '<div class="export-note">CSV files open in Excel or Google Sheets. One row per day, or one row per item per stop.</div>'
+  html += '<div class="card"><h3>'+T('export_title')+'</h3>'
+    + '<button class="export-btn" id="exportDayCsv">'+T('export_day')+'</button>'
+    + '<button class="export-btn alt" id="exportDetailCsv">'+T('export_item')+'</button>'
+    + '<button class="export-btn ghost" id="exportBtn">'+T('export_copy')+'</button>'
+    + '<div class="export-note">'+T('export_note')+'</div>'
     + '</div>';
-  html += '<div class="card"><h3>Reset</h3>'
-    + '<button class="export-btn danger" id="resetBtn">'+(state.confirmReset?'Tap again to confirm — this deletes everything':'Clear all logged data')+'</button>'
-    + '<div class="export-note">Wipes every logged day. Download your CSVs first if you want to keep the history.</div>'
+  html += '<div class="card"><h3>'+T('reset_title')+'</h3>'
+    + '<button class="export-btn danger" id="resetBtn">'+(state.confirmReset?T('reset_confirm'):T('reset_btn'))+'</button>'
+    + '<div class="export-note">'+T('reset_note')+'</div>'
     + '</div>';
   html += '<div class="brand-footer">'
     + '<svg class="logo-mark sm" viewBox="0 0 100 100" aria-hidden="true">'
-    +   '<circle cx="50" cy="46" r="34" fill="none" stroke="currentColor" stroke-width="5"/>'
-    +   '<path d="M50 82 L50 40" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>'
-    +   '<path d="M39 24 L39 42 Q39 48 44 49 L50 50 M44 24 L44 42 M50 24 L50 40 M56 24 L56 42" '
-    +     'stroke="currentColor" stroke-width="4.5" stroke-linecap="round" fill="none"/>'
-    +   '<path d="M52 74 Q52 46 78 38 Q80 66 54 72 Z" fill="currentColor"/>'
+    +   '<circle cx="50" cy="50" r="36" fill="none" stroke="currentColor" stroke-width="5"/>'
+    +   '<text x="50" y="68" text-anchor="middle" font-family="\'Space Grotesk\',sans-serif" font-size="52" font-weight="600" fill="currentColor">g</text>'
     + '</svg>'
-    + '<span>GreenLife Fit Foods — route log</span></div>';
+    + '<span>'+T('brand_footer')+'</span></div>';
   html += '</div>';
   return html;
 }
@@ -1148,7 +1327,7 @@ function csvEscape(s){
 }
 function buildDetailCSV(){
   const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
-  const rows = [['Date','Weekday','Stop','Item','Category','UnitPrice','QtySold','LineRevenue']];
+  const rows = [['Date','Weekday','Seller','Stop','Item','Category','UnitPrice','QtySold','LineRevenue']];
   days.forEach(d=>{
     const wd = effectiveWeekday(d);
     const menu = MENU[wd];
@@ -1160,7 +1339,7 @@ function buildDetailCSV(){
         items.forEach(([name, price])=>{
           const qty = (st.items[name] && st.items[name].sold) || 0;
           if(qty > 0){
-            rows.push([d.date, wd, stopName, name, cat, price.toFixed(2), qty, (qty*price).toFixed(2)]);
+            rows.push([d.date, wd, state.sellerName||'', stopName, name, cat, price.toFixed(2), qty, (qty*price).toFixed(2)]);
           }
         });
       });
@@ -1170,7 +1349,7 @@ function buildDetailCSV(){
 }
 function buildDayCSV(){
   const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
-  const rows = [['Date','Weekday','Stops','Revenue','Commission30','ItemsSold','ItemsUnsold','UnsoldValue','MinutesOnSite','StartFloat','ChangeGiven','CashAdded','ExpectedCash','Square','SquareFees','Zelle','Venmo','CreditCard','Cash','Owed']];
+  const rows = [['Date','Weekday','Seller','Stops','Revenue','Commission30','ItemsSold','ItemsUnsold','UnsoldValue','MinutesOnSite','MinutesDriving','StartFloat','ChangeGiven','CashAdded','ExpectedCash','Square','SquareFees','Zelle','Venmo','CreditCard','Cash','Owed']];
   days.forEach(d=>{
     const wd = effectiveWeekday(d);
     const menu = MENU[wd];
@@ -1182,8 +1361,8 @@ function buildDayCSV(){
     Object.entries(d.returns||{}).forEach(([k,v])=>{ unsoldCount += v; unsoldValue += v*priceOf(k); });
     const pt = dayPaymentTotals(d);
     rows.push([
-      d.date, wd, d.stopNames.length, rev.toFixed(2), (rev*COMMISSION_RATE).toFixed(2),
-      soldCount, unsoldCount, unsoldValue.toFixed(2), dayDwellMinutes(d),
+      d.date, wd, state.sellerName||'', d.stopNames.length, rev.toFixed(2), (rev*COMMISSION_RATE).toFixed(2),
+      soldCount, unsoldCount, unsoldValue.toFixed(2), dayDwellMinutes(d), dayDriveMinutes(d),
       (d.startFloat||0).toFixed(2), dayChangeGiven(d).toFixed(2), dayCashTopUps(d).toFixed(2), expectedCash(d).toFixed(2),
       (pt['Square']||0).toFixed(2), dayFeesTotal(d).toFixed(2), (pt['Zelle']||0).toFixed(2), (pt['Venmo']||0).toFixed(2),
       (pt['Credit Card']||0).toFixed(2), (pt['Cash']||0).toFixed(2), (pt['Owed']||0).toFixed(2)
@@ -1200,9 +1379,9 @@ function downloadCSV(filename, text){
     document.body.appendChild(a); a.click();
     document.body.removeChild(a);
     setTimeout(()=>URL.revokeObjectURL(url), 1000);
-    toast('Downloaded '+filename);
+    toast(T('toast_downloaded',{f:filename}));
   }catch(e){
-    toast('Download blocked — use Copy instead');
+    toast(T('toast_download_fail'));
   }
 }
 
@@ -1228,6 +1407,11 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','
 function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
 
 function attachHandlers(){
+  const langToggle = document.getElementById('langToggle');
+  if(langToggle) langToggle.addEventListener('click', ()=>{ setLang(state.lang==='es'?'en':'es'); });
+  const sellerInput = document.getElementById('sellerInput');
+  if(sellerInput) sellerInput.addEventListener('change', e=>{ setSellerName(e.target.value); });
+
   const dateBtn = document.getElementById('dateBtn');
   if(dateBtn) dateBtn.addEventListener('click', ()=>{
     state.calMonth = state.date.slice(0,7);
@@ -1299,7 +1483,7 @@ function attachHandlers(){
   document.querySelectorAll('[data-item]').forEach(b=>{
     b.addEventListener('click', ()=>{
       bump(b.dataset.item, parseInt(b.dataset.delta,10));
-      if(b.dataset.delta==='1') toast('Sale logged');
+      if(b.dataset.delta==='1') toast(T('toast_sale'));
     });
   });
   document.querySelectorAll('[data-ritem]').forEach(b=>{
@@ -1328,10 +1512,10 @@ function attachHandlers(){
       state.confirmClearStop = false;
       state.day.stops[state.stopIndex].items = {};
       persistDay();
-      toast('Stop items cleared');
+      toast(T('toast_stop_cleared'));
     } else {
       state.confirmClearStop = true;
-      toast('Tap clear again to confirm');
+      toast(T('toast_confirm_clear'));
       setTimeout(()=>{ state.confirmClearStop = false; }, 4000);
     }
   });
@@ -1390,8 +1574,8 @@ function attachHandlers(){
   const exportBtn = document.getElementById('exportBtn');
   if(exportBtn) exportBtn.addEventListener('click', async ()=>{
     const text = buildExportText();
-    try{ await navigator.clipboard.writeText(text); toast('Copied to clipboard'); }
-    catch(e){ toast('Could not copy — select manually'); }
+    try{ await navigator.clipboard.writeText(text); toast(T('toast_copied')); }
+    catch(e){ toast(T('toast_copy_fail')); }
   });
 }
 
@@ -1412,7 +1596,7 @@ async function resetAllData(){
   state.allDays[state.date] = state.day;
   state.tab = 'log';
   render();
-  toast('All data cleared');
+  toast(T('toast_reset_done'));
 }
 
 async function selectDate(ds){
@@ -1444,6 +1628,7 @@ document.addEventListener('visibilitychange', ()=>{
 /* ---------------- INIT ---------------- */
 async function init(){
   try{
+    await loadPrefs();
     state.defaultStopNames = await loadDefaultStopNames();
     // One-time fresh start: clear any prior test data on first load of this build
     let fresh = false;
