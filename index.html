@@ -592,12 +592,13 @@ function addPayment(amountStr){
   if(isNaN(amount) || amount <= 0) return;
   const stop = state.day.stops[state.stopIndex];
   const method = state.activeMethod;
-  stop.payments.push({ method: method, amount: Math.round(amount*100)/100 });
-  if(method === 'Square'){
-    stop.payments.push({ method:'Square', amount: SQUARE_FEE, isFee:true });
-  }
+  const fee = method === 'Square' ? SQUARE_FEE : 0;
+  const total = Math.round((amount+fee)*100)/100;
+  const entry = { method, amount: total };
+  if(fee > 0) entry.fee = fee;
+  stop.payments.push(entry);
   persistDay();
-  toast(method==='Square' ? 'Square logged + $'+SQUARE_FEE.toFixed(2)+' fee' : 'Payment logged');
+  toast(fee>0 ? 'Square '+fmtMoney(total)+' logged' : 'Payment logged');
 }
 function removePayment(idx){
   const stop = state.day.stops[state.stopIndex];
@@ -645,10 +646,10 @@ function stopItemCount(stop){
   return Object.values(stop.items||{}).reduce((s,v)=>s+(v.sold||0), 0);
 }
 function stopCollectedTotal(stop){
-  return (stop.payments||[]).reduce((s,p)=>s+(p.isFee?0:p.amount), 0);
+  return (stop.payments||[]).reduce((s,p)=>s+(p.amount-(p.fee||0)), 0);
 }
 function stopFeesTotal(stop){
-  return (stop.payments||[]).reduce((s,p)=>s+(p.isFee?p.amount:0), 0);
+  return (stop.payments||[]).reduce((s,p)=>s+(p.fee||0), 0);
 }
 function dayFeesTotal(day){
   let t = 0;
@@ -858,11 +859,8 @@ async function render(){
     let stopCollected = 0;
     stop.payments.forEach((p,i)=>{
       stopCollected += p.amount;
-      const label = p.isFee ? 'Square fee' : p.method;
-      html += '<span class="chip'+(p.isFee?' fee':'')+'">'+label+' '+fmtMoney(p.amount)+' <button data-pidx="'+i+'" class="payRemove">×</button></span>';
+      html += '<span class="chip">'+p.method+' '+fmtMoney(p.amount)+' <button data-pidx="'+i+'" class="payRemove">×</button></span>';
     });
-    const feesHere = stopFeesTotal(stop);
-    if(feesHere > 0) html += '<div class="pay-sum">Square fees added here: '+fmtMoney(feesHere)+'</div>';
     html += '</div>';
 
     const exp = expectedCash(state.day);
