@@ -1349,7 +1349,7 @@ function buildDetailCSV(){
       });
     });
   });
-  return rows.map(r=>r.map(csvEscape).join(',')).join('\n');
+  return 'sep=,\n' + rows.map(r=>r.map(csvEscape).join(',')).join('\n');
 }
 function buildDayCSV(){
   const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
@@ -1372,7 +1372,7 @@ function buildDayCSV(){
       (pt['Credit Card']||0).toFixed(2), (pt['Cash']||0).toFixed(2), (pt['Owed']||0).toFixed(2)
     ]);
   });
-  return rows.map(r=>r.map(csvEscape).join(',')).join('\n');
+  return 'sep=,\n' + rows.map(r=>r.map(csvEscape).join(',')).join('\n');
 }
 function downloadCSV(filename, text){
   try{
