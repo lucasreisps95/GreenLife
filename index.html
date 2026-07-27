@@ -114,11 +114,17 @@
   .item-info{flex:1;min-width:0;}
   .item-name{font-size:14px;font-weight:600;}
   .item-price{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
-  .counter{display:flex;align-items:center;gap:10px;}
-  .counter button{width:32px;height:32px;border-radius:9px;border:none;font-size:16px;font-weight:700;}
+  .counter{display:flex;align-items:center;gap:7px;}
+  .counter button{width:40px;height:40px;border-radius:9px;border:none;font-size:17px;font-weight:700;flex-shrink:0;}
   .counter .minus{background:#F0EDE3;color:var(--ink-soft);}
   .counter .plus{background:var(--primary);color:#fff;}
-  .counter .count{min-width:22px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:16px;}
+  .counter .plus2{background:var(--accent);color:#fff;font-size:14px;}
+  .counter .count{min-width:24px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:16px;}
+  .counter.big button{width:52px;height:52px;font-size:20px;}
+  .counter.big .plus2{font-size:15px;}
+  .counter.big .count{min-width:32px;font-size:20px;}
+  .item.top{background:var(--accent-soft);border:1px solid var(--accent);}
+  .cat-label.top-label{color:var(--primary-dark);font-weight:700;}
 
   .req-box, .pay-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-top:8px;}
   .req-box .lbl, .pay-box .lbl{font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:8px;}
@@ -208,8 +214,13 @@
 
   /* Mobile sizing — bigger tap targets, 16px inputs to stop iOS zoom */
   @media (max-width:520px){
-    .counter button{width:44px;height:44px;font-size:20px;}
-    .counter .count{min-width:30px;font-size:18px;}
+    .counter{gap:6px;}
+    .counter button{width:48px;height:48px;font-size:20px;}
+    .counter .plus2{font-size:15px;}
+    .counter .count{min-width:28px;font-size:18px;}
+    .counter.big button{width:58px;height:58px;font-size:22px;}
+    .counter.big .plus2{font-size:16px;}
+    .counter.big .count{min-width:34px;font-size:21px;}
     .item{padding:12px;}
     .item-name{font-size:15px;}
     .tab{padding:13px 6px;font-size:14px;}
@@ -683,6 +694,26 @@ function dayUncollected(day){
   return gap;
 }
 
+function computeTopSellers(weekday, n){
+  const menu = MENU[weekday];
+  if(!menu) return [];
+  const allItems = Object.values(menu).flat();
+  const menuNames = new Set(allItems.map(x=>x[0]));
+  const agg = {};
+  Object.values(state.allDays||{}).forEach(d=>{
+    Object.values(d.stops||{}).forEach(st=>{
+      Object.entries(st.items||{}).forEach(([name,v])=>{
+        if(menuNames.has(name)) agg[name] = (agg[name]||0) + (v.sold||0);
+      });
+    });
+  });
+  let ranked = Object.entries(agg).filter(([,q])=>q>0).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+  const hotPlates = (menu['Hot Plates']||[]).map(x=>x[0]);
+  hotPlates.forEach(name=>{ if(!ranked.includes(name)) ranked.push(name); });
+  allItems.forEach(([name])=>{ if(!ranked.includes(name)) ranked.push(name); });
+  return ranked.slice(0,n).map(name=>allItems.find(x=>x[0]===name)).filter(Boolean);
+}
+
 function dayItemsSold(day){
   const totals = {};
   Object.values(day.stops).forEach(st=>{
@@ -807,6 +838,22 @@ async function render(){
         + (sCount>0 ? '<button class="ob-clear" id="clearStop">clear</button>' : '')
         + '</div></div>';
 
+      const topSellers = computeTopSellers(weekday, 4);
+      if(topSellers.length){
+        html += '<div class="cat-label top-label">Top sellers — tap fast</div>';
+        topSellers.forEach(([name, price])=>{
+          const sold = (stop.items[name] && stop.items[name].sold) || 0;
+          html += '<div class="item top">'
+            + '<div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+'</div></div>'
+            + '<div class="counter big">'
+            +   '<button class="minus" data-item="'+escapeAttr(name)+'" data-delta="-1">−</button>'
+            +   '<span class="count">'+sold+'</span>'
+            +   '<button class="plus" data-item="'+escapeAttr(name)+'" data-delta="1">+1</button>'
+            +   '<button class="plus2" data-item="'+escapeAttr(name)+'" data-delta="2">+2</button>'
+            + '</div></div>';
+        });
+      }
+
       Object.entries(menu).forEach(([cat, items])=>{
         html += '<div class="cat-label">'+cat+'</div>';
         items.forEach(([name, price])=>{
@@ -816,7 +863,8 @@ async function render(){
             + '<div class="counter">'
             +   '<button class="minus" data-item="'+escapeAttr(name)+'" data-delta="-1">−</button>'
             +   '<span class="count">'+sold+'</span>'
-            +   '<button class="plus" data-item="'+escapeAttr(name)+'" data-delta="1">+</button>'
+            +   '<button class="plus" data-item="'+escapeAttr(name)+'" data-delta="1">+1</button>'
+            +   '<button class="plus2" data-item="'+escapeAttr(name)+'" data-delta="2">+2</button>'
             + '</div></div>';
         });
       });
