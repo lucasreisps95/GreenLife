@@ -81,6 +81,12 @@
   .pair-row .open{color:var(--accent);font-weight:700;}
   .pair-row button{background:none;border:none;color:var(--ink-soft);font-weight:700;cursor:pointer;font-size:14px;}
 
+  .seller-row{margin-top:10px;}
+  .seller-row input{
+    width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(239,234,217,0.3);
+    color:#EFEAD9;font-size:13px;padding:9px 12px;border-radius:10px;font-family:'Inter',sans-serif;
+  }
+  .seller-row input::placeholder{color:#B9C9BE;}
   .stub-controls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
   .ctrl{flex:1;min-width:120px;}
   .ctrl label{display:block;font-size:10px;color:#B9C9BE;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.05em;}
@@ -240,6 +246,7 @@
     .export-btn{padding:15px;font-size:14px;}
     .stop-name-input{font-size:16px;}
     .ctrl select,.ctrl input[type=number]{font-size:16px;padding:10px 8px;}
+    .seller-row input{font-size:16px;padding:11px 12px;}
     .date-btn{padding:11px 14px;font-size:13px;}
   }
 
@@ -922,10 +929,8 @@ async function render(){
     + '<div class="stub-top">'
     +   '<div class="brand">'
     +     '<svg class="logo-mark" viewBox="0 0 100 100" aria-hidden="true">'
-    +       '<circle cx="50" cy="50" r="36" fill="none" stroke="currentColor" stroke-width="5"/>'
-    +       '<g transform="translate(50 50) scale(1.15) translate(-50 -50)">'
-    +         '<path d="M48,25 C38,25 30,33 30,42 C30,51 38,58 47,57 C53,56 58,52 59,46 C61,52 62,58 60,64 C58,71 51,76 43,74 C37,72 34,66 37,61 C40,57 46,58 50,61 C52,62 54,61 55,59" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'
-    +       '</g>'
+    +       '<circle cx="50" cy="50" r="37" fill="none" stroke="currentColor" stroke-width="4.5"/>'
+    +       '<path d="M67.5,25 C69.5,29 66.5,32 61.5,31 C61.5,31 59.5,30 57.5,29 C47.5,25 36.5,29 33.5,39 C30.5,49 36.5,58 46.5,59 C56.5,60 64.5,53 65.5,43 C67.5,50 67.5,57 65.5,63 C63.5,70 55.5,75 47.5,72 C40.5,69 38.5,62 42.5,57 C45.5,54 50.5,55 53.5,58 C55.5,59 57.5,58 58.5,56" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
     +     '</svg>'
     +     '<div><h1>GreenLife</h1><div class="sub">'+weekday.toUpperCase()+'</div></div>'
     +   '</div>'
@@ -935,10 +940,10 @@ async function render(){
     +       (state.date===todayStr() ? (state.lang==='es'?'Hoy':'Today') : fmtDateShort(state.date))+'</span></button>'
     +   '</div>'
     + '</div>'
+    + '<div class="seller-row"><input type="text" id="sellerInput" placeholder="'+T('seller_label')+'" value="'+escapeAttr(state.sellerName)+'"></div>'
     + '<div class="stub-controls">'
     +   '<div class="ctrl"><label>'+T('menu_label')+'</label><select id="menuSelect">'+menuOptionsHtml+'</select></div>'
     +   '<div class="ctrl"><label>'+T('stops_label')+'</label><input type="number" id="stopCountInput" min="1" max="30" value="'+state.day.stopNames.length+'"></div>'
-    +   '<div class="ctrl"><label>'+T('seller_label')+'</label><input type="text" id="sellerInput" placeholder="'+T('seller_label')+'" value="'+escapeAttr(state.sellerName)+'"></div>'
     + '</div>'
     + '<div class="stub-kpis">'
     +   '<div class="stub-kpi"><div class="amt">'+fmtMoney(rev)+'</div><div class="lbl">'+T('revenue_today')+'</div></div>'
@@ -1315,10 +1320,8 @@ function renderSummary(){
     + '</div>';
   html += '<div class="brand-footer">'
     + '<svg class="logo-mark sm" viewBox="0 0 100 100" aria-hidden="true">'
-    +   '<circle cx="50" cy="50" r="36" fill="none" stroke="currentColor" stroke-width="5"/>'
-    +   '<g transform="translate(50 50) scale(1.15) translate(-50 -50)">'
-    +     '<path d="M48,25 C38,25 30,33 30,42 C30,51 38,58 47,57 C53,56 58,52 59,46 C61,52 62,58 60,64 C58,71 51,76 43,74 C37,72 34,66 37,61 C40,57 46,58 50,61 C52,62 54,61 55,59" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'
-    +   '</g>'
+    +   '<circle cx="50" cy="50" r="37" fill="none" stroke="currentColor" stroke-width="4.5"/>'
+    +   '<path d="M67.5,25 C69.5,29 66.5,32 61.5,31 C61.5,31 59.5,30 57.5,29 C47.5,25 36.5,29 33.5,39 C30.5,49 36.5,58 46.5,59 C56.5,60 64.5,53 65.5,43 C67.5,50 67.5,57 65.5,63 C63.5,70 55.5,75 47.5,72 C40.5,69 38.5,62 42.5,57 C45.5,54 50.5,55 53.5,58 C55.5,59 57.5,58 58.5,56" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
     + '</svg>'
     + '<span>'+T('brand_footer')+'</span></div>';
   html += '</div>';
