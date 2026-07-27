@@ -923,7 +923,9 @@ async function render(){
     +   '<div class="brand">'
     +     '<svg class="logo-mark" viewBox="0 0 100 100" aria-hidden="true">'
     +       '<circle cx="50" cy="50" r="36" fill="none" stroke="currentColor" stroke-width="5"/>'
-    +       '<text x="50" y="68" text-anchor="middle" font-family="\'Space Grotesk\',sans-serif" font-size="52" font-weight="600" fill="currentColor">g</text>'
+    +       '<g transform="translate(50 50) scale(1.15) translate(-50 -50)">'
+    +         '<path d="M48,25 C38,25 30,33 30,42 C30,51 38,58 47,57 C53,56 58,52 59,46 C61,52 62,58 60,64 C58,71 51,76 43,74 C37,72 34,66 37,61 C40,57 46,58 50,61 C52,62 54,61 55,59" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'
+    +       '</g>'
     +     '</svg>'
     +     '<div><h1>GreenLife</h1><div class="sub">'+weekday.toUpperCase()+'</div></div>'
     +   '</div>'
@@ -1314,7 +1316,9 @@ function renderSummary(){
   html += '<div class="brand-footer">'
     + '<svg class="logo-mark sm" viewBox="0 0 100 100" aria-hidden="true">'
     +   '<circle cx="50" cy="50" r="36" fill="none" stroke="currentColor" stroke-width="5"/>'
-    +   '<text x="50" y="68" text-anchor="middle" font-family="\'Space Grotesk\',sans-serif" font-size="52" font-weight="600" fill="currentColor">g</text>'
+    +   '<g transform="translate(50 50) scale(1.15) translate(-50 -50)">'
+    +     '<path d="M48,25 C38,25 30,33 30,42 C30,51 38,58 47,57 C53,56 58,52 59,46 C61,52 62,58 60,64 C58,71 51,76 43,74 C37,72 34,66 37,61 C40,57 46,58 50,61 C52,62 54,61 55,59" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'
+    +   '</g>'
     + '</svg>'
     + '<span>'+T('brand_footer')+'</span></div>';
   html += '</div>';
