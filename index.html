@@ -126,6 +126,8 @@
   .req-input-row input{flex:1;border:1px solid var(--border);border-radius:9px;padding:9px 10px;font-size:13px;}
   .req-input-row button{background:var(--accent);color:#fff;border:none;border-radius:9px;padding:0 14px;font-weight:700;}
   .chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--primary-dark);border-radius:20px;padding:5px 10px;font-size:12px;font-weight:600;margin:6px 6px 0 0;}
+  .chip.fee{background:#F0EDE3;color:var(--ink-soft);font-style:italic;}
+  .fee-note{font-size:11px;color:var(--accent);margin-top:6px;font-weight:600;}
   .chip button{background:none;border:none;color:var(--primary-dark);font-weight:700;cursor:pointer;}
   .chip.time{background:#E6EEE8;color:var(--primary-dark);}
 
@@ -245,7 +247,7 @@ const MENU = {
     Sushi: [["California Roll",12]],
     "Protein Plates": [["Chicken Salad Protein Plate",15],["Hummus and Chicken Protein Plate",15]],
     Treats: [["Cookies",8],["Brownies",8],["Fresh Fruit",8],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10]],
-    Drinks: [["Smoothies",8],["Orange Juice",7]]
+    Drinks: [["Orange Juice",7],["Green Juice",7],["Berry Juice",7]]
   },
   Tuesday: {
     Salads: [["Chef Salad",15],["Asian Crunchy Salad",15]],
@@ -255,7 +257,7 @@ const MENU = {
     Sushi: [["California Roll",12]],
     "Protein Plates": [["Hummus and Chicken Protein Plate",15]],
     Treats: [["Cookies",8],["Brownies",8],["Fresh Fruit",8],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10]],
-    Drinks: [["Smoothies",8],["Orange Juice",7]]
+    Drinks: [["Orange Juice",7],["Green Juice",7],["Berry Juice",7]]
   },
   Wednesday: {
     Salads: [["House Chopped Salad",15],["Thai Grilled Chicken Salad",15]],
@@ -265,7 +267,7 @@ const MENU = {
     Sushi: [["Crunchy Roll",13.5]],
     "Protein Plates": [["Blackened Chicken Protein Plate",15]],
     Treats: [["Cookies",8],["Brownies",8],["Fresh Fruit",8],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10]],
-    Drinks: [["Smoothies",8],["Orange Juice",7]]
+    Drinks: [["Orange Juice",7],["Green Juice",7],["Berry Juice",7]]
   },
   Thursday: {
     Salads: [["Super Taco Salad",15],["Turkey Cobb Salad",15]],
@@ -275,7 +277,7 @@ const MENU = {
     Sushi: [["California Roll",12],["Rainbow Roll (special order)",18]],
     "Protein Plates": [["Hot Honey Chicken",15]],
     Treats: [["Cookies",8],["Brownies",8],["Fresh Fruit",8],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10]],
-    Drinks: [["Smoothies",8],["Orange Juice",7]]
+    Drinks: [["Orange Juice",7],["Green Juice",7],["Berry Juice",7]]
   },
   Friday: {
     Salads: [["Super Taco Salad",15],["Grilled Chicken Quinoa Salad",15]],
@@ -285,7 +287,7 @@ const MENU = {
     Sushi: [["California Roll",12]],
     "Protein Plates": [["Chicken Salad Protein Plate",15]],
     Treats: [["Cookies",8],["Brownies",8],["Fresh Fruit",8],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10]],
-    Drinks: [["Smoothies",8],["Orange Juice",7]]
+    Drinks: [["Orange Juice",7],["Green Juice",7],["Berry Juice",7]]
   }
 };
 const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -332,6 +334,7 @@ function toast(msg){
   toast._t = setTimeout(()=>t.classList.remove('show'), 1400);
 }
 
+const SQUARE_FEE = 0.50;
 function makeStop(){ return { items:{}, requests:[], visits:[], payments:[], cashMoves:[] }; }
 function emptyDay(dateStr, stopNames){
   const stops = {};
@@ -588,8 +591,13 @@ function addPayment(amountStr){
   const amount = parseFloat(amountStr);
   if(isNaN(amount) || amount <= 0) return;
   const stop = state.day.stops[state.stopIndex];
-  stop.payments.push({ method: state.activeMethod, amount: Math.round(amount*100)/100 });
+  const method = state.activeMethod;
+  stop.payments.push({ method: method, amount: Math.round(amount*100)/100 });
+  if(method === 'Square'){
+    stop.payments.push({ method:'Square', amount: SQUARE_FEE, isFee:true });
+  }
   persistDay();
+  toast(method==='Square' ? 'Square logged + $'+SQUARE_FEE.toFixed(2)+' fee' : 'Payment logged');
 }
 function removePayment(idx){
   const stop = state.day.stops[state.stopIndex];
@@ -637,7 +645,15 @@ function stopItemCount(stop){
   return Object.values(stop.items||{}).reduce((s,v)=>s+(v.sold||0), 0);
 }
 function stopCollectedTotal(stop){
-  return (stop.payments||[]).reduce((s,p)=>s+p.amount, 0);
+  return (stop.payments||[]).reduce((s,p)=>s+(p.isFee?0:p.amount), 0);
+}
+function stopFeesTotal(stop){
+  return (stop.payments||[]).reduce((s,p)=>s+(p.isFee?p.amount:0), 0);
+}
+function dayFeesTotal(day){
+  let t = 0;
+  Object.values(day.stops).forEach(st=>{ t += stopFeesTotal(st); });
+  return t;
 }
 function stopUnpaid(stop, weekday){
   return stopRevenue(stop, weekday) - stopCollectedTotal(stop);
@@ -832,7 +848,8 @@ async function render(){
       html += '<div class="method-chip '+(state.activeMethod===m?'active':'')+'" data-method="'+m+'">'+m+'</div>';
     });
     html += '</div>'
-      + '<div class="pay-add-row"><input type="number" step="0.01" inputmode="decimal" id="payAmount" placeholder="Amount ($)"><button id="payAdd">Add</button></div>';
+      + '<div class="pay-add-row"><input type="number" step="0.01" inputmode="decimal" id="payAmount" placeholder="Amount ($)"><button id="payAdd">Add</button></div>'
+      + (state.activeMethod==='Square' ? '<div class="fee-note">+ $'+SQUARE_FEE.toFixed(2)+' fee auto-added for Square</div>' : '');
 
     if(remaining > 0.005){
       html += '<button class="pay-fill" id="payFill">Pay remaining '+fmtMoney(remaining)+' by '+state.activeMethod+'</button>';
@@ -841,8 +858,11 @@ async function render(){
     let stopCollected = 0;
     stop.payments.forEach((p,i)=>{
       stopCollected += p.amount;
-      html += '<span class="chip">'+p.method+' '+fmtMoney(p.amount)+' <button data-pidx="'+i+'" class="payRemove">×</button></span>';
+      const label = p.isFee ? 'Square fee' : p.method;
+      html += '<span class="chip'+(p.isFee?' fee':'')+'">'+label+' '+fmtMoney(p.amount)+' <button data-pidx="'+i+'" class="payRemove">×</button></span>';
     });
+    const feesHere = stopFeesTotal(stop);
+    if(feesHere > 0) html += '<div class="pay-sum">Square fees added here: '+fmtMoney(feesHere)+'</div>';
     html += '</div>';
 
     const exp = expectedCash(state.day);
@@ -977,7 +997,7 @@ function renderSummary(){
   if(days.length===0){
     return '<div class="panel"><div class="empty">No data logged yet. Start tapping sales on the Log Stop tab.</div></div>';
   }
-  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0;
+  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0, totalFees = 0;
   const soldAgg = {}, returnedAgg = {}, requestAgg = {}, paymentAgg = {};
   PAYMENT_METHODS.forEach(m=>paymentAgg[m]=0);
 
@@ -989,6 +1009,7 @@ function renderSummary(){
     totalRevenue += rev;
     totalCommission += rev * COMMISSION_RATE;
     totalDwell += dayDwellMinutes(d);
+    totalFees += dayFeesTotal(d);
     const sold = dayItemsSold(d);
     Object.entries(sold).forEach(([k,v])=>{ soldAgg[k]=(soldAgg[k]||0)+v; });
     Object.entries(d.returns||{}).forEach(([k,v])=>{
@@ -1009,6 +1030,7 @@ function renderSummary(){
     +   '<div class="kpi gold"><div class="v">'+fmtMoney(totalCommission)+'</div><div class="k">YOUR COMMISSION</div></div>'
     +   '<div class="kpi warn"><div class="v">'+fmtMoney(totalReturnedValue)+'</div><div class="k">WASTE VALUE</div></div>'
     +   '<div class="kpi"><div class="v">'+fmtDur(totalDwell)+'</div><div class="k">TIME ON SITE</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(totalFees)+'</div><div class="k">SQUARE FEES</div></div>'
     + '</div></div>';
 
   html += '<div class="card"><h3>Payment methods (all days)</h3>';
@@ -1102,7 +1124,7 @@ function buildDetailCSV(){
 }
 function buildDayCSV(){
   const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
-  const rows = [['Date','Weekday','Stops','Revenue','Commission30','ItemsSold','ItemsUnsold','UnsoldValue','MinutesOnSite','StartFloat','ChangeGiven','CashAdded','ExpectedCash','Square','Zelle','Venmo','CreditCard','Cash','Owed']];
+  const rows = [['Date','Weekday','Stops','Revenue','Commission30','ItemsSold','ItemsUnsold','UnsoldValue','MinutesOnSite','StartFloat','ChangeGiven','CashAdded','ExpectedCash','Square','SquareFees','Zelle','Venmo','CreditCard','Cash','Owed']];
   days.forEach(d=>{
     const wd = effectiveWeekday(d);
     const menu = MENU[wd];
@@ -1117,7 +1139,7 @@ function buildDayCSV(){
       d.date, wd, d.stopNames.length, rev.toFixed(2), (rev*COMMISSION_RATE).toFixed(2),
       soldCount, unsoldCount, unsoldValue.toFixed(2), dayDwellMinutes(d),
       (d.startFloat||0).toFixed(2), dayChangeGiven(d).toFixed(2), dayCashTopUps(d).toFixed(2), expectedCash(d).toFixed(2),
-      (pt['Square']||0).toFixed(2), (pt['Zelle']||0).toFixed(2), (pt['Venmo']||0).toFixed(2),
+      (pt['Square']||0).toFixed(2), dayFeesTotal(d).toFixed(2), (pt['Zelle']||0).toFixed(2), (pt['Venmo']||0).toFixed(2),
       (pt['Credit Card']||0).toFixed(2), (pt['Cash']||0).toFixed(2), (pt['Owed']||0).toFixed(2)
     ]);
   });
