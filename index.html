@@ -346,6 +346,10 @@
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 </head>
 <body>
 <div id="app" class="app"></div>
@@ -463,7 +467,10 @@ const TRANSLATIONS = {
     toast_square:"Square {amt} logged", toast_payment:"Payment logged", toast_change:"Change logged",
     toast_topup:"Top-up logged", toast_copied:"Copied to clipboard", toast_copy_fail:"Could not copy — select manually",
     toast_downloaded:"Downloaded {f}", toast_download_fail:"Download blocked — use Copy instead",
-    toast_reset_done:"All data cleared", brand_footer:"GreenLife Fit Foods — route log"
+    toast_reset_done:"All data cleared", brand_footer:"GreenLife Fit Foods — route log",
+    cloud_offline:"Local only — not synced", cloud_connecting:"Connecting to cloud…",
+    cloud_synced:"Synced to cloud as {name}", cloud_taken:"That name is already syncing from another device — use a different name",
+    cloud_error:"Cloud sync error — saved locally, will retry"
   },
   es: {
     tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen",
@@ -506,7 +513,10 @@ const TRANSLATIONS = {
     toast_square:"Square {amt} registrado", toast_payment:"Pago registrado", toast_change:"Cambio registrado",
     toast_topup:"Recarga registrada", toast_copied:"Copiado al portapapeles", toast_copy_fail:"No se pudo copiar — selecciona manualmente",
     toast_downloaded:"Descargado {f}", toast_download_fail:"Descarga bloqueada — usa Copiar",
-    toast_reset_done:"Todos los datos borrados", brand_footer:"GreenLife Fit Foods — registro de ruta"
+    toast_reset_done:"Todos los datos borrados", brand_footer:"GreenLife Fit Foods — registro de ruta",
+    cloud_offline:"Solo local — no sincronizado", cloud_connecting:"Conectando a la nube…",
+    cloud_synced:"Sincronizado como {name}", cloud_taken:"Ese nombre ya se usa en otro dispositivo — usa un nombre diferente",
+    cloud_error:"Error de sincronización — guardado localmente, se reintentará"
   }
 };
 function T(key, vars){
@@ -516,6 +526,13 @@ function T(key, vars){
 }
 function TC(cat){ return state.lang==='es' ? (CAT_ES[cat]||cat) : cat; }
 function TP(method){ return state.lang==='es' ? (PAY_ES[method]||method) : method; }
+function cloudStatusLabel(){
+  if(state.cloudStatus === 'connecting') return T('cloud_connecting');
+  if(state.cloudStatus === 'synced') return T('cloud_synced',{name:escapeAttr(state.sellerName)});
+  if(state.cloudStatus === 'taken') return T('cloud_taken');
+  if(state.cloudStatus === 'error') return T('cloud_error');
+  return T('cloud_offline');
+}
 const DEFAULT_STOP_COUNT = 10;
 const COMMISSION_RATE = 0.30;
 
@@ -532,7 +549,8 @@ let state = {
   calOpen: false,
   calMonth: todayStr().slice(0,7),
   lang: 'en',
-  sellerName: ''
+  sellerName: '',
+  cloudStatus: 'offline'
 };
 
 function todayStr(){
@@ -665,6 +683,12 @@ async function setLang(lang){
 async function setSellerName(name){
   state.sellerName = (name||'').trim();
   try{ await storageSet('seller_name', state.sellerName, false); }catch(e){}
+  if(fbReady && state.sellerName){
+    const result = await claimDriver(state.sellerName);
+    state.cloudStatus = result.status;
+    if(result.status === 'synced') await hydrateFromCloud();
+    render();
+  }
 }
 
 async function loadDefaultStopNames(){
@@ -711,6 +735,100 @@ async function loadAllDays(){
     }
     return out;
   }catch(e){ return {}; }
+}
+
+/* ---------------- CLOUD SYNC (Firestore, best-effort layer on top of local storage) ---------------- */
+/* FIREBASE_CONFIG comes from firebase-config.js, shared with admin.html */
+let fbDb = null, fbAuth = null, fbUid = null, fbReady = false;
+
+function driverIdFor(name){
+  const slug = (name||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+  return slug || null;
+}
+function cloudConfigured(){
+  return FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf('REPLACE_ME') === -1;
+}
+async function initCloud(){
+  if(!cloudConfigured() || typeof firebase === 'undefined') return;
+  state.cloudStatus = 'connecting';
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    fbAuth = firebase.auth();
+    fbDb = firebase.firestore();
+    try{ await fbDb.enablePersistence({synchronizeTabs:true}); }catch(e){}
+    await new Promise((resolve)=>{
+      let settled = false;
+      fbAuth.onAuthStateChanged(user=>{
+        if(user && !settled){ settled = true; fbUid = user.uid; fbReady = true; resolve(); }
+      });
+      fbAuth.signInAnonymously().catch(()=>{ if(!settled){ settled = true; resolve(); } });
+    });
+  }catch(e){ fbReady = false; }
+  if(!fbReady){ state.cloudStatus = 'offline'; render(); return; }
+  if(state.sellerName){
+    const result = await claimDriver(state.sellerName);
+    state.cloudStatus = result.status;
+    if(result.status === 'synced') await hydrateFromCloud();
+  } else {
+    state.cloudStatus = 'offline';
+  }
+  render();
+}
+// Claiming is write-only (no read-before-write): a plain set()-with-merge is
+// evaluated by Firestore as "create" the first time (allowed if we're setting
+// ourselves as owner) or "update" every time after (allowed only if we're
+// already the owner) — so a name already claimed by a different device simply
+// fails the update rule and we catch that as 'taken'. This also sidesteps the
+// fact that Firestore denies get() on a not-yet-existing doc under our rules.
+// Returns {status:'synced', driverId} | {status:'taken'} | {status:'error', detail}
+async function claimDriver(name){
+  const driverId = driverIdFor(name);
+  if(!driverId || !fbReady) return { status:'error', detail:'no name or not signed in' };
+  try{
+    await fbDb.collection('drivers').doc(driverId).set({
+      name: name.trim(), ownerUid: fbUid,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    return { status:'synced', driverId };
+  }catch(e){
+    if(e && e.code === 'permission-denied') return { status:'taken' };
+    return { status:'error', detail: (e && e.code) || String(e) };
+  }
+}
+async function cloudPushDay(day){
+  if(!fbReady || !state.sellerName) return;
+  const result = await claimDriver(state.sellerName);
+  state.cloudStatus = result.status;
+  if(result.status !== 'synced') return;
+  const driverId = result.driverId;
+  try{
+    await fbDb.collection('drivers').doc(driverId).collection('days').doc(day.date).set(
+      Object.assign({}, day, {
+        driverName: state.sellerName.trim(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+    );
+  }catch(e){ /* offline or blocked — local copy already saved, will retry on next edit */ }
+}
+async function hydrateFromCloud(){
+  if(!fbReady || !state.sellerName) return;
+  const driverId = driverIdFor(state.sellerName);
+  if(!driverId) return;
+  try{
+    const snap = await fbDb.collection('drivers').doc(driverId).collection('days').get();
+    let changed = false;
+    for(const doc of snap.docs){
+      const dateStr = doc.id;
+      if(state.allDays[dateStr]) continue; // this device already has local data for that date — local wins
+      const data = doc.data();
+      delete data.driverName; delete data.updatedAt;
+      const normalized = normalizeDay(data, state.defaultStopNames);
+      await saveDay(normalized);
+      state.allDays[dateStr] = normalized;
+      changed = true;
+    }
+    if(changed && state.allDays[state.date]) state.day = state.allDays[state.date];
+  }catch(e){}
 }
 
 /* ---------------- MUTATIONS ---------------- */
@@ -906,6 +1024,7 @@ async function persistDay(){
   await saveDay(state.day);
   state.allDays[state.day.date] = state.day;
   render();
+  cloudPushDay(state.day).then(render); // best-effort background sync; local save above already succeeded
 }
 async function renameStop(newName){
   state.day.stopNames[state.stopIndex] = newName;
@@ -1080,7 +1199,9 @@ async function render(){
     +       (state.date===todayStr() ? (state.lang==='es'?'Hoy':'Today') : fmtDateShort(state.date))+'</span></button>'
     +   '</div>'
     + '</div>'
-    + '<div class="seller-row"><input type="text" id="sellerInput" placeholder="'+T('seller_label')+'" value="'+escapeAttr(state.sellerName)+'"></div>'
+    + '<div class="seller-row"><input type="text" id="sellerInput" placeholder="'+T('seller_label')+'" value="'+escapeAttr(state.sellerName)+'">'
+    +   '<div class="sub" style="margin-top:5px;">'+cloudStatusLabel()+'</div>'
+    + '</div>'
     + '<div class="stub-controls">'
     +   '<div class="ctrl"><label>'+T('menu_label')+'</label><select id="menuSelect">'+menuOptionsHtml+'</select></div>'
     +   '<div class="ctrl"><label>'+T('stops_label')+'</label><input type="number" id="stopCountInput" min="1" max="30" value="'+state.day.stopNames.length+'"></div>'
@@ -1895,6 +2016,7 @@ async function init(){
     state.allDays = await loadAllDays();
     state.allDays[state.date] = state.day;
     render();
+    initCloud(); // best-effort background cloud sync; app is already usable offline above
   }catch(err){
     document.getElementById('app').innerHTML =
       '<div style="padding:24px;font-family:sans-serif;color:#B5482E;"><h3>Something failed to load</h3>'

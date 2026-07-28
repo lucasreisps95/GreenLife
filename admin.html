@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>GreenLife — Owner Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#DFE5C7; --bg-2:#BFD2BB; --bg-3:#AFC1BC;
+    --ink:#122635; --ink-soft:#4A6477;
+    --primary:#2A8084; --primary-dark:#184E77;
+    --ocean:#1A759F; --teal:#52B69A; --mint:#99D98C; --sprout:#B5E48C; --lime:#D9ED92;
+    --accent-soft:rgba(181,228,140,0.32); --lime-soft:rgba(217,237,146,0.38);
+    --danger:#BF4726; --danger-vivid:#E0632F;
+    --surface:rgba(255,255,255,0.58); --surface-strong:rgba(255,255,255,0.78); --border:rgba(255,255,255,0.7);
+    --hairline:rgba(18,38,53,0.09);
+    --shadow:0 6px 22px rgba(18,52,60,0.10); --shadow-lift:0 10px 34px rgba(18,52,60,0.16);
+    --radius:20px; --radius-sm:13px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:linear-gradient(168deg,var(--bg-1) 0%,var(--bg-2) 46%,var(--bg-3) 100%);
+    background-attachment:fixed; min-height:100vh; color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:960px;margin:0 auto;padding:12px 12px 60px;}
+  .stub{
+    position:relative; margin:0 0 14px; padding:20px 22px;
+    border-radius:26px;
+    background:linear-gradient(142deg,rgba(26,117,159,0.94) 0%,rgba(24,78,119,0.97) 100%);
+    -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.18); box-shadow:0 12px 34px rgba(18,52,80,0.28);
+    color:#EAF3EC; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .stub h1{font-family:'Space Grotesk',sans-serif;font-size:20px;margin:0;letter-spacing:-0.4px;font-weight:600;}
+  .stub .sub{font-size:10px;color:rgba(217,237,146,0.85);font-family:'IBM Plex Mono',monospace;letter-spacing:0.14em;}
+  .stub-actions{display:flex;gap:8px;}
+  .btn{
+    background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);color:#EAF3EC;
+    font-family:'Inter',sans-serif;font-size:12px;font-weight:700;padding:9px 14px;border-radius:12px;cursor:pointer;
+  }
+  .btn.primary{background:var(--primary);border-color:transparent;}
+
+  .card{
+    background:var(--surface); -webkit-backdrop-filter:blur(18px) saturate(1.15); backdrop-filter:blur(18px) saturate(1.15);
+    border:1px solid var(--border); box-shadow:var(--shadow);
+    border-radius:var(--radius); padding:16px; margin-bottom:14px;
+  }
+  .card h3{margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;letter-spacing:-0.2px;}
+  .kpi-row{display:flex;gap:9px;flex-wrap:wrap;}
+  .kpi{flex:1;min-width:130px;background:rgba(255,255,255,0.5);border:1px solid var(--border);border-radius:14px;padding:14px 12px;text-align:center;}
+  .kpi .v{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.4px;}
+  .kpi .k{font-size:9px;color:var(--ink-soft);margin-top:6px;letter-spacing:0.06em;text-transform:uppercase;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);padding:8px 10px;border-bottom:1px solid var(--hairline);}
+  td{padding:9px 10px;border-bottom:1px solid var(--hairline);font-family:'IBM Plex Mono',monospace;}
+  td.name{font-family:'Inter',sans-serif;font-weight:600;}
+  tr:last-child td{border-bottom:none;}
+  .table-wrap{overflow-x:auto;}
+  .rank{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:8px;background:var(--primary-dark);color:var(--lime);font-size:11px;font-weight:700;margin-right:8px;}
+  .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:30px 0;}
+
+  .login-wrap{max-width:360px;margin:80px auto 0;}
+  .login-wrap input{
+    width:100%;border:1px solid var(--hairline);background:rgba(255,255,255,0.7);border-radius:12px;
+    padding:12px 13px;font-size:14px;color:var(--ink);margin-bottom:10px;
+  }
+  .login-wrap button{width:100%;padding:13px;border-radius:14px;border:none;background:var(--primary);color:#fff;font-weight:700;font-size:14px;cursor:pointer;}
+  .err{color:var(--danger);font-size:12px;margin-top:8px;}
+  .hint{color:var(--ink-soft);font-size:11px;margin-top:14px;line-height:1.5;word-break:break-all;}
+  .hidden{display:none !important;}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+<div class="app">
+  <div id="loginView" class="login-wrap card">
+    <h3>Owner sign in</h3>
+    <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
+    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+    <button id="loginBtn">Sign in</button>
+    <div id="loginErr" class="err"></div>
+    <div class="hint">One-time setup: create this account in Firebase console → Authentication → Users, then add a document to the <b>admins</b> collection whose ID is your account's UID (shown here after you sign in) so Firestore rules grant you read access.</div>
+  </div>
+
+  <div id="dashView" class="hidden">
+    <div class="stub">
+      <div><h1>GreenLife</h1><div class="sub">OWNER DASHBOARD</div></div>
+      <div class="stub-actions">
+        <button class="btn" id="refreshBtn">Refresh</button>
+        <button class="btn" id="logoutBtn">Sign out</button>
+      </div>
+    </div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<script>
+/* ---------------- Menu data (kept in sync with index.html; used only to value
+   returned/unsold items — sold-item revenue always comes from each sale's
+   stored price snapshot, never from this live menu) ---------------- */
+const MENU = {
+  Monday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["Mexican Caesar Salad",15],["Chicken Taco Salad",15]],
+    Sandwiches: [["Chicken Salad Sandwich",15],["Smoked Turkey and Swiss",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Caesar Salad Wrap",15]],
+    "Hot Plates": [["Chicken Kabob",16],["Chipotle Shrimp/Chicken Pasta",16],["Salmon w/ Cilantro Rice",17.5]],
+    Sushi: [["California Roll",12]],
+    "Protein Plates": [["Chicken Salad Protein Plate",15],["Hummus and Chicken Protein Plate",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  },
+  Tuesday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["Chef Salad",15],["Asian Crunchy Salad",15]],
+    Sandwiches: [["Turkey Club",15],["Smoked Turkey and Swiss",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Thai Chicken Wrap",15]],
+    "Hot Plates": [["Chicken Enchiladas",16],["Chicken Chile Verde",16],["Shrimp/Chicken Pesto Pasta",16]],
+    Sushi: [["California Roll",12]],
+    "Protein Plates": [["Hummus and Chicken Protein Plate",15],["Tuna Protein Plate",16],["Chicken Protein Plate",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  },
+  Wednesday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["House Chopped Salad",15],["Thai Grilled Chicken Salad",15]],
+    Sandwiches: [["Italian Sandwich",15],["Smoked Turkey and Swiss",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Mediterranean Wrap",15]],
+    "Hot Plates": [["Chicken Chow Mein",16],["Teriyaki Chicken",16],["Blackened Salmon",16]],
+    Sushi: [["Crunchy Roll",12]],
+    "Protein Plates": [["Blackened Chicken Protein Plate",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  },
+  Thursday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["Super Taco Salad",15],["Turkey Cobb Salad",15]],
+    Sandwiches: [["Chicken Salad Sandwich",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Buffalo Chicken Wrap",15]],
+    "Hot Plates": [["Broccoli Beef w/ Brown Rice",16],["Meat Lasagna",16],["Rosemary Chicken w/ Mashed Potatoes",16]],
+    Sushi: [["California Roll",12],["Rainbow Roll (special order)",18]],
+    "Protein Plates": [["Hot Honey Chicken",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  },
+  Friday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["Super Taco Salad",15],["Grilled Chicken Quinoa Salad",15]],
+    Sandwiches: [["Chicken Salad Sandwich",15],["Smoked Turkey and Swiss",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Summer Turkey Wrap",15]],
+    "Hot Plates": [["Shrimp Spinach Capellini",16],["Chicken Lemon Garlic Pasta",16]],
+    Sushi: [["California Roll",12]],
+    "Protein Plates": [["Chicken Salad Protein Plate",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  }
+};
+const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const COMMISSION_RATE = 0.30;
+const SQUARE_REAL_RATE = 0.026;
+const SQUARE_REAL_FLAT = 0.10;
+
+function weekdayOf(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return WEEKDAYS[new Date(y,m-1,d).getDay()];
+}
+function effectiveWeekday(day){ return day.menuOverride || weekdayOf(day.date); }
+function livePriceOf(name, weekday){
+  const menu = MENU[weekday];
+  if(!menu) return 0;
+  const f = Object.values(menu).flat().find(x=>x[0]===name);
+  return f ? f[1] : 0;
+}
+function fmtMoney(n){ return '$'+(Math.round((n||0)*100)/100).toFixed(2); }
+
+// ---- Pure per-day calculations, mirroring index.html exactly ----
+// Sold-item revenue always uses the price snapshot stored on the sale at
+// the time it happened (it.price) — never re-derived from the live MENU above.
+function stopRevenue(stop){
+  let total = 0;
+  Object.values(stop.items||{}).forEach(it=>{ total += (it.sold||0) * (it.price!=null ? it.price : 0); });
+  return total;
+}
+function dayRevenue(day){ return Object.values(day.stops||{}).reduce((s,st)=>s+stopRevenue(st),0); }
+function dayItemsSold(day){
+  const totals = {};
+  Object.values(day.stops||{}).forEach(st=>{
+    Object.entries(st.items||{}).forEach(([name,v])=>{ totals[name] = (totals[name]||0) + (v.sold||0); });
+  });
+  return totals;
+}
+function dayReturnedValue(day){
+  const wd = effectiveWeekday(day);
+  let count = 0, value = 0;
+  Object.entries(day.returns||{}).forEach(([name,qty])=>{ count += qty; value += qty * livePriceOf(name, wd); });
+  return { count, value };
+}
+function stopCollectedTotal(stop){ return (stop.payments||[]).reduce((s,p)=>s+(p.amount-(p.fee||0)),0); }
+function dayFeesTotal(day){ return Object.values(day.stops||{}).reduce((t,st)=>t+(st.payments||[]).reduce((s,p)=>s+(p.fee||0),0),0); }
+function dayRealSquareFee(day){
+  let t = 0;
+  Object.values(day.stops||{}).forEach(st=>{
+    (st.payments||[]).forEach(p=>{ if(p.method==='Square') t += p.amount*SQUARE_REAL_RATE + SQUARE_REAL_FLAT; });
+  });
+  return t;
+}
+function dayPaymentTotals(day){
+  const t = { Square:0, Zelle:0, Venmo:0, 'Credit Card':0, Cash:0, Owed:0 };
+  Object.values(day.stops||{}).forEach(st=>{
+    (st.payments||[]).forEach(p=>{ if(t[p.method]!==undefined) t[p.method]+=p.amount; });
+  });
+  return t;
+}
+function dayCashMoves(day){
+  let topups=0, changeGiven=0;
+  Object.values(day.stops||{}).forEach(st=>{
+    (st.cashMoves||[]).forEach(c=>{ if(c.type==='topup') topups+=c.amount; else if(c.type==='change') changeGiven+=c.amount; });
+  });
+  return { topups, changeGiven };
+}
+
+// ---- Firebase ----
+let fbAuth, fbDb;
+function initFirebase(){
+  firebase.initializeApp(FIREBASE_CONFIG);
+  fbAuth = firebase.auth();
+  fbDb = firebase.firestore();
+}
+
+function showErr(msg){ document.getElementById('loginErr').textContent = msg || ''; }
+
+async function doLogin(){
+  showErr('');
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if(!email || !password){ showErr('Enter email and password.'); return; }
+  try{
+    await fbAuth.signInWithEmailAndPassword(email, password);
+  }catch(e){
+    showErr(e.message || 'Sign-in failed.');
+  }
+}
+function doLogout(){ fbAuth.signOut(); }
+
+async function loadAllDriverData(){
+  const driversSnap = await fbDb.collection('drivers').get();
+  const drivers = [];
+  for(const doc of driversSnap.docs){
+    const info = doc.data();
+    const daysSnap = await doc.ref.collection('days').get();
+    drivers.push({ driverId: doc.id, name: info.name || doc.id, days: daysSnap.docs.map(d=>d.data()) });
+  }
+  return drivers;
+}
+
+function renderDashboard(drivers){
+  const content = document.getElementById('content');
+  const totalDays = drivers.reduce((s,d)=>s+d.days.length,0);
+  if(totalDays === 0){
+    content.innerHTML = '<div class="card"><div class="empty">No driver data logged yet. Once a driver logs sales in the app, it will show up here.</div></div>';
+    return;
+  }
+
+  let totalRevenue=0, totalFees=0, totalRealFee=0, totalWasteValue=0, totalWasteCount=0;
+  const soldAgg = {};
+  const perDriver = drivers.map(drv=>{
+    let rev=0, fees=0, realFee=0, wasteVal=0, wasteCount=0, itemsSold=0;
+    let cashSales=0, topups=0, changeGiven=0;
+    drv.days.forEach(day=>{
+      const r = dayRevenue(day);
+      rev += r; totalRevenue += r;
+      fees += dayFeesTotal(day); totalFees += dayFeesTotal(day);
+      realFee += dayRealSquareFee(day); totalRealFee += dayRealSquareFee(day);
+      const waste = dayReturnedValue(day);
+      wasteVal += waste.value; wasteCount += waste.count;
+      totalWasteValue += waste.value; totalWasteCount += waste.count;
+      const sold = dayItemsSold(day);
+      Object.entries(sold).forEach(([k,v])=>{ soldAgg[k]=(soldAgg[k]||0)+v; itemsSold+=v; });
+      const pay = dayPaymentTotals(day);
+      cashSales += pay.Cash;
+      const moves = dayCashMoves(day);
+      topups += moves.topups; changeGiven += moves.changeGiven;
+    });
+    return { name: drv.name, days: drv.days.length, rev, commission: rev*COMMISSION_RATE, itemsSold, wasteVal, wasteCount, cashSales, topups, changeGiven, netCash: cashSales+topups-changeGiven };
+  }).sort((a,b)=>b.rev-a.rev);
+
+  const totalCommission = totalRevenue*COMMISSION_RATE;
+  const bestSellers = Object.entries(soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  let html = '';
+  html += '<div class="card"><h3>Company-wide, all logged days</h3><div class="kpi-row">'
+    + kpi(fmtMoney(totalRevenue),'Total Revenue')
+    + kpi(fmtMoney(totalCommission),'Commission Paid Out')
+    + kpi(fmtMoney(totalWasteValue),'Waste Value ('+totalWasteCount+' items)')
+    + kpi(fmtMoney(totalRealFee),'Real Square Fees')
+    + '</div></div>';
+
+  html += '<div class="card"><h3>Driver leaderboard</h3><div class="table-wrap"><table><thead><tr>'
+    + '<th>Driver</th><th>Days</th><th>Revenue</th><th>Commission</th><th>Items Sold</th><th>Waste Value</th>'
+    + '</tr></thead><tbody>'
+    + perDriver.map((d,i)=>'<tr><td class="name"><span class="rank">'+(i+1)+'</span>'+escapeHtml(d.name)+'</td>'
+        + '<td>'+d.days+'</td><td>'+fmtMoney(d.rev)+'</td><td>'+fmtMoney(d.commission)+'</td>'
+        + '<td>'+d.itemsSold+'</td><td>'+fmtMoney(d.wasteVal)+'</td></tr>').join('')
+    + '</tbody></table></div></div>';
+
+  html += '<div class="card"><h3>Cash reconciliation by driver</h3><div class="table-wrap"><table><thead><tr>'
+    + '<th>Driver</th><th>Cash Sales</th><th>Cash Added</th><th>Change Given</th><th>Net Cash Handled</th>'
+    + '</tr></thead><tbody>'
+    + perDriver.map(d=>'<tr><td class="name">'+escapeHtml(d.name)+'</td><td>'+fmtMoney(d.cashSales)+'</td>'
+        + '<td>'+fmtMoney(d.topups)+'</td><td>'+fmtMoney(d.changeGiven)+'</td><td>'+fmtMoney(d.netCash)+'</td></tr>').join('')
+    + '</tbody></table></div></div>';
+
+  html += '<div class="card"><h3>Best sellers, company-wide</h3><div class="table-wrap"><table><thead><tr>'
+    + '<th>Item</th><th>Qty Sold</th></tr></thead><tbody>'
+    + (bestSellers.length ? bestSellers.map(([name,qty])=>'<tr><td class="name">'+escapeHtml(name)+'</td><td>'+qty+'</td></tr>').join('')
+        : '<tr><td colspan="2" class="empty">No sales logged yet.</td></tr>')
+    + '</tbody></table></div></div>';
+
+  content.innerHTML = html;
+}
+function kpi(v,k){ return '<div class="kpi"><div class="v">'+v+'</div><div class="k">'+k+'</div></div>'; }
+function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function refresh(){
+  const content = document.getElementById('content');
+  content.innerHTML = '<div class="card"><div class="empty">Loading…</div></div>';
+  try{
+    const drivers = await loadAllDriverData();
+    renderDashboard(drivers);
+  }catch(e){
+    content.innerHTML = '<div class="card"><div class="empty">'
+      + 'Could not load data: '+escapeHtml(e.message||String(e))
+      + '<div class="hint">If this says "permission-denied", your account is signed in but not yet authorized as an admin. '
+      + 'Your UID is: <b>'+escapeHtml((fbAuth.currentUser&&fbAuth.currentUser.uid)||'')+'</b> — add a document with this ID to the <b>admins</b> collection in the Firebase console.</div></div></div>';
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.getElementById('logoutBtn').addEventListener('click', doLogout);
+document.getElementById('refreshBtn').addEventListener('click', refresh);
+document.getElementById('loginPassword').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+function boot(){
+  if(!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey.indexOf('REPLACE_ME')===0){
+    document.body.innerHTML = '<div class="app"><div class="card"><h3>Firebase not configured</h3>'
+      + '<div class="empty">Fill in firebase-config.js with your real Firebase web config, then reload this page.</div></div></div>';
+    return;
+  }
+  initFirebase();
+  fbAuth.onAuthStateChanged(user=>{
+    // A driver's anonymous session (shared browser storage with index.html)
+    // must never count as an admin login — only a real email/password sign-in does.
+    if(user && !user.isAnonymous){
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('dashView').classList.remove('hidden');
+      refresh();
+    } else {
+      document.getElementById('loginView').classList.remove('hidden');
+      document.getElementById('dashView').classList.add('hidden');
+    }
+  });
+}
+boot();
+</script>
+</body>
+</html>
