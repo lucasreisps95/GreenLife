@@ -362,6 +362,9 @@ const TRANSLATIONS = {
     unsold_label:"What came back unsold today (all stops)", sold_today:"sold today: {n}",
     across_days:"Across {n} logged day{s}", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
     waste_value:"WASTE VALUE", time_on_site:"TIME ON SITE", square_fees:"SQUARE FEES",
+    real_fee_title:"Real Square Fee", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
+    charged_fee:"You charged (flat $0.50/sale)", real_fee:"Square actually took", fee_gap:"Your gap",
+    txn_count:"Square transactions",
     payment_methods:"Payment methods (all days)", best_sellers:"Best sellers",
     waste_title:"Consistently coming back (waste)", lost_sales:"Requested but not carried (lost sales)",
     export_title:"Export", export_excel:"Download Excel workbook (all data, one file)", export_day:"Download day-by-day CSV", export_item:"Download item-by-item CSV",
@@ -402,6 +405,9 @@ const TRANSLATIONS = {
     unsold_label:"Lo que no se vendió hoy (todas las paradas)", sold_today:"vendido hoy: {n}",
     across_days:"En {n} día{s} registrado{s}", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
     waste_value:"VALOR DESPERDICIADO", time_on_site:"TIEMPO EN SITIO", square_fees:"CARGOS DE SQUARE",
+    real_fee_title:"Cargo real de Square", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
+    charged_fee:"Cobraste (fijo $0.50/venta)", real_fee:"Square realmente cobró", fee_gap:"Tu diferencia",
+    txn_count:"Transacciones de Square",
     payment_methods:"Métodos de pago (todos los días)", best_sellers:"Más vendidos",
     waste_title:"Siempre regresa (desperdicio)", lost_sales:"Pedido pero no disponible (ventas perdidas)",
     export_title:"Exportar", export_excel:"Descargar libro de Excel (todo en un archivo)", export_day:"Descargar CSV por día", export_item:"Descargar CSV por artículo",
@@ -858,6 +864,26 @@ function dayFeesTotal(day){
   Object.values(day.stops).forEach(st=>{ t += stopFeesTotal(st); });
   return t;
 }
+const SQUARE_REAL_RATE = 0.026;
+const SQUARE_REAL_FLAT = 0.10;
+function dayRealSquareFee(day){
+  let t = 0;
+  Object.values(day.stops).forEach(st=>{
+    (st.payments||[]).forEach(p=>{
+      if(p.method === 'Square'){
+        t += p.amount * SQUARE_REAL_RATE + SQUARE_REAL_FLAT;
+      }
+    });
+  });
+  return Math.round(t*100)/100;
+}
+function dayRealSquareCount(day){
+  let n = 0;
+  Object.values(day.stops).forEach(st=>{
+    (st.payments||[]).forEach(p=>{ if(p.method === 'Square') n++; });
+  });
+  return n;
+}
 function stopUnpaid(stop, weekday){
   return stopRevenue(stop) - stopCollectedTotal(stop);
 }
@@ -1260,7 +1286,7 @@ function renderSummary(){
   if(days.length===0){
     return '<div class="panel"><div class="empty">'+T('no_data_yet')+'</div></div>';
   }
-  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0, totalFees = 0, totalDrive = 0;
+  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0, totalFees = 0, totalDrive = 0, totalRealFee = 0, totalSquareTxns = 0;
   const soldAgg = {}, returnedAgg = {}, requestAgg = {}, paymentAgg = {};
   PAYMENT_METHODS.forEach(m=>paymentAgg[m]=0);
 
@@ -1274,6 +1300,8 @@ function renderSummary(){
     totalDwell += dayDwellMinutes(d);
     totalDrive += dayDriveMinutes(d);
     totalFees += dayFeesTotal(d);
+    totalRealFee += dayRealSquareFee(d);
+    totalSquareTxns += dayRealSquareCount(d);
     const sold = dayItemsSold(d);
     Object.entries(sold).forEach(([k,v])=>{ soldAgg[k]=(soldAgg[k]||0)+v; });
     Object.entries(d.returns||{}).forEach(([k,v])=>{
@@ -1306,6 +1334,19 @@ function renderSummary(){
       + '<div class="bar-track"><div class="bar-fill" style="width:'+((amt/payTotal*100).toFixed(0))+'%"></div></div></div>';
   });
   html += '</div>';
+
+  if(totalSquareTxns > 0){
+    const gap = totalFees - totalRealFee;
+    html += '<div class="card"><h3>'+T('real_fee_title')+'</h3>'
+      + '<div class="pay-ledger">'
+      +   '<div><span>'+T('txn_count')+'</span><span>'+totalSquareTxns+'</span></div>'
+      +   '<div><span>'+T('charged_fee')+'</span><span>'+fmtMoney(totalFees)+'</span></div>'
+      +   '<div><span>'+T('real_fee')+'</span><span>'+fmtMoney(totalRealFee)+'</span></div>'
+      +   '<div class="'+(gap>=0?'settled':'owing')+'"><span>'+T('fee_gap')+'</span><span>'+(gap>=0?'+':'')+fmtMoney(gap)+'</span></div>'
+      + '</div>'
+      + '<div class="export-note">'+T('real_fee_note')+'</div>'
+      + '</div>';
+  }
 
   const soldSorted = Object.entries(soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(soldSorted.length){
