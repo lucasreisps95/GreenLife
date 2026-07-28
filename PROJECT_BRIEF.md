@@ -194,24 +194,68 @@ to the repo root.
 
 **What's still open / next steps for whoever picks this up:**
 
-- [ ] **Blocking: no Firebase project exists yet.** `firebase-config.js` still has `REPLACE_ME`
-      placeholders. Need from the user (or whoever has console access):
-      1. A Firebase project with Firestore enabled (Native mode).
-      2. Authentication → Sign-in method → enable **Anonymous** and **Email/Password**.
-      3. One manually-created Email/Password user for the owner, and their UID added as a doc ID
-         under `admins/`.
-      4. The web app config object (Project settings → Your apps → Web app) pasted into
-         `firebase-config.js`.
-      5. The contents of `firestore.rules` pasted into Firebase console → Firestore → Rules → Publish
-         (this repo file isn't auto-deployed; there's no CI wired up for that here).
-- [ ] Have not yet tested any of this against a real Firestore project — no config exists to test
-      with. Once config + rules are live, still need to: log sales as two differently-named test
-      drivers in two separate browser profiles/incognito windows, confirm both show up correctly
-      and combined in `admin.html`, confirm driver A cannot see/overwrite driver B's data (try
-      manually in the browser console), confirm offline logging + later sync works (airplane mode
-      test), and re-verify the price-snapshot rule holds through `admin.html` (edit a menu price,
-      confirm historical revenue in the dashboard doesn't change).
-- [ ] Not yet committed/pushed — code is only in the local clone at this point. Nothing has been
-      pushed to `main`, so nothing above is live on Netlify yet.
 - [ ] `admin.html` shows all-time totals only (no date-range filter). Brief didn't ask for one;
       easy to add later (`days.filter(d => d.date >= from && d.date <= to)`) if the owner wants it.
+- [ ] Have not yet verified the price-snapshot rule specifically through `admin.html` (edit a menu
+      price, confirm historical revenue in the dashboard doesn't change) — the code path reuses the
+      same `it.price` snapshot as index.html so this should hold, but hasn't been explicitly
+      re-checked end-to-end post-deploy.
+- [ ] Haven't done a real two-separate-devices test (two different phones/computers) — only
+      simulated it in one browser by clearing `localStorage` + the Firebase Auth IndexedDB between
+      "drivers" (see below). Worth a real two-device pass before fully trusting this in the field.
+- [ ] Owner still needs to finish their own one-time setup: create their Email/Password admin
+      account in Firebase console → Authentication → Users, then add a doc under `admins/` whose ID
+      is that account's UID (admin.html shows the UID on a permission-denied screen to make this
+      easy — sign in once, copy the UID it displays, paste it as a new document ID in the `admins`
+      collection in Firestore, content doesn't matter).
+
+### 2026-07-28 (later same day) — Claude (Sonnet 5, via Claude Code) — Firebase config wired in + tested
+
+User supplied a real Firebase project (`greenlife-ad21a`) config, now live in `firebase-config.js`.
+Testing this surfaced two real bugs in what I built earlier today, both fixed:
+
+1. **Rules bug — reading a driver doc before it exists was always denied.** My original
+   `isOwnerOfDriver()` required `exists(...)` to be true before checking `ownerUid`, which is
+   correct once a driver doc exists, but meant the very first `get()` a device ever made (to check
+   "does this name exist yet, should I create it") was denied outright — Firestore denies reads on
+   a rules-protected path regardless of whether the target doc exists. This surfaced as every new
+   driver name incorrectly showing "that name is already syncing from another device," which was
+   just a swallowed permission-denied error, not a real conflict.
+   **Fix:** `claimDriver()` no longer reads before writing. It does a single `set(..., {merge:true})`
+   — Firestore evaluates that as a `create` the first time (allowed, since we're setting ourselves
+   as `ownerUid`) and as an `update` every time after (allowed only if we're already the owner, so a
+   genuine hijack attempt from a different device now correctly fails and is caught as `'taken'`).
+   Also split `claimDriver`'s return value into `{status:'synced'|'taken'|'error', ...}` instead of
+   a bare truthy/falsy value, so genuine errors (offline, rules misconfigured, etc.) no longer get
+   mislabeled as a name conflict in the UI. Simplified `firestore.rules` accordingly — drivers never
+   need read access to their own `drivers/{driverId}` doc at all (only to their `days` subcollection,
+   and only admins need to read `drivers/{driverId}` itself, to list names).
+   **If you touch `firestore.rules` or the claim flow again: re-test a brand-new, never-before-seen
+   driver name specifically** — that first-write path is exactly what broke.
+2. **admin.html bug — a driver's anonymous session was mistaken for an admin login.** Since
+   `index.html` and `admin.html` share the same browser storage (same origin), and drivers sign in
+   silently via Firebase Anonymous Auth, opening `admin.html` in a browser that had already used
+   `index.html` skipped the login form entirely and tried to load the dashboard as that anonymous
+   user — which correctly failed with permission-denied, but the *login gate itself* was wrong, not
+   just the permissions. **Fix:** `admin.html`'s `onAuthStateChanged` handler now explicitly checks
+   `user && !user.isAnonymous` before treating someone as logged in.
+
+**Verified working, in the browser, against the real Firestore project** (via a local static
+server serving the repo — Firebase Auth doesn't behave reliably over `file://`):
+- Anonymous auth signs in silently and gets a stable uid.
+- Setting a seller name claims `drivers/{driverId}` and shows "Synced to cloud as {name}".
+- Logging a sale writes the full `day` object (including the `{sold, price}` snapshot) to
+  `drivers/{driverId}/days/{date}` in Firestore within ~1s, confirmed by reading it back directly.
+- **Write isolation, confirmed adversarially:** signed in as a second anonymous uid and attempted to
+  (a) overwrite `drivers/test_driver_a`'s `ownerUid`, (b) write into its `days` subcollection, and
+  (c) read its `days` subcollection — all three correctly denied with `permission-denied`.
+- Simulated a second driver ("Test Driver B", after clearing local storage + Firebase's auth
+  IndexedDB to mimic a fresh device) — got their own separate `driverId`/uid and synced
+  independently without touching Driver A's data.
+- `admin.html` login gate now correctly requires real email/password auth, separate from any
+  driver's anonymous session in the same browser.
+
+**Not yet done:** admin.html's dashboard *view* (KPIs/leaderboard/tables) hasn't been visually
+confirmed against these two test drivers yet — that still needs the owner's admin account +
+`admins/{uid}` doc to exist first (see checklist above). Code changes in this entry are pushed to
+`main`; Netlify deploy not yet spot-checked live post-push.
