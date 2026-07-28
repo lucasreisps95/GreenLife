@@ -182,6 +182,7 @@
   .export-btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--primary-dark);color:#fff;font-weight:700;font-size:13px;margin-top:4px;margin-bottom:6px;}
   .export-btn.alt{background:var(--primary);}
   .export-btn.ghost{background:#F0EDE3;color:var(--ink-soft);}
+  .export-btn.xlsx{background:var(--primary);}
   .export-btn.danger{background:var(--danger);}
   .export-note{font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.4;}
   .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:20px 0;}
@@ -260,6 +261,7 @@
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;}
   .toast.show{opacity:1;}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 <div id="app" class="app"></div>
@@ -362,8 +364,8 @@ const TRANSLATIONS = {
     waste_value:"WASTE VALUE", time_on_site:"TIME ON SITE", square_fees:"SQUARE FEES",
     payment_methods:"Payment methods (all days)", best_sellers:"Best sellers",
     waste_title:"Consistently coming back (waste)", lost_sales:"Requested but not carried (lost sales)",
-    export_title:"Export", export_day:"Download day-by-day CSV", export_item:"Download item-by-item CSV",
-    export_copy:"Copy summary as text", export_note:"CSV files open in Excel or Google Sheets. One row per day, or one row per item per stop.",
+    export_title:"Export", export_excel:"Download Excel workbook (all data, one file)", export_day:"Download day-by-day CSV", export_item:"Download item-by-item CSV",
+    export_copy:"Copy summary as text", export_note:"The Excel file has both day and item data as separate tabs, with filters and a frozen header row. CSVs are plain backups.",
     reset_title:"Reset", reset_btn:"Clear all logged data", reset_confirm:"Tap again to confirm — this deletes everything",
     reset_note:"Wipes every logged day. Download your CSVs first if you want to keep the history.",
     no_data_yet:"No data logged yet. Start tapping sales on the Log Stop tab.",
@@ -402,8 +404,8 @@ const TRANSLATIONS = {
     waste_value:"VALOR DESPERDICIADO", time_on_site:"TIEMPO EN SITIO", square_fees:"CARGOS DE SQUARE",
     payment_methods:"Métodos de pago (todos los días)", best_sellers:"Más vendidos",
     waste_title:"Siempre regresa (desperdicio)", lost_sales:"Pedido pero no disponible (ventas perdidas)",
-    export_title:"Exportar", export_day:"Descargar CSV por día", export_item:"Descargar CSV por artículo",
-    export_copy:"Copiar resumen como texto", export_note:"Los archivos CSV se abren en Excel o Google Sheets. Una fila por día, o una fila por artículo por parada.",
+    export_title:"Exportar", export_excel:"Descargar libro de Excel (todo en un archivo)", export_day:"Descargar CSV por día", export_item:"Descargar CSV por artículo",
+    export_copy:"Copiar resumen como texto", export_note:"El archivo de Excel tiene los datos de días y artículos en pestañas separadas, con filtros y encabezado fijo. Los CSV son solo respaldo.",
     reset_title:"Reiniciar", reset_btn:"Borrar todos los datos", reset_confirm:"Toca de nuevo para confirmar — esto borra todo",
     reset_note:"Borra cada día registrado. Descarga tus CSV primero si quieres conservar el historial.",
     no_data_yet:"Aún no hay datos. Empieza a registrar ventas en Registrar parada.",
@@ -477,10 +479,18 @@ function emptyDay(dateStr, stopNames){
 function normalizeDay(d, fallbackNames){
   if(!d.stopNames || !d.stopNames.length) d.stopNames = fallbackNames.slice();
   if(!d.stops) d.stops = {};
+  const wd = (d.menuOverride) || weekdayOf(d.date);
   d.stopNames.forEach((n,i)=>{
     if(!d.stops[i]) d.stops[i] = makeStop();
     const s = d.stops[i];
     if(!s.items) s.items = {};
+    Object.keys(s.items).forEach(name=>{
+      const it = s.items[name];
+      if(it.price === undefined || it.price === null){
+        const p = priceForItem(name, wd);
+        it.price = (p != null) ? p : 0;
+      }
+    });
     if(!s.requests) s.requests = [];
     if(!s.visits){
       const legacy = s.arrivals || (Array.isArray(s.arrival) ? s.arrival : (s.arrival ? [s.arrival] : []));
@@ -586,7 +596,9 @@ async function loadDay(dateStr, fallbackNames){
   try{
     const r = await storageGet('day:'+dateStr, false);
     const d = JSON.parse(r.value);
-    return normalizeDay(d, fallbackNames);
+    const normalized = normalizeDay(d, fallbackNames);
+    await saveDay(normalized);
+    return normalized;
   }catch(e){
     return emptyDay(dateStr, fallbackNames);
   }
@@ -602,7 +614,9 @@ async function loadAllDays(){
       try{
         const r = await storageGet(k, false);
         const d = JSON.parse(r.value);
-        out[d.date] = normalizeDay(d, state.defaultStopNames || ['Stop 1']);
+        const normalized = normalizeDay(d, state.defaultStopNames || ['Stop 1']);
+        await saveDay(normalized);
+        out[normalized.date] = normalized;
       }catch(e){}
     }
     return out;
@@ -610,10 +624,22 @@ async function loadAllDays(){
 }
 
 /* ---------------- MUTATIONS ---------------- */
+function priceForItem(name, weekday){
+  const menu = MENU[weekday];
+  if(!menu) return null;
+  const found = Object.values(menu).flat().find(x=>x[0]===name);
+  return found ? found[1] : null;
+}
 function bump(itemName, delta){
   const stop = state.day.stops[state.stopIndex];
-  if(!stop.items[itemName]) stop.items[itemName] = {sold:0};
-  stop.items[itemName].sold = Math.max(0, stop.items[itemName].sold + delta);
+  if(!stop.items[itemName]) stop.items[itemName] = {sold:0, price:null};
+  const it = stop.items[itemName];
+  it.sold = Math.max(0, it.sold + delta);
+  if(it.price == null){
+    const wd = effectiveWeekday(state.day);
+    const p = priceForItem(itemName, wd);
+    if(p != null) it.price = p;
+  }
   persistDay();
 }
 function setStartFloat(v){
@@ -833,27 +859,24 @@ function dayFeesTotal(day){
   return t;
 }
 function stopUnpaid(stop, weekday){
-  return stopRevenue(stop, weekday) - stopCollectedTotal(stop);
+  return stopRevenue(stop) - stopCollectedTotal(stop);
 }
 
-function stopRevenue(stop, weekday){
-  const menu = MENU[weekday]; if(!menu) return 0;
+function stopRevenue(stop){
   let total = 0;
-  Object.values(menu).flat().forEach(([name,price])=>{
-    const it = stop.items[name];
-    if(it) total += it.sold * price;
+  Object.values(stop.items||{}).forEach(it=>{
+    total += (it.sold||0) * (it.price!=null ? it.price : 0);
   });
   return total;
 }
 function dayRevenue(day){
-  const wd = effectiveWeekday(day);
-  return Object.values(day.stops).reduce((s,st)=>s+stopRevenue(st,wd),0);
+  return Object.values(day.stops).reduce((s,st)=>s+stopRevenue(st),0);
 }
 function dayUncollected(day){
   const wd = effectiveWeekday(day);
   let gap = 0;
   Object.values(day.stops).forEach(st=>{
-    const g = stopRevenue(st, wd) - stopCollectedTotal(st);
+    const g = stopRevenue(st) - stopCollectedTotal(st);
     if(g > 0) gap += g;
   });
   return gap;
@@ -1006,7 +1029,7 @@ async function render(){
     if(!menu){
       html += '<div class="empty">'+T('no_menu',{wd:weekday})+'</div>';
     } else {
-      const sRev = stopRevenue(stop, weekday);
+      const sRev = stopRevenue(stop);
       const sCount = stopItemCount(stop);
       html += '<div class="order-bar'+(sCount>0?' live':'')+'">'
         + '<div class="ob-left"><span class="ob-count">'+sCount+'</span>'
@@ -1059,7 +1082,7 @@ async function render(){
     });
     html += '</div></div>';
 
-    const sRevNow = menu ? stopRevenue(stop, weekday) : 0;
+    const sRevNow = stopRevenue(stop);
     const collectedNow = stopCollectedTotal(stop);
     const remaining = Math.round((sRevNow - collectedNow)*100)/100;
 
@@ -1316,6 +1339,7 @@ function renderSummary(){
   }
 
   html += '<div class="card"><h3>'+T('export_title')+'</h3>'
+    + '<button class="export-btn xlsx" id="exportXlsx">'+T('export_excel')+'</button>'
     + '<button class="export-btn" id="exportDayCsv">'+T('export_day')+'</button>'
     + '<button class="export-btn alt" id="exportDetailCsv">'+T('export_item')+'</button>'
     + '<button class="export-btn ghost" id="exportBtn">'+T('export_copy')+'</button>'
@@ -1336,23 +1360,29 @@ function csvEscape(s){
   s = String(s == null ? '' : s);
   return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
 }
+function categoryForItem(name, weekday){
+  const menu = MENU[weekday];
+  if(!menu) return 'Other';
+  for(const [cat, items] of Object.entries(menu)){
+    if(items.some(x=>x[0]===name)) return cat;
+  }
+  return 'Other';
+}
 function buildDetailCSV(){
   const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
   const rows = [['Date','Weekday','Seller','Stop','Item','Category','UnitPrice','QtySold','LineRevenue']];
   days.forEach(d=>{
     const wd = effectiveWeekday(d);
-    const menu = MENU[wd];
-    if(!menu) return;
     d.stopNames.forEach((stopName,i)=>{
       const st = d.stops[i];
       if(!st) return;
-      Object.entries(menu).forEach(([cat, items])=>{
-        items.forEach(([name, price])=>{
-          const qty = (st.items[name] && st.items[name].sold) || 0;
-          if(qty > 0){
-            rows.push([d.date, wd, state.sellerName||'', stopName, name, cat, price.toFixed(2), qty, (qty*price).toFixed(2)]);
-          }
-        });
+      Object.entries(st.items||{}).forEach(([name,it])=>{
+        const qty = it.sold || 0;
+        if(qty > 0){
+          const price = it.price != null ? it.price : 0;
+          const cat = categoryForItem(name, wd);
+          rows.push([d.date, wd, state.sellerName||'', stopName, name, cat, price.toFixed(2), qty, (qty*price).toFixed(2)]);
+        }
       });
     });
   });
@@ -1381,6 +1411,86 @@ function buildDayCSV(){
   });
   return 'sep=,\n' + rows.map(r=>r.map(csvEscape).join(',')).join('\n');
 }
+function buildDayRowsNative(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
+  const rows = [['Date','Weekday','Seller','Stops','Revenue','Commission (30%)','Items Sold','Items Unsold','Unsold Value','Minutes On Site','Minutes Driving','Start Float','Change Given','Cash Added','Expected Cash','Square','Square Fees','Zelle','Venmo','Credit Card','Cash','Owed']];
+  days.forEach(d=>{
+    const wd = effectiveWeekday(d);
+    const menu = MENU[wd];
+    const priceOf = name => { if(!menu) return 0; const f = Object.values(menu).flat().find(x=>x[0]===name); return f?f[1]:0; };
+    const rev = dayRevenue(d);
+    const sold = dayItemsSold(d);
+    const soldCount = Object.values(sold).reduce((a,b)=>a+b,0);
+    let unsoldCount = 0, unsoldValue = 0;
+    Object.entries(d.returns||{}).forEach(([k,v])=>{ unsoldCount += v; unsoldValue += v*priceOf(k); });
+    const pt = dayPaymentTotals(d);
+    rows.push([
+      d.date, wd, state.sellerName||'', d.stopNames.length, rev, rev*COMMISSION_RATE,
+      soldCount, unsoldCount, unsoldValue, dayDwellMinutes(d), dayDriveMinutes(d),
+      d.startFloat||0, dayChangeGiven(d), dayCashTopUps(d), expectedCash(d),
+      pt['Square']||0, dayFeesTotal(d), pt['Zelle']||0, pt['Venmo']||0,
+      pt['Credit Card']||0, pt['Cash']||0, pt['Owed']||0
+    ]);
+  });
+  return rows;
+}
+function buildDetailRowsNative(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
+  const rows = [['Date','Weekday','Seller','Stop','Item','Category','Unit Price','Qty Sold','Line Revenue']];
+  days.forEach(d=>{
+    const wd = effectiveWeekday(d);
+    d.stopNames.forEach((stopName,i)=>{
+      const st = d.stops[i];
+      if(!st) return;
+      Object.entries(st.items||{}).forEach(([name,it])=>{
+        const qty = it.sold || 0;
+        if(qty > 0){
+          const price = it.price != null ? it.price : 0;
+          rows.push([d.date, wd, state.sellerName||'', stopName, name, categoryForItem(name, wd), price, qty, qty*price]);
+        }
+      });
+    });
+  });
+  return rows;
+}
+function autoSizeCols(rows){
+  const widths = rows[0].map((_,ci)=>{
+    let max = 8;
+    rows.forEach(r=>{
+      const v = r[ci];
+      const len = (v==null?'':String(v)).length;
+      if(len > max) max = len;
+    });
+    return { wch: Math.min(max+2, 40) };
+  });
+  return widths;
+}
+function downloadXLSX(){
+  try{
+    if(typeof XLSX === 'undefined'){ toast(T('toast_download_fail')); return; }
+    const dayRows = buildDayRowsNative();
+    const detailRows = buildDetailRowsNative();
+
+    const wb = XLSX.utils.book_new();
+    const wsDay = XLSX.utils.aoa_to_sheet(dayRows);
+    wsDay['!cols'] = autoSizeCols(dayRows);
+    wsDay['!autofilter'] = { ref: XLSX.utils.encode_range({s:{r:0,c:0},e:{r:dayRows.length-1,c:dayRows[0].length-1}}) };
+    wsDay['!freeze'] = { xSplit:0, ySplit:1 };
+    XLSX.utils.book_append_sheet(wb, wsDay, "Days");
+
+    const wsDetail = XLSX.utils.aoa_to_sheet(detailRows);
+    wsDetail['!cols'] = autoSizeCols(detailRows);
+    wsDetail['!autofilter'] = { ref: XLSX.utils.encode_range({s:{r:0,c:0},e:{r:detailRows.length-1,c:detailRows[0].length-1}}) };
+    wsDetail['!freeze'] = { xSplit:0, ySplit:1 };
+    XLSX.utils.book_append_sheet(wb, wsDetail, "Items");
+
+    XLSX.writeFile(wb, 'route_manifest_'+todayStr()+'.xlsx');
+    toast(T('toast_downloaded',{f:'Excel file'}));
+  }catch(e){
+    toast(T('toast_download_fail'));
+  }
+}
+
 function downloadCSV(filename, text){
   try{
     const blob = new Blob([text], {type:'text/csv;charset=utf-8;'});
@@ -1514,7 +1624,7 @@ function attachHandlers(){
   if(payFill) payFill.addEventListener('click', ()=>{
     const stop = state.day.stops[state.stopIndex];
     const wd = effectiveWeekday(state.day);
-    const remaining = stopRevenue(stop, wd) - stopCollectedTotal(stop);
+    const remaining = stopRevenue(stop) - stopCollectedTotal(stop);
     if(remaining > 0.005) addPayment(remaining.toFixed(2));
   });
   const clearStop = document.getElementById('clearStop');
@@ -1574,6 +1684,8 @@ function attachHandlers(){
     else { state.confirmReset = true; render(); setTimeout(()=>{ if(state.confirmReset){ state.confirmReset=false; render(); } }, 5000); }
   });
 
+  const exportXlsx = document.getElementById('exportXlsx');
+  if(exportXlsx) exportXlsx.addEventListener('click', downloadXLSX);
   const exportDayCsv = document.getElementById('exportDayCsv');
   if(exportDayCsv) exportDayCsv.addEventListener('click', ()=>{
     downloadCSV('route_days_'+todayStr()+'.csv', buildDayCSV());
