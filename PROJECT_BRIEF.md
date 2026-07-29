@@ -738,3 +738,19 @@ the driver-list deletion control was unclear.
   plainly.
 - Production build completed successfully. Feature commit `b3a5573` is on `owner-dashboard-v2`
   and should be mirrored to `main`.
+
+### 2026-07-28 — Codex intuitive driver-list removal
+
+Owner clarified that the previous Driver list looked like a confusing name-editing form and did
+not provide an apparent way to remove an existing driver such as Lucas.
+
+- The Settings driver list now treats each person as a manageable entry with a clear red
+  **Remove** button, rather than an icon-only action.
+- Removing a synced driver now hides that driver from the owner dashboard through
+  `settings/driverDirectory.hiddenDriverIds`; it does **not** delete their Firestore sales data or
+  prevent the driver app from continuing to sync. The owner must press **Save driver list** to make
+  the removal permanent.
+- Future/manual drivers are removed from the list normally. Synced-driver removal is deliberately
+  a safe dashboard hide rather than a destructive data delete.
+- Production build completed successfully. Feature commit `5297151` is on `owner-dashboard-v2`
+  and should be mirrored to `main`.
