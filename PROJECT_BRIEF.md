@@ -633,3 +633,18 @@ After the owner published the current Firestore rules, the approved one-time imp
   the import. The historical record uses a separate ID with `mergeKey: "lucas"`, so dashboard
   totals combine historical Lucas data and future live Lucas phone data safely.
 - Temporary import tooling and data payload files were removed from the repository after success.
+
+### 2026-07-28 — Codex weekday-only menu-edit safeguard
+
+Owner reported that adding Chicken Salad Sandwich on Tuesday appeared to affect other days.
+
+- Checked the original weekly menu: Chicken Salad Sandwich was already part of the Monday,
+  Thursday, and Friday menus; it was not originally part of Tuesday. The Tuesday change did not
+  create those existing entries.
+- Strengthened the Settings editor so every add/remove action explicitly names the selected weekday,
+  updates only that weekday's menu data, and confirms that removal leaves the product on all other
+  days.
+- Added a clearly visible “This day only: [weekday]” label beside the weekday selector (also
+  translated into Vietnamese), so it is obvious which day is being edited before saving.
+- Built and pushed the safeguard as `1fd01fe` on `owner-dashboard-v2`. The owner-dashboard Netlify
+  site deploys this branch automatically. The matching source will also be mirrored to `main`.
