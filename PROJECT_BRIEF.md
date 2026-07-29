@@ -465,3 +465,29 @@ Added a gentle automatic data refresh to both `admin.html` and the standalone
   public access remains the larger usage/privacy consideration.
 
 The refresh change is committed as `ec68370` on `owner-dashboard-v2`.
+
+### 2026-07-28 — Codex owner product and driver controls
+
+The owner only had a photograph of the legacy spreadsheet, not an importable workbook. Built the
+first control-center version from that reference and the current GreenLife menu instead of guessing
+at spreadsheet formulas.
+
+- Added the protected `owner-dashboard/manage.html` page. It requires the real Firebase owner
+  account to edit data, even though the reporting dashboard remains public by explicit owner choice.
+- Added a weekday product-price editor initialized from the existing GreenLife menu. It supports
+  changing prices, adding products within an existing category, and removing products from future
+  menus. The first save creates `settings/menu` in Firestore.
+- Added an editable driver display-name directory in `settings/driverDirectory`. These names appear
+  on the dashboard but deliberately do not change a driver’s anonymous-auth identity, claimed
+  driver ID, or historical records.
+- Updated the driver app to read `settings/menu` when it starts. It falls back to the built-in menu
+  if that document does not exist or cannot be read. Menu changes therefore apply to new sales after
+  a driver refreshes or reopens the app; every completed sale retains its own saved `price` snapshot.
+- Added owner-only write rules for `settings/*`; public reads remain enabled due the earlier explicit
+  no-login dashboard decision. The updated Firestore rules must be published in Firebase Console
+  before the controls can save.
+
+Verified both the manager page and driver app inline JavaScript parse successfully. Commit
+`97ce88d` contains the control center. Once Netlify deploys it, open `/manage.html` on the
+standalone dashboard URL, sign in with the Firebase owner account, make a small price change, save,
+then refresh a driver app before logging a new test sale to verify the new snapshot price.
