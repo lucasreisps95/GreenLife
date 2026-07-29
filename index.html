@@ -357,7 +357,7 @@
 
 <script>
 /* ---------------- MENU DATA ---------------- */
-const MENU = {
+let MENU = {
   Monday: {
     Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
     Salads: [["Mexican Caesar Salad",15],["Chicken Taco Salad",15]],
@@ -765,6 +765,7 @@ async function initCloud(){
     });
   }catch(e){ fbReady = false; }
   if(!fbReady){ state.cloudStatus = 'offline'; render(); return; }
+  await loadManagedMenu();
   if(state.sellerName){
     const result = await claimDriver(state.sellerName);
     state.cloudStatus = result.status;
@@ -773,6 +774,19 @@ async function initCloud(){
     state.cloudStatus = 'offline';
   }
   render();
+}
+
+function isManagedMenu(value){
+  return value && typeof value === 'object'
+    && ['Monday','Tuesday','Wednesday','Thursday','Friday'].every(day=>value[day] && typeof value[day] === 'object');
+}
+async function loadManagedMenu(){
+  if(!fbDb) return;
+  try{
+    const snap = await fbDb.collection('settings').doc('menu').get();
+    const managed = snap.exists && snap.data().weeklyMenu;
+    if(isManagedMenu(managed)) MENU = managed;
+  }catch(e){ /* Use the built-in menu if settings cannot be reached. */ }
 }
 // Claiming is write-only (no read-before-write): a plain set()-with-merge is
 // evaluated by Firestore as "create" the first time (allowed if we're setting

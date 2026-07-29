@@ -348,3 +348,146 @@ can be performed in this environment are now complete. A real two-physical-devic
 still advisable before rollout, but the two independent anonymous identities, write isolation,
 cloud records, admin aggregation, live deployment, and price-snapshot behavior have all been
 verified.
+
+### 2026-07-28 — Codex owner dashboard v2 frontend
+
+Created and pushed the review branch `owner-dashboard-v2`; `main` and the current live owner
+dashboard were intentionally left unchanged.
+
+**What changed in `admin.html`:**
+
+- Rebuilt the owner interface around large, plain-language summary cards for total sales, driver
+  commission, expected cash, and customer balances still owed.
+- Added simple date filters for today, this week, this month, and all time.
+- Added a daily sales chart, plain-sentence attention alerts, driver comparison, best sellers, and
+  cash-by-driver reconciliation.
+- Added a persistent English/Vietnamese switch. Vietnamese was chosen because the owner is
+  Vietnamese with limited English; the translation covers login, navigation, filters, metrics,
+  tables, alerts, and status text.
+- Added responsive desktop, tablet, and phone layouts inspired by the two owner-provided dashboard
+  references, while preserving GreenLife's green/teal identity and avoiding dense business jargon.
+- Preserved the existing Firebase auth/schema and every calculation function. Sold revenue still
+  comes only from each item's saved `price` snapshot.
+
+**Verification:**
+
+- Tested the branch locally against the real Firebase project and both existing driver records.
+- Dashboard values remain exact: `$32.00` revenue, `$9.60` commission, two drivers, two items sold.
+- Vietnamese overview renders correctly as `Tổng quan`.
+- No JavaScript page errors occurred and a 390px-wide phone viewport had zero page-level horizontal
+  overflow.
+- A full-page visual screenshot was inspected; temporary screenshot/test files and the supplied
+  owner credentials were removed before committing and were never pushed.
+
+Next step: create or use Netlify's deploy preview for `owner-dashboard-v2`, let the owner review it
+on her actual phone/tablet, then merge the branch to `main` only after approval.
+
+### 2026-07-28 — Codex compact dashboard refinement
+
+Refined `owner-dashboard-v2` after owner feedback that the first redesign felt too spread out.
+
+- Reduced whitespace, card padding, chart height, and section spacing so the important information
+  fits much more naturally on a laptop screen.
+- Replaced the mostly empty attention area with a compact, more expressive green “business pulse”
+  card inspired by the owner’s second dashboard reference. It shows total sales in a quick visual
+  summary and becomes a clear warning when there is money to collect or food that was not sold.
+- Corrected the wording around returns: the dashboard now describes this as **possible sales value
+  from unsold food**, explicitly not the cost of making the food. The existing calculation is still
+  based on each returned item’s menu value, so it must never be interpreted as actual food cost or
+  profit loss.
+- Kept English/Vietnamese translations aligned with the new language and verified the refreshed
+  layout with the real Firebase driver data. The same `$32.00` sales and `$9.60` commission totals
+  render correctly, with no phone-width overflow or browser errors.
+
+The compact refinement is committed as `778103e` on `owner-dashboard-v2`; it is not on `main`.
+
+### 2026-07-28 — Codex standalone owner-dashboard Netlify package
+
+Added `owner-dashboard/` on the `owner-dashboard-v2` branch so the owner dashboard can be deployed
+as its own Netlify site with a clean root URL, without affecting the existing driver app deployment.
+
+- `owner-dashboard/index.html` is the approved compact owner dashboard.
+- `owner-dashboard/firebase-config.js` contains the same public Firebase web configuration required
+  by that independent static site.
+- `owner-dashboard/README.md` documents the Netlify settings: choose branch `owner-dashboard-v2`,
+  leave build command blank, and set publish directory to `owner-dashboard`.
+- Verified locally that the standalone root and its Firebase config both return HTTP 200.
+
+The standalone package is committed as `9c71672`. Future approved changes to `admin.html` must be
+copied into `owner-dashboard/index.html` before redeploying the separate site.
+
+### 2026-07-28 — Codex standalone Netlify deployment verification
+
+The user created a separate Netlify site at `https://zippy-flan-6a77ad.netlify.app/` and reported
+that the branch and publish settings were updated. A direct, cache-bypassed verification still shows
+that this URL serves the old 107 KB driver app rather than the standalone 39 KB owner-dashboard
+package. Its Firebase config file is available, but the root page is not yet the dashboard.
+
+Before treating this deployment as complete, open the Netlify **Deploys** page and confirm that the
+newest production deployment specifically reads `owner-dashboard-v2@59f8d45` (or a later commit on
+that branch), not `main@…`. If it still shows `main`, the Production branch setting did not save.
+If it shows the correct branch but still serves the driver app, confirm the Publish directory is
+exactly `owner-dashboard`, save it, and trigger **Deploy project without cache**. The remaining work
+is limited to this Netlify configuration/deploy state; repository source files are ready.
+
+### 2026-07-28 — Codex public owner dashboard (explicit owner choice)
+
+The owner explicitly chose to remove the owner sign-in page, despite the privacy trade-off. The
+`owner-dashboard-v2` branch now makes the dashboard open directly with no Firebase Auth UI or
+password flow.
+
+- `admin.html` and `owner-dashboard/index.html` no longer show a login page or call Firebase Auth.
+- `firestore.rules` now allow public reads of `drivers/{driverId}` and their `days` subcollections
+  (`allow read: if true`). Driver write ownership rules were not changed.
+- This exposes driver names, sales, cash figures, customer balances, returned-food figures, and
+  best-selling items to anyone who knows the public dashboard URL. This is intentional per owner
+  instruction, but it is a material loss of privacy and must remain clearly understood.
+- The dashboard layout was checked locally: no login form is present, the dashboard shell is visible,
+  and the Refresh action remains available. Firebase data will not load publicly until the updated
+  Firestore rules are manually published in Firebase Console.
+
+The no-login change is committed as `9e98133`. After Netlify deploys that commit, publish the
+matching `firestore.rules` in Firebase Console → Firestore Database → Rules, then reload the
+standalone dashboard URL.
+
+### 2026-07-28 — Codex five-minute owner dashboard refresh
+
+Added a gentle automatic data refresh to both `admin.html` and the standalone
+`owner-dashboard/index.html`.
+
+- The dashboard now runs its existing read-only refresh function every five minutes and displays a
+  small “Updates every 5 minutes” notice (translated to Vietnamese as well).
+- The manual Refresh button remains available.
+- Verified at a 390px phone viewport: the no-login dashboard still has zero horizontal overflow and
+  the refresh notice renders correctly.
+- This does not write, alter, or recalculate sales. It only re-reads Firestore data. With the two
+  current drivers, it is well within Firestore’s free daily read allowance for normal owner use;
+  public access remains the larger usage/privacy consideration.
+
+The refresh change is committed as `ec68370` on `owner-dashboard-v2`.
+
+### 2026-07-28 — Codex owner product and driver controls
+
+The owner only had a photograph of the legacy spreadsheet, not an importable workbook. Built the
+first control-center version from that reference and the current GreenLife menu instead of guessing
+at spreadsheet formulas.
+
+- Added the protected `owner-dashboard/manage.html` page. It requires the real Firebase owner
+  account to edit data, even though the reporting dashboard remains public by explicit owner choice.
+- Added a weekday product-price editor initialized from the existing GreenLife menu. It supports
+  changing prices, adding products within an existing category, and removing products from future
+  menus. The first save creates `settings/menu` in Firestore.
+- Added an editable driver display-name directory in `settings/driverDirectory`. These names appear
+  on the dashboard but deliberately do not change a driver’s anonymous-auth identity, claimed
+  driver ID, or historical records.
+- Updated the driver app to read `settings/menu` when it starts. It falls back to the built-in menu
+  if that document does not exist or cannot be read. Menu changes therefore apply to new sales after
+  a driver refreshes or reopens the app; every completed sale retains its own saved `price` snapshot.
+- Added owner-only write rules for `settings/*`; public reads remain enabled due the earlier explicit
+  no-login dashboard decision. The updated Firestore rules must be published in Firebase Console
+  before the controls can save.
+
+Verified both the manager page and driver app inline JavaScript parse successfully. Commit
+`97ce88d` contains the control center. Once Netlify deploys it, open `/manage.html` on the
+standalone dashboard URL, sign in with the Firebase owner account, make a small price change, save,
+then refresh a driver app before logging a new test sale to verify the new snapshot price.

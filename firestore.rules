@@ -21,16 +21,25 @@ service cloud.firestore {
     // Drivers never need to read this doc directly (only claim/refresh it via
     // write) — only the admin dashboard reads it, to list driver names.
     match /drivers/{driverId} {
-      allow read: if isAdmin();
+      // Owner chose a no-login dashboard. This makes driver names and dashboard
+      // data readable by anyone who knows the public dashboard URL.
+      allow read: if true;
       allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid;
       allow update: if isOwnerOfDriver(driverId) || isAdmin();
       allow delete: if false;
 
       // drivers/{driverId}/days/{date} — one doc per day of sales for that driver.
       match /days/{dateId} {
-        allow read: if isOwnerOfDriver(driverId) || isAdmin();
+        allow read: if true;
         allow write: if isOwnerOfDriver(driverId);
       }
+    }
+
+    // Shared menu and owner-managed driver display labels. Anyone may read the
+    // current catalog, but only the authenticated owner can change it.
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     // admins/{uid} — one doc per owner/admin account, created manually in the
