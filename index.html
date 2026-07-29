@@ -1,3 +1,2050 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>GreenLife Driver</title>  <script type="module" crossorigin src="/assets/index-i_7THf-M.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-B0BvoYQo.css">
-</head><body><div id="root"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Route Manifest — Daily Logger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#DFE5C7;
+    --bg-2:#BFD2BB;
+    --bg-3:#AFC1BC;
+    --ink:#122635;
+    --ink-soft:#4A6477;
+    --primary:#2A8084;
+    --primary-dark:#184E77;
+    --ocean:#1A759F;
+    --teal:#52B69A;
+    --mint:#99D98C;
+    --sprout:#B5E48C;
+    --lime:#D9ED92;
+    --accent:#34A0A4;
+    --accent-soft:rgba(181,228,140,0.32);
+    --lime-soft:rgba(217,237,146,0.38);
+    --gold:#D9ED92;
+    --danger:#BF4726;
+    --danger-vivid:#E0632F;
+    --surface:rgba(255,255,255,0.58);
+    --surface-strong:rgba(255,255,255,0.78);
+    --border:rgba(255,255,255,0.7);
+    --hairline:rgba(18,38,53,0.09);
+    --shadow:0 6px 22px rgba(18,52,60,0.10);
+    --shadow-lift:0 10px 34px rgba(18,52,60,0.16);
+    --radius:20px;
+    --radius-sm:13px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:linear-gradient(168deg,var(--bg-1) 0%,var(--bg-2) 46%,var(--bg-3) 100%);
+    background-attachment:fixed;
+    min-height:100vh;
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:520px;margin:0 auto;padding-bottom:100px;}
+
+  /* ---------- Header: floating ocean panel ---------- */
+  .stub{
+    position:relative;
+    margin:12px 12px 0;
+    padding:18px 18px 20px;
+    border-radius:26px;
+    background:linear-gradient(142deg,rgba(26,117,159,0.94) 0%,rgba(24,78,119,0.97) 100%);
+    -webkit-backdrop-filter:blur(20px);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:0 12px 34px rgba(18,52,80,0.28);
+    color:#EAF3EC;
+    overflow:hidden;
+  }
+  .stub::after{
+    content:'';position:absolute;top:-60px;right:-40px;width:180px;height:180px;
+    background:radial-gradient(circle,rgba(217,237,146,0.22) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .stub-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .logo-mark{width:40px;height:40px;flex-shrink:0;object-fit:contain;border-radius:12px;}
+  .logo-mark.sm{width:20px;height:20px;object-fit:contain;border-radius:6px;}
+  .stub h1{font-family:'Space Grotesk',sans-serif;font-size:20px;margin:0 0 1px;letter-spacing:-0.4px;font-weight:600;}
+  .stub .sub{font-size:10px;color:rgba(217,237,146,0.85);font-family:'IBM Plex Mono',monospace;letter-spacing:0.14em;}
+
+  .header-right{display:flex;align-items:center;gap:7px;}
+  .lang-toggle{
+    background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);
+    color:#EAF3EC;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
+    padding:9px 10px;border-radius:12px;cursor:pointer;letter-spacing:0.05em;
+  }
+  .date-btn{
+    position:relative;overflow:hidden;
+    background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);
+    color:#EAF3EC;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+    padding:9px 12px;border-radius:12px;display:flex;align-items:center;gap:6px;cursor:pointer;
+  }
+  .date-btn input[type=date]{display:none;}
+  .date-btn.past{background:var(--lime);border-color:var(--lime);color:var(--primary-dark);}
+  .date-btn .cal-icon{font-size:12px;}
+
+  .seller-row{margin-top:12px;position:relative;}
+  .seller-row input{
+    width:100%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
+    color:#EAF3EC;font-size:13px;padding:10px 13px;border-radius:13px;font-family:'Inter',sans-serif;
+  }
+  .seller-row input::placeholder{color:rgba(234,243,236,0.55);}
+
+  .stub-controls{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap;position:relative;}
+  .ctrl{flex:1;min-width:120px;}
+  .ctrl label{display:block;font-size:9px;color:rgba(217,237,146,0.8);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;}
+  .ctrl select,.ctrl input[type=number]{
+    width:100%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
+    color:#EAF3EC;font-size:13px;padding:9px 10px;border-radius:12px;font-family:'Inter',sans-serif;
+  }
+  .ctrl select option{color:#122635;}
+
+  .stub-kpis{display:flex;gap:12px;margin-top:18px;position:relative;}
+  .stub-kpi{flex:1;}
+  .stub-kpi .amt{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1;}
+  .stub-kpi .lbl{font-size:10px;color:rgba(234,243,236,0.62);margin-top:5px;letter-spacing:0.03em;}
+  .stub-kpi.commission .amt{color:var(--lime);}
+
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;gap:6px;padding:14px 14px 0;}
+  .tab{
+    flex:1;text-align:center;padding:11px 6px;border-radius:14px;
+    font-size:13px;font-weight:600;color:var(--ink-soft);
+    background:var(--surface);border:1px solid var(--border);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    cursor:pointer;transition:background .18s,color .18s;
+  }
+  .tab.active{background:var(--primary);color:#fff;border-color:transparent;box-shadow:var(--shadow);}
+
+  .panel{padding:14px;}
+
+  /* ---------- Glass card base ---------- */
+  .stopper,.card,.item,.req-box,.pay-box,.cash-box,.eod-item,.cal-sheet{
+    background:var(--surface);
+    -webkit-backdrop-filter:blur(18px) saturate(1.15);
+    backdrop-filter:blur(18px) saturate(1.15);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+  }
+
+  .stopper{border-radius:var(--radius);padding:12px;margin-bottom:10px;}
+  .stopper-top{display:flex;align-items:center;justify-content:space-between;}
+  .stopper button.nav{
+    width:42px;height:42px;border-radius:14px;border:none;
+    background:rgba(255,255,255,0.66);color:var(--primary-dark);font-size:19px;font-weight:700;cursor:pointer;
+  }
+  .stop-mid{flex:1;text-align:center;padding:0 6px;}
+  .stop-idx{font-size:9px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:0.12em;}
+  .stop-name-input{width:100%;text-align:center;border:none;background:transparent;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-0.2px;}
+  .stopcount-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--hairline);}
+  .stopcount-row label{font-size:11px;color:var(--ink-soft);font-weight:600;}
+  .stopcount-row input{width:58px;text-align:center;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);border-radius:10px;padding:6px;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);}
+
+  /* ---------- Arrival / departure ---------- */
+  .timing{border-top:1px solid var(--hairline);margin-top:10px;padding-top:11px;}
+  .big-time-btn{
+    width:100%;border:none;border-radius:16px;padding:14px 12px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff;cursor:pointer;
+    box-shadow:var(--shadow);
+  }
+  .big-time-btn.arriving{background:linear-gradient(135deg,var(--primary) 0%,#237074 100%);}
+  .big-time-btn.leaving{background:linear-gradient(135deg,var(--lime) 0%,#C4DE7A 100%);color:var(--primary-dark);}
+  .big-time-btn .btl{font-size:14px;font-weight:700;letter-spacing:-0.1px;}
+  .big-time-btn .bts{font-size:11px;font-family:'IBM Plex Mono',monospace;opacity:0.82;}
+  .visit-list{margin-top:9px;}
+  .arrival-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;}
+  .arrival-btn{width:100%;padding:12px;border-radius:14px;border:none;background:var(--primary);color:#fff;font-size:13px;font-weight:700;}
+  .arrival-log{margin-top:8px;}
+
+  .pair-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px solid var(--hairline);font-family:'IBM Plex Mono',monospace;}
+  .pair-row:last-child{border-bottom:none;}
+  .pair-row.drive-row{color:var(--ocean);font-style:italic;padding-left:10px;}
+  .pair-row .dur{color:var(--primary);font-weight:700;}
+  .pair-row .open{color:var(--danger);font-weight:700;}
+  .pair-row button{background:none;border:none;color:var(--ink-soft);font-weight:700;cursor:pointer;font-size:14px;}
+
+  /* ---------- Running order bar ---------- */
+  .order-bar{
+    position:sticky;top:8px;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    background:var(--surface-strong);
+    -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+    border:1px solid var(--border);border-radius:16px;padding:12px 15px;margin:14px 0 6px;
+    box-shadow:var(--shadow);
+  }
+  .order-bar.live{
+    background:linear-gradient(135deg,rgba(26,117,159,0.95),rgba(24,78,119,0.96));
+    border-color:transparent;box-shadow:var(--shadow-lift);
+  }
+  .ob-left{display:flex;align-items:baseline;gap:7px;}
+  .ob-count{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--ink-soft);}
+  .ob-lbl{font-size:11px;color:var(--ink-soft);}
+  .order-bar.live .ob-count{color:#fff;}
+  .order-bar.live .ob-lbl{color:rgba(234,243,236,0.7);}
+  .ob-right{display:flex;align-items:center;gap:10px;}
+  .ob-amt{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--ink-soft);letter-spacing:-0.5px;}
+  .order-bar.live .ob-amt{color:var(--lime);}
+  .ob-clear{background:rgba(255,255,255,0.18);border:none;color:rgba(234,243,236,0.85);font-size:10px;font-weight:700;
+    padding:6px 9px;border-radius:9px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;}
+
+  /* ---------- Items ---------- */
+  .cat-label{
+    font-size:10px;text-transform:uppercase;letter-spacing:0.14em;
+    color:var(--ink-soft);margin:20px 4px 9px;font-weight:700;
+  }
+  .cat-label.top-label{color:var(--primary);}
+  .item{border-radius:var(--radius-sm);padding:11px 13px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .item.top{background:var(--lime-soft);border:1px solid rgba(153,217,140,0.75);}
+  .item-info{flex:1;min-width:0;}
+  .item-name{font-size:14px;font-weight:600;letter-spacing:-0.1px;}
+  .item-price{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-top:1px;}
+  .counter{display:flex;align-items:center;gap:7px;}
+  .counter button{width:40px;height:40px;border-radius:13px;border:none;font-size:17px;font-weight:700;flex-shrink:0;cursor:pointer;}
+  .counter .minus{background:rgba(255,255,255,0.72);color:var(--ink-soft);}
+  .counter .plus{background:var(--primary);color:#fff;}
+  .counter .plus2{background:var(--teal);color:var(--primary-dark);font-size:14px;}
+  .counter .count{min-width:24px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:16px;}
+  .counter.big button{width:52px;height:52px;font-size:20px;border-radius:16px;}
+  .counter.big .plus2{font-size:15px;}
+  .counter.big .count{min-width:32px;font-size:20px;}
+
+  /* ---------- Requests / payments / cash ---------- */
+  .req-box,.pay-box{border-radius:var(--radius);padding:14px;margin-top:9px;}
+  .req-box .lbl,.pay-box .lbl{font-size:11px;font-weight:700;color:var(--ink-soft);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;}
+  .req-input-row{display:flex;gap:8px;}
+  .req-input-row input{flex:1;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:10px 11px;font-size:13px;color:var(--ink);}
+  .req-input-row button{background:var(--teal);color:var(--primary-dark);border:none;border-radius:12px;padding:0 15px;font-weight:700;cursor:pointer;}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--primary-dark);border-radius:20px;padding:6px 11px;font-size:12px;font-weight:600;margin:7px 6px 0 0;}
+  .chip.fee{background:rgba(255,255,255,0.6);color:var(--ink-soft);font-style:italic;}
+  .chip.time{background:rgba(82,182,154,0.24);color:var(--primary-dark);}
+  .chip button{background:none;border:none;color:var(--primary-dark);font-weight:700;cursor:pointer;}
+
+  .pay-ledger{font-family:'IBM Plex Mono',monospace;font-size:12px;margin-bottom:12px;}
+  .pay-ledger > div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);}
+  .pay-ledger > div:last-child{border-bottom:none;font-weight:700;padding-top:8px;}
+  .pay-ledger .owing{color:var(--danger);}
+  .pay-ledger .settled{color:var(--primary);}
+  .pay-ledger .over{color:var(--ocean);}
+  .pay-fill{width:100%;padding:13px;margin-top:9px;border-radius:14px;border:none;
+    background:linear-gradient(135deg,var(--primary),#237074);color:#fff;font-weight:700;font-size:13px;box-shadow:var(--shadow);cursor:pointer;}
+
+  .method-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px;}
+  .method-chip{padding:9px 12px;border-radius:12px;border:1px solid var(--hairline);background:rgba(255,255,255,0.55);font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  .method-chip.active{background:var(--primary);color:#fff;border-color:transparent;}
+  .pay-add-row{display:flex;gap:8px;}
+  .pay-add-row input{flex:1;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:10px 11px;font-size:13px;color:var(--ink);}
+  .pay-add-row button{background:var(--primary);color:#fff;border:none;border-radius:12px;padding:0 15px;font-weight:700;cursor:pointer;}
+  .pay-sum{font-size:12px;color:var(--ink-soft);margin-top:9px;font-family:'IBM Plex Mono',monospace;}
+  .fee-note{font-size:11px;color:var(--ocean);margin-top:7px;font-weight:600;}
+
+  .cash-box{border-radius:var(--radius);padding:15px;margin-top:9px;}
+  .cash-head{display:flex;align-items:baseline;justify-content:space-between;}
+  .cash-head .lbl{font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.08em;}
+  .cash-amt{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--primary);letter-spacing:-0.8px;}
+  .cash-sub{font-size:11px;color:var(--ink-soft);margin-top:1px;margin-bottom:12px;}
+  .float-prompt{background:var(--lime-soft);border-radius:13px;padding:11px;font-size:12px;font-weight:600;color:var(--primary-dark);margin-bottom:11px;}
+  .cash-breakdown{font-family:'IBM Plex Mono',monospace;font-size:12px;margin-bottom:11px;}
+  .cash-breakdown > div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--hairline);}
+  .cash-breakdown > div:last-child{border-bottom:none;}
+  .edit-float{justify-content:flex-end !important;}
+  .edit-float button{background:none;border:none;color:var(--ocean);font-size:11px;font-weight:700;text-decoration:underline;cursor:pointer;font-family:'Inter',sans-serif;}
+  .change-row{display:flex;gap:6px;}
+  .change-row input{flex:1;min-width:0;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:12px 11px;font-size:16px;color:var(--ink);}
+  .change-row button{background:var(--danger);color:#fff;border:none;border-radius:12px;padding:0 16px;font-weight:700;font-size:13px;cursor:pointer;}
+  .change-row button.topup{background:var(--primary);padding:0 13px;}
+  .quick-change{display:flex;gap:6px;margin-top:9px;}
+  .qc{flex:1;padding:12px 0;border-radius:12px;border:1px solid var(--hairline);background:rgba(255,255,255,0.55);font-weight:700;font-size:14px;color:var(--ink);cursor:pointer;}
+
+  /* ---------- Unsold ---------- */
+  .eod-item{border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+  .eod-item .item-name{font-size:14px;font-weight:600;}
+  .eod-sold-hint{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-top:1px;}
+
+  /* ---------- Summary ---------- */
+  .card{border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+  .card h3{margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;letter-spacing:-0.2px;}
+  .kpi-row{display:flex;gap:9px;flex-wrap:wrap;}
+  .kpi{flex:1;min-width:92px;background:rgba(255,255,255,0.5);border:1px solid var(--border);border-radius:14px;padding:12px 10px;text-align:center;}
+  .kpi .v{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.4px;}
+  .kpi.warn .v{color:var(--danger);}
+  .kpi.gold .v{color:var(--lime);background:var(--primary-dark);border-radius:8px;padding:3px 7px;display:inline-block;}
+  .kpi .k{font-size:9px;color:var(--ink-soft);margin-top:5px;letter-spacing:0.06em;text-transform:uppercase;}
+  .bar-row{margin-bottom:10px;}
+  .bar-row .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
+  .bar-track{height:8px;background:rgba(18,38,53,0.08);border-radius:6px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--primary));border-radius:6px;}
+  .bar-fill.waste{background:linear-gradient(90deg,var(--danger-vivid),var(--danger));}
+  .export-btn{width:100%;padding:14px;border-radius:14px;border:none;background:var(--primary-dark);color:#fff;font-weight:700;font-size:13px;margin-top:4px;margin-bottom:7px;cursor:pointer;box-shadow:var(--shadow);}
+  .export-btn.alt{background:var(--ocean);}
+  .export-btn.ghost{background:rgba(255,255,255,0.6);color:var(--ink-soft);box-shadow:none;}
+  .export-btn.danger{background:var(--danger);}
+  .export-btn.xlsx{background:linear-gradient(135deg,var(--primary),#237074);}
+  .export-note{font-size:11px;color:var(--ink-soft);margin-top:5px;line-height:1.5;}
+  .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:22px 0;}
+
+  .brand-footer{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 0 6px;
+    color:var(--ink-soft);font-size:11px;font-weight:600;letter-spacing:0.04em;opacity:0.8;}
+
+  /* ---------- Calendar ---------- */
+  .cal-overlay{position:fixed;inset:0;background:rgba(18,38,53,0.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .cal-sheet{background:rgba(255,255,255,0.9);border-radius:24px;padding:18px;width:100%;max-width:340px;box-shadow:var(--shadow-lift);}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
+  .cal-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;}
+  .cal-nav{width:40px;height:40px;border-radius:13px;border:none;background:var(--lime-soft);color:var(--primary-dark);font-size:20px;font-weight:700;cursor:pointer;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-dow{text-align:center;font-size:9px;font-weight:700;color:var(--ink-soft);padding:5px 0;letter-spacing:0.08em;}
+  .cal-day{aspect-ratio:1;border:none;background:rgba(255,255,255,0.6);border-radius:11px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;position:relative;padding:0;}
+  .cal-day.has::after{content:'';position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--teal);}
+  .cal-day.today{outline:2px solid var(--primary);}
+  .cal-day.sel{background:var(--primary);color:#fff;}
+  .cal-day.sel.has::after{background:var(--lime);}
+  .cal-actions{display:flex;gap:8px;margin-top:15px;}
+  .cal-today{flex:1;padding:13px;border-radius:13px;border:none;background:var(--primary);color:#fff;font-weight:700;font-size:13px;cursor:pointer;}
+  .cal-close{flex:1;padding:13px;border-radius:13px;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);color:var(--ink-soft);font-weight:700;font-size:13px;cursor:pointer;}
+
+  /* ---------- Toast ---------- */
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+    background:rgba(18,38,53,0.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    color:#fff;padding:12px 20px;border-radius:30px;font-size:13px;font-weight:500;
+    opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:var(--shadow-lift);z-index:200;}
+  .toast.show{opacity:1;}
+
+  /* ---------- Mobile ---------- */
+  @media (max-width:520px){
+    .counter{gap:6px;}
+    .counter button{width:48px;height:48px;font-size:20px;}
+    .counter .plus2{font-size:15px;}
+    .counter .count{min-width:28px;font-size:18px;}
+    .counter.big button{width:58px;height:58px;font-size:22px;}
+    .counter.big .plus2{font-size:16px;}
+    .counter.big .count{min-width:34px;font-size:21px;}
+    .item{padding:12px 13px;}
+    .item-name{font-size:15px;}
+    .tab{padding:13px 6px;font-size:14px;}
+    .stopper button.nav{width:46px;height:46px;font-size:21px;}
+    .method-chip{padding:11px 13px;font-size:13px;}
+    .req-input-row input,.pay-add-row input{font-size:16px;padding:12px 11px;}
+    .req-input-row button,.pay-add-row button{padding:0 18px;font-size:14px;}
+    .big-time-btn{padding:17px 12px;}
+    .big-time-btn .btl{font-size:16px;}
+    .export-btn{padding:15px;font-size:14px;}
+    .stop-name-input{font-size:16px;}
+    .ctrl select,.ctrl input[type=number]{font-size:16px;padding:10px;}
+    .seller-row input{font-size:16px;padding:12px 13px;}
+    .date-btn,.lang-toggle{padding:10px 12px;}
+    .stub-kpi .amt{font-size:28px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;animation:none !important;}
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+<div id="app" class="app"></div>
+<div id="toast" class="toast"></div>
+
+<script>
+/* ---------------- MENU DATA ---------------- */
+let MENU = {
+  Monday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["Mexican Caesar Salad",15],["Chicken Taco Salad",15]],
+    Sandwiches: [["Chicken Salad Sandwich",15],["Smoked Turkey and Swiss",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Caesar Salad Wrap",15]],
+    "Hot Plates": [["Chicken Kabob",16],["Chipotle Shrimp/Chicken Pasta",16],["Salmon w/ Cilantro Rice",17.5]],
+    Sushi: [["California Roll",12]],
+    "Protein Plates": [["Chicken Salad Protein Plate",15],["Hummus and Chicken Protein Plate",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  },
+  Tuesday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["Chef Salad",15],["Asian Crunchy Salad",15]],
+    Sandwiches: [["Turkey Club",15],["Smoked Turkey and Swiss",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Thai Chicken Wrap",15]],
+    "Hot Plates": [["Chicken Enchiladas",16],["Chicken Chile Verde",16],["Shrimp/Chicken Pesto Pasta",16]],
+    Sushi: [["California Roll",12]],
+    "Protein Plates": [["Hummus and Chicken Protein Plate",15],["Tuna Protein Plate",16],["Chicken Protein Plate",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  },
+  Wednesday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["House Chopped Salad",15],["Thai Grilled Chicken Salad",15]],
+    Sandwiches: [["Italian Sandwich",15],["Smoked Turkey and Swiss",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Mediterranean Wrap",15]],
+    "Hot Plates": [["Chicken Chow Mein",16],["Teriyaki Chicken",16],["Blackened Salmon",16]],
+    Sushi: [["Crunchy Roll",12]],
+    "Protein Plates": [["Blackened Chicken Protein Plate",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  },
+  Thursday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["Super Taco Salad",15],["Turkey Cobb Salad",15]],
+    Sandwiches: [["Chicken Salad Sandwich",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Buffalo Chicken Wrap",15]],
+    "Hot Plates": [["Broccoli Beef w/ Brown Rice",16],["Meat Lasagna",16],["Rosemary Chicken w/ Mashed Potatoes",16]],
+    Sushi: [["California Roll",12],["Rainbow Roll (special order)",18]],
+    "Protein Plates": [["Hot Honey Chicken",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  },
+  Friday: {
+    Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],
+    Salads: [["Super Taco Salad",15],["Grilled Chicken Quinoa Salad",15]],
+    Sandwiches: [["Chicken Salad Sandwich",15],["Smoked Turkey and Swiss",15]],
+    Wraps: [["Chicken Spring Rolls",15],["Summer Turkey Wrap",15]],
+    "Hot Plates": [["Shrimp Spinach Capellini",16],["Chicken Lemon Garlic Pasta",16]],
+    Sushi: [["California Roll",12]],
+    "Protein Plates": [["Chicken Salad Protein Plate",15]],
+    Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
+    Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
+  }
+};
+const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MENU_DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+const PAYMENT_METHODS = ["Square","Zelle","Venmo","Credit Card","Cash","Owed"];
+const LOGO_DATA_URI = "data:image/webp;base64,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";
+
+const CAT_ES = {
+  "Breakfast":"Desayuno","Salads":"Ensaladas","Sandwiches":"Sándwiches","Wraps":"Wraps","Hot Plates":"Platos calientes",
+  "Sushi":"Sushi","Protein Plates":"Platos de proteína","Treats":"Postres","Drinks":"Bebidas"
+};
+const PAY_ES = { "Credit Card":"Tarjeta de crédito", "Cash":"Efectivo", "Owed":"Debe" };
+
+const TRANSLATIONS = {
+  en: {
+    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary",
+    revenue_today:"revenue today", commission_label:"your commission (30%)",
+    menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
+    auto_weekday:"Auto ({wd})",
+    stop_of:"STOP {n} OF {total}", total_stops_row:"Total stops on this route today:",
+    top_sellers_at:"Top sellers at {stop} — tap fast", top_sellers_generic:"Top sellers — tap fast",
+    no_menu:"No menu selected for {wd}. Pick a menu above.",
+    arrive_tap:"Tap when you arrive", leave_tap:"Tap when you leave", here_since:"Here since {t}",
+    here_today:"{d} here today", now_label:"now",
+    req_label:"Customer asked for something you didn't have", req_placeholder:"e.g. more Salmon, or Iced Coffee", req_add:"Add",
+    pay_label:"Payment collected at this stop", sold_here:"Sold here", collected:"Collected",
+    still_to_collect:"Still to collect", over_collected:"Over-collected", settled:"Settled",
+    amount_ph:"Amount ($)", add_btn:"Add", pay_remaining:"Pay remaining {amt} by {method}",
+    fee_note:"+ {fee} fee auto-added for Square",
+    cash_pouch:"Cash pouch", cash_sub:"should be in your pouch right now",
+    float_prompt:"Starting change you loaded today:", float_ph:"e.g. 60.00", set_btn:"Set",
+    started_with:"Started with", cash_sales:"+ Cash sales", added_cash:"+ Added", change_given:"− Change given",
+    change_edit:"Change starting amount", change_ph:"Amount ($)", give_btn:"− Give", add2_btn:"+ Add",
+    arrivals_log:"Today's time log (all stops)", no_arrivals:"No arrivals logged yet today.",
+    total_time:"Total time on site", drive_to:"Driving to {stop}", total_drive:"Total driving time",
+    unsold_label:"What came back unsold today (all stops)", sold_today:"sold today: {n}",
+    across_days:"Across {n} logged day{s}", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
+    waste_value:"WASTE VALUE", time_on_site:"TIME ON SITE", square_fees:"SQUARE FEES",
+    real_fee_title:"Real Square Fee", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
+    charged_fee:"You charged (flat $0.50/sale)", real_fee:"Square actually took", fee_gap:"Your gap",
+    txn_count:"Square transactions",
+    payment_methods:"Payment methods (all days)", best_sellers:"Best sellers",
+    waste_title:"Consistently coming back (waste)", lost_sales:"Requested but not carried (lost sales)",
+    export_title:"Export", export_excel:"Download Excel workbook (all data, one file)", export_day:"Download day-by-day CSV", export_item:"Download item-by-item CSV",
+    export_copy:"Copy summary as text", export_note:"The Excel file has both day and item data as separate tabs, with filters and a frozen header row. CSVs are plain backups.",
+    reset_title:"Reset", reset_btn:"Clear all logged data", reset_confirm:"Tap again to confirm — this deletes everything",
+    reset_note:"Wipes every logged day. Download your CSVs first if you want to keep the history.",
+    no_data_yet:"No data logged yet. Start tapping sales on the Log Stop tab.",
+    toast_sale:"Sale logged", toast_arrival:"Arrival logged", toast_departure:"Departure logged",
+    toast_departure_advance:"Departure logged — next stop", toast_no_arrival:"Log an arrival first",
+    toast_already_arrived:"Already arrived — log departure first",
+    toast_stop_cleared:"Stop items cleared", toast_confirm_clear:"Tap clear again to confirm",
+    toast_square:"Square {amt} logged", toast_payment:"Payment logged", toast_change:"Change logged",
+    toast_topup:"Top-up logged", toast_copied:"Copied to clipboard", toast_copy_fail:"Could not copy — select manually",
+    toast_downloaded:"Downloaded {f}", toast_download_fail:"Download blocked — use Copy instead",
+    toast_reset_done:"All data cleared", brand_footer:"GreenLife Fit Foods — route log",
+    cloud_offline:"Local only — not synced", cloud_connecting:"Connecting to cloud…",
+    cloud_synced:"Synced to cloud as {name}", cloud_taken:"That name is already syncing from another device — use a different name",
+    cloud_error:"Cloud sync error — saved locally, will retry"
+  },
+  es: {
+    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen",
+    revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
+    menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
+    auto_weekday:"Auto ({wd})",
+    stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas en la ruta hoy:",
+    top_sellers_at:"Más vendidos en {stop} — toque rápido", top_sellers_generic:"Más vendidos — toque rápido",
+    no_menu:"No hay menú para {wd}. Elige uno arriba.",
+    arrive_tap:"Toca al llegar", leave_tap:"Toca al salir", here_since:"Aquí desde las {t}",
+    here_today:"{d} aquí hoy", now_label:"ahora",
+    req_label:"El cliente pidió algo que no tenías", req_placeholder:"ej. más Salmón, o Café helado", req_add:"Agregar",
+    pay_label:"Pago recibido en esta parada", sold_here:"Vendido aquí", collected:"Cobrado",
+    still_to_collect:"Falta por cobrar", over_collected:"Cobrado de más", settled:"Saldado",
+    amount_ph:"Monto ($)", add_btn:"Agregar", pay_remaining:"Pagar {amt} restante con {method}",
+    fee_note:"+ {fee} cargo automático de Square",
+    cash_pouch:"Bolsa de cambio", cash_sub:"debería estar en tu bolsa ahora mismo",
+    float_prompt:"Cambio inicial que cargaste hoy:", float_ph:"ej. 60.00", set_btn:"Confirmar",
+    started_with:"Empezaste con", cash_sales:"+ Ventas en efectivo", added_cash:"+ Agregado", change_given:"− Cambio entregado",
+    change_edit:"Cambiar monto inicial", change_ph:"Monto ($)", give_btn:"− Dar", add2_btn:"+ Agregar",
+    arrivals_log:"Registro de tiempo de hoy (todas las paradas)", no_arrivals:"Aún no hay llegadas registradas hoy.",
+    total_time:"Tiempo total en el lugar", drive_to:"Manejando a {stop}", total_drive:"Tiempo total manejando",
+    unsold_label:"Lo que no se vendió hoy (todas las paradas)", sold_today:"vendido hoy: {n}",
+    across_days:"En {n} día{s} registrado{s}", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
+    waste_value:"VALOR DESPERDICIADO", time_on_site:"TIEMPO EN SITIO", square_fees:"CARGOS DE SQUARE",
+    real_fee_title:"Cargo real de Square", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
+    charged_fee:"Cobraste (fijo $0.50/venta)", real_fee:"Square realmente cobró", fee_gap:"Tu diferencia",
+    txn_count:"Transacciones de Square",
+    payment_methods:"Métodos de pago (todos los días)", best_sellers:"Más vendidos",
+    waste_title:"Siempre regresa (desperdicio)", lost_sales:"Pedido pero no disponible (ventas perdidas)",
+    export_title:"Exportar", export_excel:"Descargar libro de Excel (todo en un archivo)", export_day:"Descargar CSV por día", export_item:"Descargar CSV por artículo",
+    export_copy:"Copiar resumen como texto", export_note:"El archivo de Excel tiene los datos de días y artículos en pestañas separadas, con filtros y encabezado fijo. Los CSV son solo respaldo.",
+    reset_title:"Reiniciar", reset_btn:"Borrar todos los datos", reset_confirm:"Toca de nuevo para confirmar — esto borra todo",
+    reset_note:"Borra cada día registrado. Descarga tus CSV primero si quieres conservar el historial.",
+    no_data_yet:"Aún no hay datos. Empieza a registrar ventas en Registrar parada.",
+    toast_sale:"Venta registrada", toast_arrival:"Llegada registrada", toast_departure:"Salida registrada",
+    toast_departure_advance:"Salida registrada — siguiente parada", toast_no_arrival:"Registra una llegada primero",
+    toast_already_arrived:"Ya llegaste — registra la salida primero",
+    toast_stop_cleared:"Artículos de la parada borrados", toast_confirm_clear:"Toca borrar de nuevo para confirmar",
+    toast_square:"Square {amt} registrado", toast_payment:"Pago registrado", toast_change:"Cambio registrado",
+    toast_topup:"Recarga registrada", toast_copied:"Copiado al portapapeles", toast_copy_fail:"No se pudo copiar — selecciona manualmente",
+    toast_downloaded:"Descargado {f}", toast_download_fail:"Descarga bloqueada — usa Copiar",
+    toast_reset_done:"Todos los datos borrados", brand_footer:"GreenLife Fit Foods — registro de ruta",
+    cloud_offline:"Solo local — no sincronizado", cloud_connecting:"Conectando a la nube…",
+    cloud_synced:"Sincronizado como {name}", cloud_taken:"Ese nombre ya se usa en otro dispositivo — usa un nombre diferente",
+    cloud_error:"Error de sincronización — guardado localmente, se reintentará"
+  }
+};
+function T(key, vars){
+  let s = (TRANSLATIONS[state.lang] && TRANSLATIONS[state.lang][key]) || TRANSLATIONS.en[key] || key;
+  if(vars) Object.entries(vars).forEach(([k,v])=>{ s = s.split('{'+k+'}').join(v); });
+  return s;
+}
+function TC(cat){ return state.lang==='es' ? (CAT_ES[cat]||cat) : cat; }
+function TP(method){ return state.lang==='es' ? (PAY_ES[method]||method) : method; }
+function cloudStatusLabel(){
+  if(state.cloudStatus === 'connecting') return T('cloud_connecting');
+  if(state.cloudStatus === 'synced') return T('cloud_synced',{name:escapeAttr(state.sellerName)});
+  if(state.cloudStatus === 'taken') return T('cloud_taken');
+  if(state.cloudStatus === 'error') return T('cloud_error');
+  return T('cloud_offline');
+}
+const DEFAULT_STOP_COUNT = 10;
+const COMMISSION_RATE = 0.30;
+
+/* ---------------- STATE ---------------- */
+let state = {
+  tab: 'log',
+  date: todayStr(),
+  stopIndex: 0,
+  defaultStopNames: null,
+  day: null,
+  allDays: {},
+  activeMethod: 'Cash',
+  timingOpen: false,
+  calOpen: false,
+  calMonth: todayStr().slice(0,7),
+  lang: 'en',
+  sellerName: '',
+  cloudStatus: 'offline'
+};
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+}
+function weekdayOf(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return WEEKDAYS[new Date(y,m-1,d).getDay()];
+}
+function effectiveWeekday(day){
+  return day.menuOverride || weekdayOf(day.date);
+}
+function fmtMoney(n){ return '$'+(Math.round(n*100)/100).toFixed(2); }
+function fmtDateShort(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return MON[m-1]+' '+d;
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove('show'), 1400);
+}
+
+const SQUARE_FEE = 0.50;
+function makeStop(){ return { items:{}, requests:[], visits:[], payments:[], cashMoves:[] }; }
+function emptyDay(dateStr, stopNames){
+  const stops = {};
+  for(let i=0;i<stopNames.length;i++){ stops[i] = makeStop(); }
+  return { date:dateStr, stopNames: stopNames.slice(), menuOverride:null, stops, returns:{}, startFloat:null };
+}
+function normalizeDay(d, fallbackNames){
+  if(!d.stopNames || !d.stopNames.length) d.stopNames = fallbackNames.slice();
+  if(!d.stops) d.stops = {};
+  const wd = (d.menuOverride) || weekdayOf(d.date);
+  d.stopNames.forEach((n,i)=>{
+    if(!d.stops[i]) d.stops[i] = makeStop();
+    const s = d.stops[i];
+    if(!s.items) s.items = {};
+    Object.keys(s.items).forEach(name=>{
+      const it = s.items[name];
+      if(it.price === undefined || it.price === null){
+        const p = priceForItem(name, wd);
+        it.price = (p != null) ? p : 0;
+      }
+    });
+    if(!s.requests) s.requests = [];
+    if(!s.visits){
+      const legacy = s.arrivals || (Array.isArray(s.arrival) ? s.arrival : (s.arrival ? [s.arrival] : []));
+      s.visits = (legacy||[]).map(t=>({arrive:t, depart:null}));
+    }
+    if(!s.payments) s.payments = [];
+    if(!s.cashMoves) s.cashMoves = [];
+  });
+  if(!d.returns) d.returns = {};
+  if(d.startFloat === undefined) d.startFloat = null;
+  if(d.menuOverride === undefined) d.menuOverride = null;
+  return d;
+}
+
+/* ---------------- STORAGE (safe, with in-memory fallback) ---------------- */
+const LS_PREFIX = 'routemanifest:';
+const _hasRealStorage = () => (typeof window !== 'undefined' && !!window.storage && typeof window.storage.get === 'function');
+const _hasLocalStorage = () => {
+  try{
+    if(typeof window === 'undefined' || !window.localStorage) return false;
+    const t = '__test__';
+    window.localStorage.setItem(t,'1');
+    window.localStorage.removeItem(t);
+    return true;
+  }catch(e){ return false; }
+};
+const _memoryStore = {}; // last-resort only, used if neither storage API is available
+
+async function storageGet(key, shared){
+  if(_hasRealStorage()) return window.storage.get(key, shared);
+  if(_hasLocalStorage()){
+    const raw = window.localStorage.getItem(LS_PREFIX+key);
+    if(raw === null) throw new Error('not found: '+key);
+    return { key, value: raw, shared };
+  }
+  if(Object.prototype.hasOwnProperty.call(_memoryStore, key)) return { key, value:_memoryStore[key], shared };
+  throw new Error('not found: '+key);
+}
+async function storageSet(key, value, shared){
+  if(_hasRealStorage()) return window.storage.set(key, value, shared);
+  if(_hasLocalStorage()){
+    window.localStorage.setItem(LS_PREFIX+key, value);
+    return { key, value, shared };
+  }
+  _memoryStore[key] = value;
+  return { key, value, shared };
+}
+async function storageDelete(key, shared){
+  if(_hasRealStorage() && window.storage.delete) return window.storage.delete(key, shared);
+  if(_hasLocalStorage()){ window.localStorage.removeItem(LS_PREFIX+key); return; }
+  delete _memoryStore[key];
+}
+async function storageList(prefix, shared){
+  if(_hasRealStorage()) return window.storage.list(prefix, shared);
+  if(_hasLocalStorage()){
+    const keys = [];
+    for(let i=0;i<window.localStorage.length;i++){
+      const k = window.localStorage.key(i);
+      if(k && k.startsWith(LS_PREFIX+prefix)) keys.push(k.slice(LS_PREFIX.length));
+    }
+    return { keys };
+  }
+  const keys = Object.keys(_memoryStore).filter(k=>k.startsWith(prefix));
+  return { keys };
+}
+
+async function loadPrefs(){
+  try{
+    const r = await storageGet('lang', false);
+    state.lang = r.value === 'es' ? 'es' : 'en';
+  }catch(e){}
+  try{
+    const r = await storageGet('seller_name', false);
+    state.sellerName = r.value || '';
+  }catch(e){}
+}
+async function setLang(lang){
+  state.lang = lang === 'es' ? 'es' : 'en';
+  try{ await storageSet('lang', state.lang, false); }catch(e){}
+  render();
+}
+async function setSellerName(name){
+  state.sellerName = (name||'').trim();
+  try{ await storageSet('seller_name', state.sellerName, false); }catch(e){}
+  if(fbReady && state.sellerName){
+    const result = await claimDriver(state.sellerName);
+    state.cloudStatus = result.status;
+    if(result.status === 'synced') await hydrateFromCloud();
+    render();
+  }
+}
+
+async function loadDefaultStopNames(){
+  try{
+    const r = await storageGet('stopnames_default', false);
+    const arr = JSON.parse(r.value);
+    if(Array.isArray(arr) && arr.length) return arr;
+    throw new Error('bad');
+  }catch(e){
+    const def = Array.from({length:DEFAULT_STOP_COUNT}, (_,i)=>'Stop '+(i+1));
+    try{ await storageSet('stopnames_default', JSON.stringify(def), false); }catch(e2){}
+    return def;
+  }
+}
+async function saveDefaultStopNames(names){
+  try{ await storageSet('stopnames_default', JSON.stringify(names), false); }catch(e){}
+}
+async function loadDay(dateStr, fallbackNames){
+  try{
+    const r = await storageGet('day:'+dateStr, false);
+    const d = JSON.parse(r.value);
+    const normalized = normalizeDay(d, fallbackNames);
+    await saveDay(normalized);
+    return normalized;
+  }catch(e){
+    return emptyDay(dateStr, fallbackNames);
+  }
+}
+async function saveDay(day){
+  try{ await storageSet('day:'+day.date, JSON.stringify(day), false); }catch(e){}
+}
+async function loadAllDays(){
+  try{
+    const list = await storageList('day:', false);
+    const out = {};
+    for(const k of (list.keys||[])){
+      try{
+        const r = await storageGet(k, false);
+        const d = JSON.parse(r.value);
+        const normalized = normalizeDay(d, state.defaultStopNames || ['Stop 1']);
+        await saveDay(normalized);
+        out[normalized.date] = normalized;
+      }catch(e){}
+    }
+    return out;
+  }catch(e){ return {}; }
+}
+
+/* ---------------- CLOUD SYNC (Firestore, best-effort layer on top of local storage) ---------------- */
+/* FIREBASE_CONFIG comes from firebase-config.js, shared with admin.html */
+let fbDb = null, fbAuth = null, fbUid = null, fbReady = false;
+
+function driverIdFor(name){
+  const slug = (name||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+  return slug || null;
+}
+function cloudConfigured(){
+  return FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf('REPLACE_ME') === -1;
+}
+async function initCloud(){
+  if(!cloudConfigured() || typeof firebase === 'undefined') return;
+  state.cloudStatus = 'connecting';
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    fbAuth = firebase.auth();
+    fbDb = firebase.firestore();
+    try{ await fbDb.enablePersistence({synchronizeTabs:true}); }catch(e){}
+    await new Promise((resolve)=>{
+      let settled = false;
+      fbAuth.onAuthStateChanged(user=>{
+        if(user && !settled){ settled = true; fbUid = user.uid; fbReady = true; resolve(); }
+      });
+      fbAuth.signInAnonymously().catch(()=>{ if(!settled){ settled = true; resolve(); } });
+    });
+  }catch(e){ fbReady = false; }
+  if(!fbReady){ state.cloudStatus = 'offline'; render(); return; }
+  await loadManagedMenu();
+  if(state.sellerName){
+    const result = await claimDriver(state.sellerName);
+    state.cloudStatus = result.status;
+    if(result.status === 'synced') await hydrateFromCloud();
+  } else {
+    state.cloudStatus = 'offline';
+  }
+  render();
+}
+
+function isManagedMenu(value){
+  return value && typeof value === 'object'
+    && ['Monday','Tuesday','Wednesday','Thursday','Friday'].every(day=>value[day] && typeof value[day] === 'object');
+}
+async function loadManagedMenu(){
+  if(!fbDb) return;
+  try{
+    const snap = await fbDb.collection('settings').doc('menu').get();
+    const managed = snap.exists && snap.data().weeklyMenu;
+    if(isManagedMenu(managed)) MENU = managed;
+  }catch(e){ /* Use the built-in menu if settings cannot be reached. */ }
+}
+// Claiming is write-only (no read-before-write): a plain set()-with-merge is
+// evaluated by Firestore as "create" the first time (allowed if we're setting
+// ourselves as owner) or "update" every time after (allowed only if we're
+// already the owner) — so a name already claimed by a different device simply
+// fails the update rule and we catch that as 'taken'. This also sidesteps the
+// fact that Firestore denies get() on a not-yet-existing doc under our rules.
+// Returns {status:'synced', driverId} | {status:'taken'} | {status:'error', detail}
+async function claimDriver(name){
+  const driverId = driverIdFor(name);
+  if(!driverId || !fbReady) return { status:'error', detail:'no name or not signed in' };
+  try{
+    await fbDb.collection('drivers').doc(driverId).set({
+      name: name.trim(), ownerUid: fbUid,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    return { status:'synced', driverId };
+  }catch(e){
+    if(e && e.code === 'permission-denied') return { status:'taken' };
+    return { status:'error', detail: (e && e.code) || String(e) };
+  }
+}
+async function cloudPushDay(day){
+  if(!fbReady || !state.sellerName) return;
+  const result = await claimDriver(state.sellerName);
+  state.cloudStatus = result.status;
+  if(result.status !== 'synced') return;
+  const driverId = result.driverId;
+  try{
+    await fbDb.collection('drivers').doc(driverId).collection('days').doc(day.date).set(
+      Object.assign({}, day, {
+        driverName: state.sellerName.trim(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+    );
+  }catch(e){ /* offline or blocked — local copy already saved, will retry on next edit */ }
+}
+async function hydrateFromCloud(){
+  if(!fbReady || !state.sellerName) return;
+  const driverId = driverIdFor(state.sellerName);
+  if(!driverId) return;
+  try{
+    const snap = await fbDb.collection('drivers').doc(driverId).collection('days').get();
+    let changed = false;
+    for(const doc of snap.docs){
+      const dateStr = doc.id;
+      if(state.allDays[dateStr]) continue; // this device already has local data for that date — local wins
+      const data = doc.data();
+      delete data.driverName; delete data.updatedAt;
+      const normalized = normalizeDay(data, state.defaultStopNames);
+      await saveDay(normalized);
+      state.allDays[dateStr] = normalized;
+      changed = true;
+    }
+    if(changed && state.allDays[state.date]) state.day = state.allDays[state.date];
+  }catch(e){}
+}
+
+/* ---------------- MUTATIONS ---------------- */
+function priceForItem(name, weekday){
+  const menu = MENU[weekday];
+  if(!menu) return null;
+  const found = Object.values(menu).flat().find(x=>x[0]===name);
+  return found ? found[1] : null;
+}
+function bump(itemName, delta){
+  const stop = state.day.stops[state.stopIndex];
+  if(!stop.items[itemName]) stop.items[itemName] = {sold:0, price:null};
+  const it = stop.items[itemName];
+  it.sold = Math.max(0, it.sold + delta);
+  if(it.price == null){
+    const wd = effectiveWeekday(state.day);
+    const p = priceForItem(itemName, wd);
+    if(p != null) it.price = p;
+  }
+  persistDay();
+}
+function setStartFloat(v){
+  const n = parseFloat(v);
+  state.day.startFloat = (isNaN(n) || n < 0) ? null : Math.round(n*100)/100;
+  persistDay();
+}
+function addChangeGiven(amountStr){
+  const amount = parseFloat(amountStr);
+  if(isNaN(amount) || amount <= 0) return;
+  const stop = state.day.stops[state.stopIndex];
+  stop.cashMoves.push({ type:'change', amount: Math.round(amount*100)/100, time: nowTime() });
+  persistDay();
+  toast(T('toast_change'));
+}
+function addCashTopUp(amountStr){
+  const amount = parseFloat(amountStr);
+  if(isNaN(amount) || amount <= 0) return;
+  const stop = state.day.stops[state.stopIndex];
+  stop.cashMoves.push({ type:'topup', amount: Math.round(amount*100)/100, time: nowTime() });
+  persistDay();
+  toast(T('toast_topup'));
+}
+function removeCashMove(idx){
+  const stop = state.day.stops[state.stopIndex];
+  stop.cashMoves.splice(idx,1);
+  persistDay();
+}
+function dayCashSales(day){
+  let t = 0;
+  Object.values(day.stops).forEach(st=>{
+    (st.payments||[]).forEach(p=>{ if(p.method==='Cash') t += p.amount; });
+  });
+  return t;
+}
+function dayChangeGiven(day){
+  let t = 0;
+  Object.values(day.stops).forEach(st=>{
+    (st.cashMoves||[]).forEach(c=>{ if(c.type==='change') t += c.amount; });
+  });
+  return t;
+}
+function dayCashTopUps(day){
+  let t = 0;
+  Object.values(day.stops).forEach(st=>{
+    (st.cashMoves||[]).forEach(c=>{ if(c.type==='topup') t += c.amount; });
+  });
+  return t;
+}
+function expectedCash(day){
+  const start = day.startFloat || 0;
+  return start + dayCashSales(day) + dayCashTopUps(day) - dayChangeGiven(day);
+}
+function stopChangeGiven(stop){
+  return (stop.cashMoves||[]).reduce((s,c)=>s + (c.type==='change'?c.amount:0), 0);
+}
+
+function nowTime(){
+  return new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+function openVisit(stop){
+  return stop.visits.find(v=>!v.depart);
+}
+function logArrival(){
+  const stop = state.day.stops[state.stopIndex];
+  if(openVisit(stop)){ toast(T('toast_already_arrived')); return; }
+  stop.visits.push({ arrive: nowTime(), depart: null });
+  persistDay();
+  toast(T('toast_arrival'));
+}
+function logDeparture(){
+  const stop = state.day.stops[state.stopIndex];
+  const v = openVisit(stop);
+  if(!v){ toast(T('toast_no_arrival')); return; }
+  v.depart = nowTime();
+  const canAdvance = state.stopIndex < state.day.stopNames.length - 1;
+  if(canAdvance) state.stopIndex += 1;
+  persistDay();
+  toast(canAdvance ? T('toast_departure_advance') : T('toast_departure'));
+}
+function removeVisit(idx){
+  const stop = state.day.stops[state.stopIndex];
+  stop.visits.splice(idx,1);
+  persistDay();
+}
+function parseTime(t){
+  if(!t) return null;
+  const m = t.match(/(\d+):(\d+)\s*(AM|PM)?/i);
+  if(!m) return null;
+  let h = parseInt(m[1],10); const min = parseInt(m[2],10);
+  const ap = m[3] ? m[3].toUpperCase() : null;
+  if(ap==='PM' && h!==12) h+=12;
+  if(ap==='AM' && h===12) h=0;
+  return h*60+min;
+}
+function visitMinutes(v){
+  const a = parseTime(v.arrive), d = parseTime(v.depart);
+  if(a===null || d===null) return null;
+  let diff = d-a;
+  if(diff < 0) diff += 24*60;
+  return diff;
+}
+function fmtDur(mins){
+  if(mins===null) return '—';
+  if(mins < 60) return mins+'m';
+  return Math.floor(mins/60)+'h '+(mins%60)+'m';
+}
+function dayDwellMinutes(day){
+  let total = 0;
+  Object.values(day.stops).forEach(st=>{
+    (st.visits||[]).forEach(v=>{
+      const m = visitMinutes(v);
+      if(m!==null) total += m;
+    });
+  });
+  return total;
+}
+function dayDriveSegments(day){
+  const segs = [];
+  const names = day.stopNames||[];
+  for(let i=0;i<names.length-1;i++){
+    const curStop = day.stops[i], nextStop = day.stops[i+1];
+    if(!curStop || !nextStop) continue;
+    const curVisits = curStop.visits||[], nextVisits = nextStop.visits||[];
+    if(!curVisits.length || !nextVisits.length) continue;
+    const lastDepart = curVisits[curVisits.length-1].depart;
+    const firstArrive = nextVisits[0].arrive;
+    if(!lastDepart || !firstArrive) continue;
+    const a = parseTime(lastDepart), b = parseTime(firstArrive);
+    if(a===null || b===null) continue;
+    let diff = b-a; if(diff<0) diff += 24*60;
+    segs.push({ mins:diff, fromStop:names[i], toStop:names[i+1] });
+  }
+  return segs;
+}
+function dayDriveMinutes(day){
+  return dayDriveSegments(day).reduce((s,x)=>s+x.mins,0);
+}
+function addRequest(text){
+  if(!text.trim()) return;
+  const stop = state.day.stops[state.stopIndex];
+  stop.requests.push(text.trim());
+  persistDay();
+}
+function removeRequest(idx){
+  const stop = state.day.stops[state.stopIndex];
+  stop.requests.splice(idx,1);
+  persistDay();
+}
+function addPayment(amountStr){
+  const amount = parseFloat(amountStr);
+  if(isNaN(amount) || amount <= 0) return;
+  const stop = state.day.stops[state.stopIndex];
+  const method = state.activeMethod;
+  const fee = method === 'Square' ? SQUARE_FEE : 0;
+  const total = Math.round((amount+fee)*100)/100;
+  const entry = { method, amount: total };
+  if(fee > 0) entry.fee = fee;
+  stop.payments.push(entry);
+  persistDay();
+  toast(fee>0 ? T('toast_square',{amt:fmtMoney(total)}) : T('toast_payment'));
+}
+function removePayment(idx){
+  const stop = state.day.stops[state.stopIndex];
+  stop.payments.splice(idx,1);
+  persistDay();
+}
+function bumpReturn(itemName, delta){
+  if(!state.day.returns[itemName]) state.day.returns[itemName]=0;
+  state.day.returns[itemName] = Math.max(0, state.day.returns[itemName]+delta);
+  persistDay();
+}
+async function persistDay(){
+  await saveDay(state.day);
+  state.allDays[state.day.date] = state.day;
+  render();
+  cloudPushDay(state.day).then(render); // best-effort background sync; local save above already succeeded
+}
+async function renameStop(newName){
+  state.day.stopNames[state.stopIndex] = newName;
+  await persistDay();
+}
+async function setStopCount(newCount){
+  newCount = Math.max(1, Math.min(30, Math.round(newCount)||1));
+  const names = state.day.stopNames.slice();
+  if(newCount > names.length){
+    for(let i=names.length; i<newCount; i++){
+      names.push('Stop '+(i+1));
+      if(!state.day.stops[i]) state.day.stops[i] = makeStop();
+    }
+  } else if(newCount < names.length){
+    names.length = newCount;
+    if(state.stopIndex >= newCount) state.stopIndex = newCount - 1;
+  }
+  state.day.stopNames = names;
+  state.defaultStopNames = names.slice();
+  await saveDefaultStopNames(names);
+  await persistDay();
+}
+async function setMenuOverride(val){
+  state.day.menuOverride = val || null;
+  await persistDay();
+}
+
+/* ---------------- DERIVED ---------------- */
+function stopItemCount(stop){
+  return Object.values(stop.items||{}).reduce((s,v)=>s+(v.sold||0), 0);
+}
+function stopCollectedTotal(stop){
+  return (stop.payments||[]).reduce((s,p)=>s+(p.amount-(p.fee||0)), 0);
+}
+function stopFeesTotal(stop){
+  return (stop.payments||[]).reduce((s,p)=>s+(p.fee||0), 0);
+}
+function dayFeesTotal(day){
+  let t = 0;
+  Object.values(day.stops).forEach(st=>{ t += stopFeesTotal(st); });
+  return t;
+}
+const SQUARE_REAL_RATE = 0.026;
+const SQUARE_REAL_FLAT = 0.10;
+function dayRealSquareFee(day){
+  let t = 0;
+  Object.values(day.stops).forEach(st=>{
+    (st.payments||[]).forEach(p=>{
+      if(p.method === 'Square'){
+        t += p.amount * SQUARE_REAL_RATE + SQUARE_REAL_FLAT;
+      }
+    });
+  });
+  return Math.round(t*100)/100;
+}
+function dayRealSquareCount(day){
+  let n = 0;
+  Object.values(day.stops).forEach(st=>{
+    (st.payments||[]).forEach(p=>{ if(p.method === 'Square') n++; });
+  });
+  return n;
+}
+function stopUnpaid(stop, weekday){
+  return stopRevenue(stop) - stopCollectedTotal(stop);
+}
+
+function stopRevenue(stop){
+  let total = 0;
+  Object.values(stop.items||{}).forEach(it=>{
+    total += (it.sold||0) * (it.price!=null ? it.price : 0);
+  });
+  return total;
+}
+function dayRevenue(day){
+  return Object.values(day.stops).reduce((s,st)=>s+stopRevenue(st),0);
+}
+function dayUncollected(day){
+  const wd = effectiveWeekday(day);
+  let gap = 0;
+  Object.values(day.stops).forEach(st=>{
+    const g = stopRevenue(st) - stopCollectedTotal(st);
+    if(g > 0) gap += g;
+  });
+  return gap;
+}
+
+function computeTopSellers(weekday, n, stopName){
+  const menu = MENU[weekday];
+  if(!menu) return [];
+  const allItems = Object.values(menu).flat();
+  const menuNames = new Set(allItems.map(x=>x[0]));
+  const norm = s => (s||'').trim().toLowerCase();
+  const localAgg = {}, globalAgg = {};
+  Object.values(state.allDays||{}).forEach(d=>{
+    (d.stopNames||[]).forEach((name,i)=>{
+      const st = (d.stops||{})[i];
+      if(!st) return;
+      Object.entries(st.items||{}).forEach(([itemName,v])=>{
+        if(!menuNames.has(itemName)) return;
+        const qty = v.sold||0;
+        globalAgg[itemName] = (globalAgg[itemName]||0) + qty;
+        if(stopName && norm(name)===norm(stopName)){
+          localAgg[itemName] = (localAgg[itemName]||0) + qty;
+        }
+      });
+    });
+  });
+  const rankOf = agg => Object.entries(agg).filter(([,q])=>q>0).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+  let ranked = rankOf(localAgg);
+  const localHasEnough = ranked.length >= n;
+  rankOf(globalAgg).forEach(name=>{ if(!ranked.includes(name)) ranked.push(name); });
+  const hotPlates = (menu['Hot Plates']||[]).map(x=>x[0]);
+  hotPlates.forEach(name=>{ if(!ranked.includes(name)) ranked.push(name); });
+  allItems.forEach(([name])=>{ if(!ranked.includes(name)) ranked.push(name); });
+  return {
+    items: ranked.slice(0,n).map(name=>allItems.find(x=>x[0]===name)).filter(Boolean),
+    isLocal: localHasEnough
+  };
+}
+
+function dayItemsSold(day){
+  const totals = {};
+  Object.values(day.stops).forEach(st=>{
+    Object.entries(st.items).forEach(([name,v])=>{
+      totals[name] = (totals[name]||0) + v.sold;
+    });
+  });
+  return totals;
+}
+function dayPaymentTotals(day){
+  const totals = {};
+  PAYMENT_METHODS.forEach(m=>totals[m]=0);
+  Object.values(day.stops).forEach(st=>{
+    st.payments.forEach(p=>{ totals[p.method] = (totals[p.method]||0) + p.amount; });
+  });
+  return totals;
+}
+function dayVisitsList(day){
+  const out = [];
+  day.stopNames.forEach((name,i)=>{
+    const st = day.stops[i];
+    if(st) (st.visits||[]).forEach(v=>out.push({stop:name, arrive:v.arrive, depart:v.depart, mins:visitMinutes(v)}));
+  });
+  return out;
+}
+
+/* ---------------- RENDER ---------------- */
+async function render(){
+  const app = document.getElementById('app');
+  const weekday = effectiveWeekday(state.day);
+  const menu = MENU[weekday];
+  const rev = dayRevenue(state.day);
+  const commission = rev * COMMISSION_RATE;
+  const stopName = state.day.stopNames[state.stopIndex];
+  const stop = state.day.stops[state.stopIndex];
+
+  let menuOptionsHtml = '<option value="">'+T('auto_weekday',{wd:weekdayOf(state.date)})+'</option>';
+  MENU_DAYS.forEach(d=>{
+    menuOptionsHtml += '<option value="'+d+'" '+(state.day.menuOverride===d?'selected':'')+'>'+d+'</option>';
+  });
+
+  let html = '';
+  html += '<div class="stub">'
+    + '<div class="stub-top">'
+    +   '<div class="brand">'
+    +     '<img class="logo-mark" src="'+LOGO_DATA_URI+'" alt="GreenLife logo">'
+    +     '<div><h1>GreenLife</h1><div class="sub">'+weekday.toUpperCase()+'</div></div>'
+    +   '</div>'
+    +   '<div class="header-right">'
+    +     '<button class="lang-toggle" id="langToggle">'+(state.lang==='es'?'EN':'ES')+'</button>'
+    +     '<button class="date-btn'+(state.date!==todayStr()?' past':'')+'" id="dateBtn"><span class="cal-icon">📅</span><span>'
+    +       (state.date===todayStr() ? (state.lang==='es'?'Hoy':'Today') : fmtDateShort(state.date))+'</span></button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="seller-row"><input type="text" id="sellerInput" placeholder="'+T('seller_label')+'" value="'+escapeAttr(state.sellerName)+'">'
+    +   '<div class="sub" style="margin-top:5px;">'+cloudStatusLabel()+'</div>'
+    + '</div>'
+    + '<div class="stub-controls">'
+    +   '<div class="ctrl"><label>'+T('menu_label')+'</label><select id="menuSelect">'+menuOptionsHtml+'</select></div>'
+    +   '<div class="ctrl"><label>'+T('stops_label')+'</label><input type="number" id="stopCountInput" min="1" max="30" value="'+state.day.stopNames.length+'"></div>'
+    + '</div>'
+    + '<div class="stub-kpis">'
+    +   '<div class="stub-kpi"><div class="amt">'+fmtMoney(rev)+'</div><div class="lbl">'+T('revenue_today')+'</div></div>'
+    +   '<div class="stub-kpi commission"><div class="amt">'+fmtMoney(commission)+'</div><div class="lbl">'+T('commission_label')+'</div></div>'
+    + '</div>'
+  + '</div>';
+
+  html += '<div class="tabs">'
+    + '<div class="tab '+(state.tab==='log'?'active':'')+'" data-tab="log">'+T('tab_log')+'</div>'
+    + '<div class="tab '+(state.tab==='unsold'?'active':'')+'" data-tab="unsold">'+T('tab_unsold')+'</div>'
+    + '<div class="tab '+(state.tab==='summary'?'active':'')+'" data-tab="summary">'+T('tab_summary')+'</div>'
+  + '</div>';
+
+  if(state.tab==='log'){
+    html += '<div class="panel">';
+    html += '<div class="stopper">'
+      + '<div class="stopper-top">'
+      +   '<button class="nav" id="prevStop">‹</button>'
+      +   '<div class="stop-mid"><div class="stop-idx">'+T('stop_of',{n:state.stopIndex+1,total:state.day.stopNames.length})+'</div>'
+      +     '<input class="stop-name-input" id="stopNameInput" value="'+escapeAttr(stopName)+'"></div>'
+      +   '<button class="nav" id="nextStop">›</button>'
+      + '</div>'
+      + '<div class="stopcount-row"><label>'+T('total_stops_row')+'</label>'
+      +   '<input type="number" id="stopCountInput2" min="1" max="30" value="'+state.day.stopNames.length+'"></div>';
+
+    const open = openVisit(stop);
+    const stopMins = (stop.visits||[]).reduce((s,v)=>{ const m=visitMinutes(v); return s+(m||0); },0);
+
+    html += '<div class="timing">';
+    if(open){
+      html += '<button class="big-time-btn leaving" id="timeToggle">'
+        + '<span class="btl">'+T('leave_tap')+'</span>'
+        + '<span class="bts">'+T('here_since',{t:open.arrive})+'</span></button>';
+    } else {
+      html += '<button class="big-time-btn arriving" id="timeToggle">'
+        + '<span class="btl">'+T('arrive_tap')+'</span>'
+        + (stop.visits.length ? '<span class="bts">'+T('here_today',{d:fmtDur(stopMins)})+'</span>' : '')
+        + '</button>';
+    }
+    if(stop.visits.length){
+      html += '<div class="visit-list">';
+      stop.visits.forEach((v,i)=>{
+        const m = visitMinutes(v);
+        html += '<div class="pair-row">'
+          + '<span>'+v.arrive+' → '+(v.depart || '<span class="open">now</span>')+'</span>'
+          + '<span><span class="dur">'+(m!==null?fmtDur(m):'')+'</span> '
+          + '<button data-vidx="'+i+'" class="visitRemove">×</button></span></div>';
+      });
+      html += '</div>';
+    }
+    html += '</div></div>';
+
+    if(!menu){
+      html += '<div class="empty">'+T('no_menu',{wd:weekday})+'</div>';
+    } else {
+      const sRev = stopRevenue(stop);
+      const sCount = stopItemCount(stop);
+      html += '<div class="order-bar'+(sCount>0?' live':'')+'">'
+        + '<div class="ob-left"><span class="ob-count">'+sCount+'</span>'
+        + '<span class="ob-lbl">item'+(sCount===1?'':'s')+' at this stop</span></div>'
+        + '<div class="ob-right"><span class="ob-amt">'+fmtMoney(sRev)+'</span>'
+        + (sCount>0 ? '<button class="ob-clear" id="clearStop">clear</button>' : '')
+        + '</div></div>';
+
+      const topResult = computeTopSellers(weekday, 4, stopName);
+      const topSellers = topResult.items;
+      if(topSellers.length){
+        const topLabelText = topResult.isLocal
+          ? T('top_sellers_at').replace('{stop}', stopName)
+          : T('top_sellers_generic');
+        html += '<div class="cat-label top-label">'+topLabelText+'</div>';
+        topSellers.forEach(([name, price])=>{
+          const sold = (stop.items[name] && stop.items[name].sold) || 0;
+          html += '<div class="item top">'
+            + '<div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+'</div></div>'
+            + '<div class="counter big">'
+            +   '<button class="minus" data-item="'+escapeAttr(name)+'" data-delta="-1">−</button>'
+            +   '<span class="count">'+sold+'</span>'
+            +   '<button class="plus" data-item="'+escapeAttr(name)+'" data-delta="1">+1</button>'
+            +   '<button class="plus2" data-item="'+escapeAttr(name)+'" data-delta="2">+2</button>'
+            + '</div></div>';
+        });
+      }
+
+      Object.entries(menu).forEach(([cat, items])=>{
+        html += '<div class="cat-label">'+TC(cat)+'</div>';
+        items.forEach(([name, price])=>{
+          const sold = (stop.items[name] && stop.items[name].sold) || 0;
+          html += '<div class="item">'
+            + '<div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+'</div></div>'
+            + '<div class="counter">'
+            +   '<button class="minus" data-item="'+escapeAttr(name)+'" data-delta="-1">−</button>'
+            +   '<span class="count">'+sold+'</span>'
+            +   '<button class="plus" data-item="'+escapeAttr(name)+'" data-delta="1">+1</button>'
+            +   '<button class="plus2" data-item="'+escapeAttr(name)+'" data-delta="2">+2</button>'
+            + '</div></div>';
+        });
+      });
+    }
+
+    html += '<div class="req-box"><div class="lbl">'+T('req_label')+'</div>'
+      + '<div class="req-input-row"><input type="text" id="reqInput" placeholder="'+T('req_placeholder')+'"><button id="reqAdd">'+T('req_add')+'</button></div>'
+      + '<div id="reqChips">';
+    stop.requests.forEach((r,i)=>{
+      html += '<span class="chip">'+escapeHtml(r)+' <button data-idx="'+i+'" class="reqRemove">×</button></span>';
+    });
+    html += '</div></div>';
+
+    const sRevNow = stopRevenue(stop);
+    const collectedNow = stopCollectedTotal(stop);
+    const remaining = Math.round((sRevNow - collectedNow)*100)/100;
+
+    html += '<div class="pay-box"><div class="lbl">'+T('pay_label')+'</div>';
+
+    html += '<div class="pay-ledger">'
+      + '<div><span>'+T('sold_here')+'</span><span>'+fmtMoney(sRevNow)+'</span></div>'
+      + '<div><span>'+T('collected')+'</span><span>'+fmtMoney(collectedNow)+'</span></div>'
+      + '<div class="'+(Math.abs(remaining)<0.005?'settled':(remaining>0?'owing':'over'))+'">'
+      +   '<span>'+(remaining>0?T('still_to_collect'):(remaining<0?T('over_collected'):T('settled')))+'</span>'
+      +   '<span>'+fmtMoney(Math.abs(remaining))+'</span></div>'
+      + '</div>';
+
+    html += '<div class="method-row">';
+    PAYMENT_METHODS.forEach(m=>{
+      html += '<div class="method-chip '+(state.activeMethod===m?'active':'')+'" data-method="'+m+'">'+TP(m)+'</div>';
+    });
+    html += '</div>'
+      + '<div class="pay-add-row"><input type="number" step="0.01" inputmode="decimal" id="payAmount" placeholder="'+T('amount_ph')+'"><button id="payAdd">'+T('add_btn')+'</button></div>'
+      + (state.activeMethod==='Square' ? '<div class="fee-note">'+T('fee_note',{fee:fmtMoney(SQUARE_FEE)})+'</div>' : '');
+
+    if(remaining > 0.005){
+      html += '<button class="pay-fill" id="payFill">'+T('pay_remaining',{amt:fmtMoney(remaining),method:TP(state.activeMethod)})+'</button>';
+    }
+
+    let stopCollected = 0;
+    stop.payments.forEach((p,i)=>{
+      stopCollected += p.amount;
+      html += '<span class="chip">'+p.method+' '+fmtMoney(p.amount)+' <button data-pidx="'+i+'" class="payRemove">×</button></span>';
+    });
+    html += '</div>';
+
+    const exp = expectedCash(state.day);
+    const stopChange = stopChangeGiven(stop);
+    html += '<div class="cash-box">'
+      + '<div class="cash-head"><span class="lbl">'+T('cash_pouch')+'</span>'
+      +   '<span class="cash-amt">'+fmtMoney(exp)+'</span></div>'
+      + '<div class="cash-sub">'+T('cash_sub')+'</div>';
+
+    if(state.day.startFloat === null){
+      html += '<div class="float-prompt">'
+        + '<span>'+T('float_prompt')+'</span>'
+        + '<div class="pay-add-row" style="margin-top:6px;">'
+        +   '<input type="number" step="0.01" inputmode="decimal" id="floatInput" placeholder="'+T('float_ph')+'">'
+        +   '<button id="floatSet">'+T('set_btn')+'</button></div></div>';
+    } else {
+      html += '<div class="cash-breakdown">'
+        + '<div><span>'+T('started_with')+'</span><span>'+fmtMoney(state.day.startFloat)+'</span></div>'
+        + '<div><span>'+T('cash_sales')+'</span><span>'+fmtMoney(dayCashSales(state.day))+'</span></div>'
+        + (dayCashTopUps(state.day)>0 ? '<div><span>'+T('added_cash')+'</span><span>'+fmtMoney(dayCashTopUps(state.day))+'</span></div>' : '')
+        + '<div><span>'+T('change_given')+'</span><span>'+fmtMoney(dayChangeGiven(state.day))+'</span></div>'
+        + '<div class="edit-float"><button id="floatEdit">'+T('change_edit')+'</button></div>'
+        + '</div>';
+    }
+
+    html += '<div class="change-row">'
+      + '<input type="number" step="0.01" inputmode="decimal" id="changeInput" placeholder="'+T('change_ph')+'">'
+      + '<button id="changeAdd">'+T('give_btn')+'</button>'
+      + '<button id="topupAdd" class="topup">'+T('add2_btn')+'</button></div>'
+      + '<div class="quick-change">';
+    [1,5,10,20].forEach(v=>{
+      html += '<button class="qc" data-qc="'+v+'">$'+v+'</button>';
+    });
+    html += '</div>';
+
+    if(stop.cashMoves.length){
+      html += '<div class="visit-list">';
+      stop.cashMoves.forEach((c,i)=>{
+        html += '<div class="pair-row"><span>'+(c.type==='change'?'Change out':'Cash added')+' '+c.time+'</span>'
+          + '<span><span class="'+(c.type==='change'?'dur':'open')+'">'
+          + (c.type==='change'?'−':'+')+fmtMoney(c.amount)+'</span> '
+          + '<button data-cidx="'+i+'" class="cashRemove">×</button></span></div>';
+      });
+      html += '</div>';
+      html += '<div class="pay-sum">Change given at this stop: '+fmtMoney(stopChange)+'</div>';
+    }
+    html += '</div>';
+
+    const visits = dayVisitsList(state.day);
+    const totalDwell = dayDwellMinutes(state.day);
+    const driveSegs = dayDriveSegments(state.day);
+    const totalDrive = dayDriveMinutes(state.day);
+    const driveByFrom = {};
+    driveSegs.forEach(s=>{ driveByFrom[s.fromStop] = s; });
+
+    html += '<div class="card"><h3>'+T('arrivals_log')+'</h3>';
+    if(visits.length===0){
+      html += '<div class="empty">'+T('no_arrivals')+'</div>';
+    } else {
+      state.day.stopNames.forEach(name=>{
+        visits.filter(v=>v.stop===name).forEach(v=>{
+          html += '<div class="pair-row"><span>'+escapeHtml(v.stop)+'</span>'
+            + '<span>'+v.arrive+' → '+(v.depart||'<span class="open">'+T('now_label')+'</span>')
+            + '  <span class="dur">'+(v.mins!==null?fmtDur(v.mins):'')+'</span></span></div>';
+        });
+        const seg = driveByFrom[name];
+        if(seg){
+          html += '<div class="pair-row drive-row"><span>'+T('drive_to',{stop:escapeHtml(seg.toStop)})+'</span>'
+            + '<span class="dur">'+fmtDur(seg.mins)+'</span></div>';
+        }
+      });
+      html += '<div class="pair-row" style="border-top:2px solid var(--border);margin-top:6px;padding-top:8px;">'
+        + '<span><strong>'+T('total_time')+'</strong></span><span class="dur">'+fmtDur(totalDwell)+'</span></div>';
+      html += '<div class="pair-row"><span><strong>'+T('total_drive')+'</strong></span><span class="dur">'+fmtDur(totalDrive)+'</span></div>';
+    }
+    html += '</div>';
+
+    html += '</div>';
+  }
+
+  if(state.tab==='unsold'){
+    html += '<div class="panel">';
+    if(!menu){
+      html += '<div class="empty">'+T('no_menu',{wd:weekday})+'</div>';
+    } else {
+      html += '<div class="cat-label">'+T('unsold_label')+'</div>';
+      const sold = dayItemsSold(state.day);
+      Object.values(menu).flat().forEach(([name])=>{
+        const s = sold[name] || 0;
+        const ret = state.day.returns[name] || 0;
+        html += '<div class="eod-item"><div><div class="item-name">'+name+'</div><div class="eod-sold-hint">'+T('sold_today',{n:s})+'</div></div>'
+          + '<div class="counter">'
+          +   '<button class="minus" data-ritem="'+escapeAttr(name)+'" data-rdelta="-1">−</button>'
+          +   '<span class="count">'+ret+'</span>'
+          +   '<button class="plus" data-ritem="'+escapeAttr(name)+'" data-rdelta="1">+</button>'
+          + '</div></div>';
+      });
+    }
+    html += '</div>';
+  }
+
+  if(state.tab==='summary'){
+    html += renderSummary();
+  }
+
+  app.innerHTML = html + renderCalendar();
+  attachHandlers();
+}
+
+function renderCalendar(){
+  if(!state.calOpen) return '';
+  const [cy, cm] = state.calMonth.split('-').map(Number);
+  const first = new Date(cy, cm-1, 1);
+  const startDow = first.getDay();
+  const daysInMonth = new Date(cy, cm, 0).getDate();
+  const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const today = todayStr();
+
+  let h = '<div class="cal-overlay" id="calOverlay"><div class="cal-sheet">';
+  h += '<div class="cal-head">'
+    + '<button class="cal-nav" id="calPrev">‹</button>'
+    + '<span class="cal-title">'+MONTHS[cm-1]+' '+cy+'</span>'
+    + '<button class="cal-nav" id="calNext">›</button></div>';
+  h += '<div class="cal-grid">';
+  ['S','M','T','W','T','F','S'].forEach(d=>{ h += '<div class="cal-dow">'+d+'</div>'; });
+  for(let i=0;i<startDow;i++) h += '<div></div>';
+  for(let d=1; d<=daysInMonth; d++){
+    const ds = cy+'-'+String(cm).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const cls = ['cal-day'];
+    if(ds === state.date) cls.push('sel');
+    if(ds === today) cls.push('today');
+    if(state.allDays[ds] && dayRevenue(state.allDays[ds]) > 0) cls.push('has');
+    h += '<button class="'+cls.join(' ')+'" data-date="'+ds+'">'+d+'</button>';
+  }
+  h += '</div>';
+  h += '<div class="cal-actions">'
+    + '<button class="cal-today" id="calToday">Go to today</button>'
+    + '<button class="cal-close" id="calClose">Close</button></div>';
+  h += '</div></div>';
+  return h;
+}
+
+function renderSummary(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?1:-1);
+  if(days.length===0){
+    return '<div class="panel"><div class="empty">'+T('no_data_yet')+'</div></div>';
+  }
+  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0, totalFees = 0, totalDrive = 0, totalRealFee = 0, totalSquareTxns = 0;
+  const soldAgg = {}, returnedAgg = {}, requestAgg = {}, paymentAgg = {};
+  PAYMENT_METHODS.forEach(m=>paymentAgg[m]=0);
+
+  days.forEach(d=>{
+    const wd = effectiveWeekday(d);
+    const menu = MENU[wd];
+    const priceOf = name => { if(!menu) return 0; const f = Object.values(menu).flat().find(x=>x[0]===name); return f?f[1]:0; };
+    const rev = dayRevenue(d);
+    totalRevenue += rev;
+    totalCommission += rev * COMMISSION_RATE;
+    totalDwell += dayDwellMinutes(d);
+    totalDrive += dayDriveMinutes(d);
+    totalFees += dayFeesTotal(d);
+    totalRealFee += dayRealSquareFee(d);
+    totalSquareTxns += dayRealSquareCount(d);
+    const sold = dayItemsSold(d);
+    Object.entries(sold).forEach(([k,v])=>{ soldAgg[k]=(soldAgg[k]||0)+v; });
+    Object.entries(d.returns||{}).forEach(([k,v])=>{
+      returnedAgg[k]=(returnedAgg[k]||0)+v;
+      totalReturned += v;
+      totalReturnedValue += v * priceOf(k);
+    });
+    Object.values(d.stops).forEach(st=>{
+      st.requests.forEach(r=>{ requestAgg[r]=(requestAgg[r]||0)+1; });
+      st.payments.forEach(p=>{ paymentAgg[p.method] = (paymentAgg[p.method]||0) + p.amount; });
+    });
+  });
+
+  let html = '<div class="panel">';
+  html += '<div class="card"><h3>'+T('across_days',{n:days.length,s:days.length>1?'s':''})+'</h3>'
+    + '<div class="kpi-row">'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+    +   '<div class="kpi gold"><div class="v">'+fmtMoney(totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+    +   '<div class="kpi warn"><div class="v">'+fmtMoney(totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtDur(totalDwell)+'</div><div class="k">'+T('time_on_site')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtDur(totalDrive)+'</div><div class="k">'+T('total_drive').toUpperCase()+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
+    + '</div></div>';
+
+  html += '<div class="card"><h3>'+T('payment_methods')+'</h3>';
+  const payTotal = Object.values(paymentAgg).reduce((a,b)=>a+b,0) || 1;
+  PAYMENT_METHODS.forEach(m=>{
+    const amt = paymentAgg[m] || 0;
+    html += '<div class="bar-row"><div class="top"><span>'+TP(m)+'</span><span>'+fmtMoney(amt)+'</span></div>'
+      + '<div class="bar-track"><div class="bar-fill" style="width:'+((amt/payTotal*100).toFixed(0))+'%"></div></div></div>';
+  });
+  html += '</div>';
+
+  if(totalSquareTxns > 0){
+    const gap = totalFees - totalRealFee;
+    html += '<div class="card"><h3>'+T('real_fee_title')+'</h3>'
+      + '<div class="pay-ledger">'
+      +   '<div><span>'+T('txn_count')+'</span><span>'+totalSquareTxns+'</span></div>'
+      +   '<div><span>'+T('charged_fee')+'</span><span>'+fmtMoney(totalFees)+'</span></div>'
+      +   '<div><span>'+T('real_fee')+'</span><span>'+fmtMoney(totalRealFee)+'</span></div>'
+      +   '<div class="'+(gap>=0?'settled':'owing')+'"><span>'+T('fee_gap')+'</span><span>'+(gap>=0?'+':'')+fmtMoney(gap)+'</span></div>'
+      + '</div>'
+      + '<div class="export-note">'+T('real_fee_note')+'</div>'
+      + '</div>';
+  }
+
+  const soldSorted = Object.entries(soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if(soldSorted.length){
+    const maxSold = soldSorted[0][1];
+    html += '<div class="card"><h3>'+T('best_sellers')+'</h3>';
+    soldSorted.forEach(([name,qty])=>{
+      html += '<div class="bar-row"><div class="top"><span>'+name+'</span><span>'+qty+'</span></div>'
+        + '<div class="bar-track"><div class="bar-fill" style="width:'+((qty/maxSold*100).toFixed(0))+'%"></div></div></div>';
+    });
+    html += '</div>';
+  }
+
+  const retSorted = Object.entries(returnedAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if(retSorted.length){
+    const maxRet = retSorted[0][1];
+    html += '<div class="card"><h3>'+T('waste_title')+'</h3>';
+    retSorted.forEach(([name,qty])=>{
+      html += '<div class="bar-row"><div class="top"><span>'+name+'</span><span>'+qty+'</span></div>'
+        + '<div class="bar-track"><div class="bar-fill waste" style="width:'+((qty/maxRet*100).toFixed(0))+'%"></div></div></div>';
+    });
+    html += '</div>';
+  }
+
+  const reqSorted = Object.entries(requestAgg).sort((a,b)=>b[1]-a[1]);
+  if(reqSorted.length){
+    html += '<div class="card"><h3>'+T('lost_sales')+'</h3>';
+    reqSorted.forEach(([name,qty])=>{
+      html += '<span class="chip">'+escapeHtml(name)+' × '+qty+'</span>';
+    });
+    html += '</div>';
+  }
+
+  html += '<div class="card"><h3>'+T('export_title')+'</h3>'
+    + '<button class="export-btn xlsx" id="exportXlsx">'+T('export_excel')+'</button>'
+    + '<button class="export-btn" id="exportDayCsv">'+T('export_day')+'</button>'
+    + '<button class="export-btn alt" id="exportDetailCsv">'+T('export_item')+'</button>'
+    + '<button class="export-btn ghost" id="exportBtn">'+T('export_copy')+'</button>'
+    + '<div class="export-note">'+T('export_note')+'</div>'
+    + '</div>';
+  html += '<div class="card"><h3>'+T('reset_title')+'</h3>'
+    + '<button class="export-btn danger" id="resetBtn">'+(state.confirmReset?T('reset_confirm'):T('reset_btn'))+'</button>'
+    + '<div class="export-note">'+T('reset_note')+'</div>'
+    + '</div>';
+  html += '<div class="brand-footer">'
+    + '<img class="logo-mark sm" src="'+LOGO_DATA_URI+'" alt="GreenLife logo">'
+    + '<span>'+T('brand_footer')+'</span></div>';
+  html += '</div>';
+  return html;
+}
+
+function csvEscape(s){
+  s = String(s == null ? '' : s);
+  return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+}
+function categoryForItem(name, weekday){
+  const menu = MENU[weekday];
+  if(!menu) return 'Other';
+  for(const [cat, items] of Object.entries(menu)){
+    if(items.some(x=>x[0]===name)) return cat;
+  }
+  return 'Other';
+}
+function buildDetailCSV(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
+  const rows = [['Date','Weekday','Seller','Stop','Item','Category','UnitPrice','QtySold','LineRevenue']];
+  days.forEach(d=>{
+    const wd = effectiveWeekday(d);
+    d.stopNames.forEach((stopName,i)=>{
+      const st = d.stops[i];
+      if(!st) return;
+      Object.entries(st.items||{}).forEach(([name,it])=>{
+        const qty = it.sold || 0;
+        if(qty > 0){
+          const price = it.price != null ? it.price : 0;
+          const cat = categoryForItem(name, wd);
+          rows.push([d.date, wd, state.sellerName||'', stopName, name, cat, price.toFixed(2), qty, (qty*price).toFixed(2)]);
+        }
+      });
+    });
+  });
+  return 'sep=,\n' + rows.map(r=>r.map(csvEscape).join(',')).join('\n');
+}
+function buildDayCSV(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
+  const rows = [['Date','Weekday','Seller','Stops','Revenue','Commission30','ItemsSold','ItemsUnsold','UnsoldValue','MinutesOnSite','MinutesDriving','StartFloat','ChangeGiven','CashAdded','ExpectedCash','Square','SquareFees','Zelle','Venmo','CreditCard','Cash','Owed']];
+  days.forEach(d=>{
+    const wd = effectiveWeekday(d);
+    const menu = MENU[wd];
+    const priceOf = name => { if(!menu) return 0; const f = Object.values(menu).flat().find(x=>x[0]===name); return f?f[1]:0; };
+    const rev = dayRevenue(d);
+    const sold = dayItemsSold(d);
+    const soldCount = Object.values(sold).reduce((a,b)=>a+b,0);
+    let unsoldCount = 0, unsoldValue = 0;
+    Object.entries(d.returns||{}).forEach(([k,v])=>{ unsoldCount += v; unsoldValue += v*priceOf(k); });
+    const pt = dayPaymentTotals(d);
+    rows.push([
+      d.date, wd, state.sellerName||'', d.stopNames.length, rev.toFixed(2), (rev*COMMISSION_RATE).toFixed(2),
+      soldCount, unsoldCount, unsoldValue.toFixed(2), dayDwellMinutes(d), dayDriveMinutes(d),
+      (d.startFloat||0).toFixed(2), dayChangeGiven(d).toFixed(2), dayCashTopUps(d).toFixed(2), expectedCash(d).toFixed(2),
+      (pt['Square']||0).toFixed(2), dayFeesTotal(d).toFixed(2), (pt['Zelle']||0).toFixed(2), (pt['Venmo']||0).toFixed(2),
+      (pt['Credit Card']||0).toFixed(2), (pt['Cash']||0).toFixed(2), (pt['Owed']||0).toFixed(2)
+    ]);
+  });
+  return 'sep=,\n' + rows.map(r=>r.map(csvEscape).join(',')).join('\n');
+}
+function buildDayRowsNative(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
+  const rows = [['Date','Weekday','Seller','Stops','Revenue','Commission (30%)','Items Sold','Items Unsold','Unsold Value','Minutes On Site','Minutes Driving','Start Float','Change Given','Cash Added','Expected Cash','Square','Square Fees','Zelle','Venmo','Credit Card','Cash','Owed']];
+  days.forEach(d=>{
+    const wd = effectiveWeekday(d);
+    const menu = MENU[wd];
+    const priceOf = name => { if(!menu) return 0; const f = Object.values(menu).flat().find(x=>x[0]===name); return f?f[1]:0; };
+    const rev = dayRevenue(d);
+    const sold = dayItemsSold(d);
+    const soldCount = Object.values(sold).reduce((a,b)=>a+b,0);
+    let unsoldCount = 0, unsoldValue = 0;
+    Object.entries(d.returns||{}).forEach(([k,v])=>{ unsoldCount += v; unsoldValue += v*priceOf(k); });
+    const pt = dayPaymentTotals(d);
+    rows.push([
+      d.date, wd, state.sellerName||'', d.stopNames.length, rev, rev*COMMISSION_RATE,
+      soldCount, unsoldCount, unsoldValue, dayDwellMinutes(d), dayDriveMinutes(d),
+      d.startFloat||0, dayChangeGiven(d), dayCashTopUps(d), expectedCash(d),
+      pt['Square']||0, dayFeesTotal(d), pt['Zelle']||0, pt['Venmo']||0,
+      pt['Credit Card']||0, pt['Cash']||0, pt['Owed']||0
+    ]);
+  });
+  return rows;
+}
+function buildDetailRowsNative(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
+  const rows = [['Date','Weekday','Seller','Stop','Item','Category','Unit Price','Qty Sold','Line Revenue']];
+  days.forEach(d=>{
+    const wd = effectiveWeekday(d);
+    d.stopNames.forEach((stopName,i)=>{
+      const st = d.stops[i];
+      if(!st) return;
+      Object.entries(st.items||{}).forEach(([name,it])=>{
+        const qty = it.sold || 0;
+        if(qty > 0){
+          const price = it.price != null ? it.price : 0;
+          rows.push([d.date, wd, state.sellerName||'', stopName, name, categoryForItem(name, wd), price, qty, qty*price]);
+        }
+      });
+    });
+  });
+  return rows;
+}
+function autoSizeCols(rows){
+  const widths = rows[0].map((_,ci)=>{
+    let max = 8;
+    rows.forEach(r=>{
+      const v = r[ci];
+      const len = (v==null?'':String(v)).length;
+      if(len > max) max = len;
+    });
+    return { wch: Math.min(max+2, 40) };
+  });
+  return widths;
+}
+function downloadXLSX(){
+  try{
+    if(typeof XLSX === 'undefined'){ toast(T('toast_download_fail')); return; }
+    const dayRows = buildDayRowsNative();
+    const detailRows = buildDetailRowsNative();
+
+    const wb = XLSX.utils.book_new();
+    const wsDay = XLSX.utils.aoa_to_sheet(dayRows);
+    wsDay['!cols'] = autoSizeCols(dayRows);
+    wsDay['!autofilter'] = { ref: XLSX.utils.encode_range({s:{r:0,c:0},e:{r:dayRows.length-1,c:dayRows[0].length-1}}) };
+    wsDay['!freeze'] = { xSplit:0, ySplit:1 };
+    XLSX.utils.book_append_sheet(wb, wsDay, "Days");
+
+    const wsDetail = XLSX.utils.aoa_to_sheet(detailRows);
+    wsDetail['!cols'] = autoSizeCols(detailRows);
+    wsDetail['!autofilter'] = { ref: XLSX.utils.encode_range({s:{r:0,c:0},e:{r:detailRows.length-1,c:detailRows[0].length-1}}) };
+    wsDetail['!freeze'] = { xSplit:0, ySplit:1 };
+    XLSX.utils.book_append_sheet(wb, wsDetail, "Items");
+
+    XLSX.writeFile(wb, 'route_manifest_'+todayStr()+'.xlsx');
+    toast(T('toast_downloaded',{f:'Excel file'}));
+  }catch(e){
+    toast(T('toast_download_fail'));
+  }
+}
+
+function downloadCSV(filename, text){
+  try{
+    const blob = new Blob([text], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    toast(T('toast_downloaded',{f:filename}));
+  }catch(e){
+    toast(T('toast_download_fail'));
+  }
+}
+
+function buildExportText(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?-1:1);
+  let out = 'ROUTE MANIFEST SUMMARY\n';
+  out += 'Days logged: '+days.length+'\n\n';
+  let totalRevenue=0, totalCommission=0;
+  days.forEach(d=>{
+    const wd = effectiveWeekday(d);
+    const r = dayRevenue(d);
+    totalRevenue += r;
+    totalCommission += r*COMMISSION_RATE;
+    out += d.date+' ('+wd+'): '+fmtMoney(r)+' revenue, '+fmtMoney(r*COMMISSION_RATE)+' commission\n';
+  });
+  out += '\nTOTAL REVENUE: '+fmtMoney(totalRevenue)+'\n';
+  out += 'TOTAL COMMISSION (30%): '+fmtMoney(totalCommission)+'\n';
+  return out;
+}
+
+/* ---------------- HANDLERS ---------------- */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
+
+function attachHandlers(){
+  const langToggle = document.getElementById('langToggle');
+  if(langToggle) langToggle.addEventListener('click', ()=>{ setLang(state.lang==='es'?'en':'es'); });
+  const sellerInput = document.getElementById('sellerInput');
+  if(sellerInput) sellerInput.addEventListener('change', e=>{ setSellerName(e.target.value); });
+
+  const dateBtn = document.getElementById('dateBtn');
+  if(dateBtn) dateBtn.addEventListener('click', ()=>{
+    state.calMonth = state.date.slice(0,7);
+    state.calOpen = true;
+    render();
+  });
+
+  const calOverlay = document.getElementById('calOverlay');
+  if(calOverlay) calOverlay.addEventListener('click', (e)=>{
+    if(e.target.id === 'calOverlay'){ state.calOpen = false; render(); }
+  });
+  const calClose = document.getElementById('calClose');
+  if(calClose) calClose.addEventListener('click', ()=>{ state.calOpen = false; render(); });
+  const calPrev = document.getElementById('calPrev');
+  if(calPrev) calPrev.addEventListener('click', ()=>{
+    let [y,m] = state.calMonth.split('-').map(Number);
+    m--; if(m<1){ m=12; y--; }
+    state.calMonth = y+'-'+String(m).padStart(2,'0');
+    render();
+  });
+  const calNext = document.getElementById('calNext');
+  if(calNext) calNext.addEventListener('click', ()=>{
+    let [y,m] = state.calMonth.split('-').map(Number);
+    m++; if(m>12){ m=1; y++; }
+    state.calMonth = y+'-'+String(m).padStart(2,'0');
+    render();
+  });
+  const calToday = document.getElementById('calToday');
+  if(calToday) calToday.addEventListener('click', ()=>selectDate(todayStr()));
+  document.querySelectorAll('.cal-day').forEach(b=>{
+    b.addEventListener('click', ()=>selectDate(b.dataset.date));
+  });
+
+  const menuSelect = document.getElementById('menuSelect');
+  if(menuSelect) menuSelect.addEventListener('change', e=>{ setMenuOverride(e.target.value); });
+
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click', ()=>{ state.tab = t.dataset.tab; render(); });
+  });
+
+  const prevStop = document.getElementById('prevStop');
+  if(prevStop) prevStop.addEventListener('click', ()=>{
+    state.stopIndex = (state.stopIndex - 1 + state.day.stopNames.length) % state.day.stopNames.length;
+    render();
+  });
+  const nextStop = document.getElementById('nextStop');
+  if(nextStop) nextStop.addEventListener('click', ()=>{
+    state.stopIndex = (state.stopIndex + 1) % state.day.stopNames.length;
+    render();
+  });
+
+  const stopNameInput = document.getElementById('stopNameInput');
+  if(stopNameInput) stopNameInput.addEventListener('change', e=>{ renameStop(e.target.value); });
+
+  ['stopCountInput','stopCountInput2'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('change', e=>{ setStopCount(parseInt(e.target.value,10)); });
+  });
+
+  const timeToggle = document.getElementById('timeToggle');
+  if(timeToggle) timeToggle.addEventListener('click', ()=>{
+    const stop = state.day.stops[state.stopIndex];
+    if(openVisit(stop)) logDeparture(); else logArrival();
+  });
+  document.querySelectorAll('.visitRemove').forEach(b=>{
+    b.addEventListener('click', ()=>removeVisit(parseInt(b.dataset.vidx,10)));
+  });
+
+  document.querySelectorAll('[data-item]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      bump(b.dataset.item, parseInt(b.dataset.delta,10));
+      if(b.dataset.delta==='1') toast(T('toast_sale'));
+    });
+  });
+  document.querySelectorAll('[data-ritem]').forEach(b=>{
+    b.addEventListener('click', ()=>{ bumpReturn(b.dataset.ritem, parseInt(b.dataset.rdelta,10)); });
+  });
+
+  const reqAdd = document.getElementById('reqAdd');
+  if(reqAdd) reqAdd.addEventListener('click', ()=>{
+    const inp = document.getElementById('reqInput');
+    addRequest(inp.value); inp.value='';
+  });
+  document.querySelectorAll('.reqRemove').forEach(b=>{
+    b.addEventListener('click', ()=>removeRequest(parseInt(b.dataset.idx,10)));
+  });
+
+  const payFill = document.getElementById('payFill');
+  if(payFill) payFill.addEventListener('click', ()=>{
+    const stop = state.day.stops[state.stopIndex];
+    const wd = effectiveWeekday(state.day);
+    const remaining = stopRevenue(stop) - stopCollectedTotal(stop);
+    if(remaining > 0.005) addPayment(remaining.toFixed(2));
+  });
+  const clearStop = document.getElementById('clearStop');
+  if(clearStop) clearStop.addEventListener('click', ()=>{
+    if(state.confirmClearStop){
+      state.confirmClearStop = false;
+      state.day.stops[state.stopIndex].items = {};
+      persistDay();
+      toast(T('toast_stop_cleared'));
+    } else {
+      state.confirmClearStop = true;
+      toast(T('toast_confirm_clear'));
+      setTimeout(()=>{ state.confirmClearStop = false; }, 4000);
+    }
+  });
+
+  document.querySelectorAll('.method-chip').forEach(b=>{
+    b.addEventListener('click', ()=>{ state.activeMethod = b.dataset.method; render(); });
+  });
+  const payAdd = document.getElementById('payAdd');
+  if(payAdd) payAdd.addEventListener('click', ()=>{
+    const inp = document.getElementById('payAmount');
+    addPayment(inp.value); inp.value='';
+  });
+  document.querySelectorAll('.payRemove').forEach(b=>{
+    b.addEventListener('click', ()=>removePayment(parseInt(b.dataset.pidx,10)));
+  });
+
+  const floatSet = document.getElementById('floatSet');
+  if(floatSet) floatSet.addEventListener('click', ()=>{
+    setStartFloat(document.getElementById('floatInput').value);
+  });
+  const floatEdit = document.getElementById('floatEdit');
+  if(floatEdit) floatEdit.addEventListener('click', ()=>{
+    state.day.startFloat = null; persistDay();
+  });
+  const changeAdd = document.getElementById('changeAdd');
+  if(changeAdd) changeAdd.addEventListener('click', ()=>{
+    const inp = document.getElementById('changeInput');
+    addChangeGiven(inp.value); inp.value='';
+  });
+  const topupAdd = document.getElementById('topupAdd');
+  if(topupAdd) topupAdd.addEventListener('click', ()=>{
+    const inp = document.getElementById('changeInput');
+    addCashTopUp(inp.value); inp.value='';
+  });
+  document.querySelectorAll('.qc').forEach(b=>{
+    b.addEventListener('click', ()=>addChangeGiven(b.dataset.qc));
+  });
+  document.querySelectorAll('.cashRemove').forEach(b=>{
+    b.addEventListener('click', ()=>removeCashMove(parseInt(b.dataset.cidx,10)));
+  });
+
+  const resetBtn = document.getElementById('resetBtn');
+  if(resetBtn) resetBtn.addEventListener('click', ()=>{
+    if(state.confirmReset){ state.confirmReset = false; resetAllData(); }
+    else { state.confirmReset = true; render(); setTimeout(()=>{ if(state.confirmReset){ state.confirmReset=false; render(); } }, 5000); }
+  });
+
+  const exportXlsx = document.getElementById('exportXlsx');
+  if(exportXlsx) exportXlsx.addEventListener('click', downloadXLSX);
+  const exportDayCsv = document.getElementById('exportDayCsv');
+  if(exportDayCsv) exportDayCsv.addEventListener('click', ()=>{
+    downloadCSV('route_days_'+todayStr()+'.csv', buildDayCSV());
+  });
+  const exportDetailCsv = document.getElementById('exportDetailCsv');
+  if(exportDetailCsv) exportDetailCsv.addEventListener('click', ()=>{
+    downloadCSV('route_items_'+todayStr()+'.csv', buildDetailCSV());
+  });
+  const exportBtn = document.getElementById('exportBtn');
+  if(exportBtn) exportBtn.addEventListener('click', async ()=>{
+    const text = buildExportText();
+    try{ await navigator.clipboard.writeText(text); toast(T('toast_copied')); }
+    catch(e){ toast(T('toast_copy_fail')); }
+  });
+}
+
+async function resetAllData(){
+  try{
+    const list = await storageList('day:', false);
+    for(const k of (list.keys||[])){
+      try{ await storageDelete(k, false); }
+      catch(e){ try{ await storageSet(k, JSON.stringify(emptyDay(k.slice(4), state.defaultStopNames)), false); }catch(e2){} }
+    }
+  }catch(e){}
+  state.allDays = {};
+  state.date = todayStr();
+  state.manualDate = false;
+  state.stopIndex = 0;
+  state.day = emptyDay(state.date, state.defaultStopNames);
+  await saveDay(state.day);
+  state.allDays[state.date] = state.day;
+  state.tab = 'log';
+  render();
+  toast(T('toast_reset_done'));
+}
+
+async function selectDate(ds){
+  state.date = ds;
+  state.manualDate = (ds !== todayStr());
+  state.stopIndex = 0;
+  state.calOpen = false;
+  state.day = await loadDay(state.date, state.defaultStopNames);
+  state.allDays[state.date] = state.day;
+  render();
+}
+
+async function syncToToday(force){
+  const real = todayStr();
+  if(state.date === real) return false;
+  if(!force && state.manualDate) return false;
+  state.date = real;
+  state.stopIndex = 0;
+  state.manualDate = false;
+  state.day = await loadDay(state.date, state.defaultStopNames);
+  state.allDays[state.date] = state.day;
+  render();
+  return true;
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(!document.hidden && state.day) syncToToday(false);
+});
+
+/* ---------------- INIT ---------------- */
+async function init(){
+  try{
+    await loadPrefs();
+    state.defaultStopNames = await loadDefaultStopNames();
+    // One-time fresh start: clear any prior test data on first load of this build
+    let fresh = false;
+    try{ await storageGet('reset_v2', false); }
+    catch(e){ fresh = true; }
+    if(fresh){
+      try{
+        const list = await storageList('day:', false);
+        for(const k of (list.keys||[])){
+          try{ await storageDelete(k, false); }catch(e2){}
+        }
+      }catch(e3){}
+      try{ await storageSet('reset_v2','done',false); }catch(e4){}
+    }
+    state.day = await loadDay(state.date, state.defaultStopNames);
+    state.allDays = await loadAllDays();
+    state.allDays[state.date] = state.day;
+    render();
+    initCloud(); // best-effort background cloud sync; app is already usable offline above
+  }catch(err){
+    document.getElementById('app').innerHTML =
+      '<div style="padding:24px;font-family:sans-serif;color:#B5482E;"><h3>Something failed to load</h3>'
+      + '<p style="font-size:13px;color:#333;">'+(err && err.message ? err.message : String(err))+'</p></div>';
+  }
+}
+window.addEventListener('error', (e)=>{
+  const app = document.getElementById('app');
+  if(app && !app.innerHTML.trim()){
+    app.innerHTML = '<div style="padding:24px;font-family:sans-serif;color:#B5482E;"><h3>Script error</h3>'
+      + '<p style="font-size:13px;color:#333;">'+(e.message||'unknown')+'</p></div>';
+  }
+});
+init();
+</script>
+</body>
+</html>
