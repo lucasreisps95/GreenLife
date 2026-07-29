@@ -415,3 +415,17 @@ as its own Netlify site with a clean root URL, without affecting the existing dr
 
 The standalone package is committed as `9c71672`. Future approved changes to `admin.html` must be
 copied into `owner-dashboard/index.html` before redeploying the separate site.
+
+### 2026-07-28 — Codex standalone Netlify deployment verification
+
+The user created a separate Netlify site at `https://zippy-flan-6a77ad.netlify.app/` and reported
+that the branch and publish settings were updated. A direct, cache-bypassed verification still shows
+that this URL serves the old 107 KB driver app rather than the standalone 39 KB owner-dashboard
+package. Its Firebase config file is available, but the root page is not yet the dashboard.
+
+Before treating this deployment as complete, open the Netlify **Deploys** page and confirm that the
+newest production deployment specifically reads `owner-dashboard-v2@59f8d45` (or a later commit on
+that branch), not `main@…`. If it still shows `main`, the Production branch setting did not save.
+If it shows the correct branch but still serves the driver app, confirm the Publish directory is
+exactly `owner-dashboard`, save it, and trigger **Deploy project without cache**. The remaining work
+is limited to this Netlify configuration/deploy state; repository source files are ready.
