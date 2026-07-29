@@ -693,3 +693,19 @@ After the React rebuild, restored the original Excel export capability in additi
 The Summary view now creates an `.xlsx` workbook with a `Days` sheet and an item-level `Items`
 sheet, using the same sale price snapshots used for dashboard revenue. Build verified successfully.
 Feature commit: `2e73898`; mirror it to `main` with the driver rebuild.
+
+### 2026-07-28 — Codex driver-app rebuild reverted by owner request
+
+The owner reviewed the React/Tailwind driver-app redesign and explicitly preferred the original
+single-file driver app because its established functionality and English/Spanish toggle worked
+better in practice.
+
+- Reverted the React driver rebuild, its build-cache change, and its altered export package on both
+  `owner-dashboard-v2` and `main`. The original `index.html`, its original data model, all legacy
+  logging/export functions, and the English/Spanish toggle are restored.
+- The owner dashboard was not changed by this revert.
+- Revert commits on `main`: `23511fa`, `e943553`, and `5009887`. Netlify should automatically
+  restore the original driver interface from `main`.
+- A temporary untracked local dependency cache directory may remain in the local work folder due
+  to a Windows file lock; it is not committed, not deployed, and can be ignored or removed after
+  restarting the local development environment.
