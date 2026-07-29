@@ -429,3 +429,23 @@ that branch), not `main@…`. If it still shows `main`, the Production branch se
 If it shows the correct branch but still serves the driver app, confirm the Publish directory is
 exactly `owner-dashboard`, save it, and trigger **Deploy project without cache**. The remaining work
 is limited to this Netlify configuration/deploy state; repository source files are ready.
+
+### 2026-07-28 — Codex public owner dashboard (explicit owner choice)
+
+The owner explicitly chose to remove the owner sign-in page, despite the privacy trade-off. The
+`owner-dashboard-v2` branch now makes the dashboard open directly with no Firebase Auth UI or
+password flow.
+
+- `admin.html` and `owner-dashboard/index.html` no longer show a login page or call Firebase Auth.
+- `firestore.rules` now allow public reads of `drivers/{driverId}` and their `days` subcollections
+  (`allow read: if true`). Driver write ownership rules were not changed.
+- This exposes driver names, sales, cash figures, customer balances, returned-food figures, and
+  best-selling items to anyone who knows the public dashboard URL. This is intentional per owner
+  instruction, but it is a material loss of privacy and must remain clearly understood.
+- The dashboard layout was checked locally: no login form is present, the dashboard shell is visible,
+  and the Refresh action remains available. Firebase data will not load publicly until the updated
+  Firestore rules are manually published in Firebase Console.
+
+The no-login change is committed as `9e98133`. After Netlify deploys that commit, publish the
+matching `firestore.rules` in Firebase Console → Firestore Database → Rules, then reload the
+standalone dashboard URL.
