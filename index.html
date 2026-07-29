@@ -75,6 +75,13 @@
   .stub .sub{font-size:10px;color:rgba(217,237,146,0.85);font-family:'IBM Plex Mono',monospace;letter-spacing:0.14em;}
 
   .header-right{display:flex;align-items:center;gap:7px;}
+  .day-stepper{display:flex;align-items:center;gap:4px;}
+  .day-step{
+    width:30px;height:30px;border-radius:10px;border:1px solid rgba(255,255,255,0.22);
+    background:rgba(255,255,255,0.12);color:#EAF3EC;font-size:15px;font-weight:700;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .day-step:active{background:rgba(255,255,255,0.22);}
   .lang-toggle{
     background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);
     color:#EAF3EC;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
@@ -556,6 +563,12 @@ let state = {
 function todayStr(){
   const d = new Date();
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+}
+function shiftDate(dateStr, days){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate() + days);
+  return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,'0')+"-"+String(dt.getDate()).padStart(2,'0');
 }
 function weekdayOf(dateStr){
   const [y,m,d] = dateStr.split('-').map(Number);
@@ -1209,8 +1222,12 @@ async function render(){
     +   '</div>'
     +   '<div class="header-right">'
     +     '<button class="lang-toggle" id="langToggle">'+(state.lang==='es'?'EN':'ES')+'</button>'
-    +     '<button class="date-btn'+(state.date!==todayStr()?' past':'')+'" id="dateBtn"><span class="cal-icon">📅</span><span>'
-    +       (state.date===todayStr() ? (state.lang==='es'?'Hoy':'Today') : fmtDateShort(state.date))+'</span></button>'
+    +     '<div class="day-stepper">'
+    +       '<button class="day-step" id="dayPrev" aria-label="Previous day">‹</button>'
+    +       '<button class="date-btn'+(state.date!==todayStr()?' past':'')+'" id="dateBtn"><span class="cal-icon">📅</span><span>'
+    +         (state.date===todayStr() ? (state.lang==='es'?'Hoy':'Today') : fmtDateShort(state.date))+'</span></button>'
+    +       '<button class="day-step" id="dayNext" aria-label="Next day">›</button>'
+    +     '</div>'
     +   '</div>'
     + '</div>'
     + '<div class="seller-row"><input type="text" id="sellerInput" placeholder="'+T('seller_label')+'" value="'+escapeAttr(state.sellerName)+'">'
@@ -1792,6 +1809,11 @@ function attachHandlers(){
   if(langToggle) langToggle.addEventListener('click', ()=>{ setLang(state.lang==='es'?'en':'es'); });
   const sellerInput = document.getElementById('sellerInput');
   if(sellerInput) sellerInput.addEventListener('change', e=>{ setSellerName(e.target.value); });
+
+  const dayPrev = document.getElementById('dayPrev');
+  if(dayPrev) dayPrev.addEventListener('click', ()=>{ selectDate(shiftDate(state.date, -1)); });
+  const dayNext = document.getElementById('dayNext');
+  if(dayNext) dayNext.addEventListener('click', ()=>{ selectDate(shiftDate(state.date, 1)); });
 
   const dateBtn = document.getElementById('dateBtn');
   if(dateBtn) dateBtn.addEventListener('click', ()=>{
