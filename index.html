@@ -455,7 +455,7 @@ const TRANSLATIONS = {
     arrivals_log:"Today's time log (all stops)", no_arrivals:"No arrivals logged yet today.",
     total_time:"Total time on site", drive_to:"Driving to {stop}", total_drive:"Total driving time",
     unsold_label:"What came back unsold today (all stops)", sold_today:"sold today: {n}",
-    across_days:"Across {n} logged day{s}", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
+    across_days:"Across {n} logged day{s}", today_stats:"Today", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
     waste_value:"WASTE VALUE", time_on_site:"TIME ON SITE", square_fees:"SQUARE FEES",
     real_fee_title:"Real Square Fee", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
     charged_fee:"You charged (flat $0.50/sale)", real_fee:"Square actually took", fee_gap:"Your gap",
@@ -501,7 +501,7 @@ const TRANSLATIONS = {
     arrivals_log:"Registro de tiempo de hoy (todas las paradas)", no_arrivals:"Aún no hay llegadas registradas hoy.",
     total_time:"Tiempo total en el lugar", drive_to:"Manejando a {stop}", total_drive:"Tiempo total manejando",
     unsold_label:"Lo que no se vendió hoy (todas las paradas)", sold_today:"vendido hoy: {n}",
-    across_days:"En {n} día{s} registrado{s}", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
+    across_days:"En {n} día{s} registrado{s}", today_stats:"Hoy", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
     waste_value:"VALOR DESPERDICIADO", time_on_site:"TIEMPO EN SITIO", square_fees:"CARGOS DE SQUARE",
     real_fee_title:"Cargo real de Square", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
     charged_fee:"Cobraste (fijo $0.50/venta)", real_fee:"Square realmente cobró", fee_gap:"Tu diferencia",
@@ -1518,16 +1518,12 @@ function renderCalendar(){
   return h;
 }
 
-function renderSummary(){
-  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?1:-1);
-  if(days.length===0){
-    return '<div class="panel"><div class="empty">'+T('no_data_yet')+'</div></div>';
-  }
-  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0, totalFees = 0, totalDrive = 0, totalRealFee = 0, totalSquareTxns = 0;
-  const soldAgg = {}, returnedAgg = {}, requestAgg = {}, paymentAgg = {};
+function computeSummaryStats(dayList){
+  let totalRevenue=0, totalCommission=0, totalReturned=0, totalReturnedValue=0, totalDwell=0, totalFees=0, totalDrive=0, totalRealFee=0, totalSquareTxns=0;
+  const soldAgg={}, returnedAgg={}, requestAgg={}, paymentAgg={};
   PAYMENT_METHODS.forEach(m=>paymentAgg[m]=0);
 
-  days.forEach(d=>{
+  dayList.forEach(d=>{
     const wd = effectiveWeekday(d);
     const menu = MENU[wd];
     const priceOf = name => { if(!menu) return 0; const f = Object.values(menu).flat().find(x=>x[0]===name); return f?f[1]:0; };
@@ -1552,40 +1548,45 @@ function renderSummary(){
     });
   });
 
-  let html = '<div class="panel">';
-  html += '<div class="card"><h3>'+T('across_days',{n:days.length,s:days.length>1?'s':''})+'</h3>'
+  return { totalRevenue, totalCommission, totalReturned, totalReturnedValue, totalDwell, totalFees,
+    totalDrive, totalRealFee, totalSquareTxns, soldAgg, returnedAgg, requestAgg, paymentAgg };
+}
+
+function renderStatsCards(stats, headerText){
+  let html = '';
+  html += '<div class="card"><h3>'+headerText+'</h3>'
     + '<div class="kpi-row">'
-    +   '<div class="kpi"><div class="v">'+fmtMoney(totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
-    +   '<div class="kpi gold"><div class="v">'+fmtMoney(totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
-    +   '<div class="kpi warn"><div class="v">'+fmtMoney(totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
-    +   '<div class="kpi"><div class="v">'+fmtDur(totalDwell)+'</div><div class="k">'+T('time_on_site')+'</div></div>'
-    +   '<div class="kpi"><div class="v">'+fmtDur(totalDrive)+'</div><div class="k">'+T('total_drive').toUpperCase()+'</div></div>'
-    +   '<div class="kpi"><div class="v">'+fmtMoney(totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(stats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+    +   '<div class="kpi gold"><div class="v">'+fmtMoney(stats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+    +   '<div class="kpi warn"><div class="v">'+fmtMoney(stats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtDur(stats.totalDwell)+'</div><div class="k">'+T('time_on_site')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtDur(stats.totalDrive)+'</div><div class="k">'+T('total_drive').toUpperCase()+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(stats.totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
     + '</div></div>';
 
   html += '<div class="card"><h3>'+T('payment_methods')+'</h3>';
-  const payTotal = Object.values(paymentAgg).reduce((a,b)=>a+b,0) || 1;
+  const payTotal = Object.values(stats.paymentAgg).reduce((a,b)=>a+b,0) || 1;
   PAYMENT_METHODS.forEach(m=>{
-    const amt = paymentAgg[m] || 0;
+    const amt = stats.paymentAgg[m] || 0;
     html += '<div class="bar-row"><div class="top"><span>'+TP(m)+'</span><span>'+fmtMoney(amt)+'</span></div>'
       + '<div class="bar-track"><div class="bar-fill" style="width:'+((amt/payTotal*100).toFixed(0))+'%"></div></div></div>';
   });
   html += '</div>';
 
-  if(totalSquareTxns > 0){
-    const gap = totalFees - totalRealFee;
+  if(stats.totalSquareTxns > 0){
+    const gap = stats.totalFees - stats.totalRealFee;
     html += '<div class="card"><h3>'+T('real_fee_title')+'</h3>'
       + '<div class="pay-ledger">'
-      +   '<div><span>'+T('txn_count')+'</span><span>'+totalSquareTxns+'</span></div>'
-      +   '<div><span>'+T('charged_fee')+'</span><span>'+fmtMoney(totalFees)+'</span></div>'
-      +   '<div><span>'+T('real_fee')+'</span><span>'+fmtMoney(totalRealFee)+'</span></div>'
+      +   '<div><span>'+T('txn_count')+'</span><span>'+stats.totalSquareTxns+'</span></div>'
+      +   '<div><span>'+T('charged_fee')+'</span><span>'+fmtMoney(stats.totalFees)+'</span></div>'
+      +   '<div><span>'+T('real_fee')+'</span><span>'+fmtMoney(stats.totalRealFee)+'</span></div>'
       +   '<div class="'+(gap>=0?'settled':'owing')+'"><span>'+T('fee_gap')+'</span><span>'+(gap>=0?'+':'')+fmtMoney(gap)+'</span></div>'
       + '</div>'
       + '<div class="export-note">'+T('real_fee_note')+'</div>'
       + '</div>';
   }
 
-  const soldSorted = Object.entries(soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const soldSorted = Object.entries(stats.soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(soldSorted.length){
     const maxSold = soldSorted[0][1];
     html += '<div class="card"><h3>'+T('best_sellers')+'</h3>';
@@ -1596,7 +1597,7 @@ function renderSummary(){
     html += '</div>';
   }
 
-  const retSorted = Object.entries(returnedAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const retSorted = Object.entries(stats.returnedAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(retSorted.length){
     const maxRet = retSorted[0][1];
     html += '<div class="card"><h3>'+T('waste_title')+'</h3>';
@@ -1607,7 +1608,7 @@ function renderSummary(){
     html += '</div>';
   }
 
-  const reqSorted = Object.entries(requestAgg).sort((a,b)=>b[1]-a[1]);
+  const reqSorted = Object.entries(stats.requestAgg).sort((a,b)=>b[1]-a[1]);
   if(reqSorted.length){
     html += '<div class="card"><h3>'+T('lost_sales')+'</h3>';
     reqSorted.forEach(([name,qty])=>{
@@ -1615,6 +1616,23 @@ function renderSummary(){
     });
     html += '</div>';
   }
+
+  return html;
+}
+
+function renderSummary(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?1:-1);
+  if(days.length===0){
+    return '<div class="panel"><div class="empty">'+T('no_data_yet')+'</div></div>';
+  }
+
+  let html = '<div class="panel">';
+
+  const todayStats = computeSummaryStats(state.day ? [state.day] : []);
+  html += renderStatsCards(todayStats, T('today_stats'));
+
+  const allStats = computeSummaryStats(days);
+  html += renderStatsCards(allStats, T('across_days',{n:days.length,s:days.length>1?'s':''}));
 
   html += '<div class="card"><h3>'+T('export_title')+'</h3>'
     + '<button class="export-btn xlsx" id="exportXlsx">'+T('export_excel')+'</button>'
