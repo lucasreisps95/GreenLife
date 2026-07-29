@@ -597,3 +597,24 @@ operation needs an explicit safe import decision and Firebase write authority.
 
 No project code changed in this assessment. The temporary workbook-inspection helper was kept
 outside the repository.
+
+### 2026-07-28 — Codex safe historical-import dashboard support (Firestore blocked)
+
+Owner approved the safe approach: keep the spreadsheet as a separate historical source while
+leaving Lucas's real phone identity unclaimed for future live sync.
+
+- Added dashboard support for `settings/historicalData`: historical records are merged into
+  overview totals, stop rankings, and the Lucas driver performance row through `mergeKey: "lucas"`.
+  Existing `test_driver_a` and `test_driver_b` can be hidden from the owner view without deleting
+  their Firestore docs. The code is committed as `e9f2585` on `owner-dashboard-v2`.
+- Constructed a one-time import payload from the workbook with the 2026-07-28 Lucas sales, item
+  price snapshots, nine named revenue stops, payment totals, and aggregate returned count. It does
+  **not** create or modify `drivers/lucas`, so it cannot break Lucas's device claim or future sync.
+- Attempted the approved one-time write to `settings/historicalData`; Firebase returned 403
+  `PERMISSION_DENIED`. No dashboard data was deleted, and no spreadsheet data was written. This
+  proves the currently published Firebase rules still do not match the repository's public
+  `settings/*` write rule.
+- Next required human step: Firebase Console → Firestore Database → Rules, replace/publish the
+  current repository `firestore.rules` (it contains `match /settings/{settingId}` then
+  `allow write: if true;`). Once published, retry the one-time historical import. This public write
+  rule is a known integrity risk chosen by the owner for a no-login Settings experience.
