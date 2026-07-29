@@ -512,3 +512,22 @@ item. The old `/manage.html` URL now immediately redirects to `/#settings`.
   `owner-dashboard-v2` as `f9f6b67`. Netlify should deploy it automatically. The matching updated
   Firestore rules still must be copied into Firebase Console and **Published** before Settings can
   save successfully.
+
+### 2026-07-28 — Codex separated owner dashboard views
+
+The owner requested simpler navigation and separate screens rather than a long combined dashboard.
+
+- The owner dashboard navigation now has exactly three tabs: **Overview**, **Drivers**, and
+  **Settings**. Overview contains only the reporting dashboard; Settings contains only operational
+  controls.
+- Settings now allows adding and removing products within each existing menu category, in addition
+  to price edits. It also allows adding a future driver name and removing an un-synced driver from
+  that list. Removing a driver never deletes an already-synced driver or any historical sales,
+  which protects the sales record.
+- The new Drivers tab gives a concise per-driver table: estimated items taken (sold plus returned),
+  sold, returned, sales revenue, and the 30% driver commission. The current data schema does not
+  separately record a physical “taken” count, so the UI clearly labels that figure as an estimate.
+
+Source changes are committed and pushed to the Netlify branch as `23ab759`. Verify after deploy:
+click each tab; add then remove a test product without saving; add a test future driver, save, then
+reload. Remember Settings writes remain public by the owner’s explicit no-login choice.
