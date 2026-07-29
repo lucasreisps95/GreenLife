@@ -754,3 +754,19 @@ not provide an apparent way to remove an existing driver such as Lucas.
   a safe dashboard hide rather than a destructive data delete.
 - Production build completed successfully. Feature commit `5297151` is on `owner-dashboard-v2`
   and should be mirrored to `main`.
+
+### 2026-07-29 — Codex Steak Burrito weekday menu addition
+
+Owner requested the change shown in Lucas's handoff: add **Steak Burrito** at **$13** to the
+Breakfast section on Monday through Friday.
+
+- Added the item to all five weekdays in the driver app's built-in `MENU` and to the owner
+  dashboard's `GREENLIFE_DEFAULT_MENU` source. The dashboard source now programmatically ensures
+  the same default item exists for every weekday, avoiding drift between the two starting menus.
+- Read the live `settings/menu` Firestore document before changing code: it returned 404, so no
+  cloud-managed menu currently overrides these defaults. The new item is therefore active for
+  drivers after Netlify deploys and their page is refreshed.
+- No historical sales changed: only future menus are affected, and sold-item revenue remains based
+  on saved price snapshots.
+- Owner-dashboard production build passed. Feature commit `fa746fb` is on `owner-dashboard-v2`
+  and should be mirrored to `main`.
