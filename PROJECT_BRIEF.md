@@ -531,3 +531,25 @@ The owner requested simpler navigation and separate screens rather than a long c
 Source changes are committed and pushed to the Netlify branch as `23ab759`. Verify after deploy:
 click each tab; add then remove a test product without saving; add a test future driver, save, then
 reload. Remember Settings writes remain public by the owner’s explicit no-login choice.
+
+### 2026-07-28 — Codex React, Tailwind, and shadcn-style rebuild
+
+The owner explicitly requested a visual rebuild using React, Tailwind CSS, and shadcn dashboard
+patterns, using `shadcndashboard/shadcndashboard` as the reference.
+
+- Replaced the standalone `owner-dashboard/index.html` implementation with a compiled React/Vite
+  app. Its source lives in `owner-dashboard/app/`; the compiled `index.html` and `assets/` remain
+  directly in `owner-dashboard/`, so the existing Netlify project can keep publishing that same
+  directory with no build-setting change.
+- Added Tailwind configuration, shadcn registry metadata, React, Firebase modular SDK, and
+  Lucide icons. The new presentation uses a clean shadcn-style sidebar, compact statistic cards,
+  responsive tables, and clear one-action-per-control Settings UI while retaining the three
+  existing data-backed views: Overview, Drivers, and Settings.
+- Preserved Firestore data paths and safety behavior: historical sold revenue always uses each
+  item's stored price snapshot; changing a menu price still affects future driver sales only.
+- Verified `npm run build` succeeds with Vite and produces the committed static deploy files.
+  `npm install` reported 12 dependency audit findings (10 moderate, 2 high); do not run an
+  automatic force audit fix without reviewing a future dependency upgrade.
+- Added a footer attribution link to Shadcn Dashboard, whose reference repository is MIT-licensed.
+
+The feature commit is `a121169` on `owner-dashboard-v2`. Netlify should deploy it automatically.
