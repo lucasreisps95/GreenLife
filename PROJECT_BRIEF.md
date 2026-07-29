@@ -709,3 +709,16 @@ better in practice.
 - A temporary untracked local dependency cache directory may remain in the local work folder due
   to a Windows file lock; it is not committed, not deployed, and can be ignored or removed after
   restarting the local development environment.
+
+### 2026-07-28 — Codex returned-food possible-sales value
+
+Owner requested that the Overview returned-food card show the money represented by returned plates,
+not only the plate count.
+
+- The card now keeps the returned plate count as its main number and adds the calculated dollar
+  amount underneath as “possible sales value” (also translated to Vietnamese).
+- This value is calculated from each returned item count and the matching menu price for that day.
+  It is explicitly not presented as food cost, money already spent, or profit lost; the system does
+  not have food-cost data.
+- Production build completed successfully. Feature commit `96905b1` is on `owner-dashboard-v2`
+  and should be mirrored to `main`.
