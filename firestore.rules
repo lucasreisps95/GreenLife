@@ -35,6 +35,13 @@ service cloud.firestore {
       }
     }
 
+    // Shared menu and owner-managed driver display labels. Anyone may read the
+    // current catalog, but only the authenticated owner can change it.
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // admins/{uid} — one doc per owner/admin account, created manually in the
     // Firebase console (Firestore tab) after the owner signs in once via
     // admin.html with email/password. Doc content doesn't matter, only existence.

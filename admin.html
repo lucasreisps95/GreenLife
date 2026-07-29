@@ -208,12 +208,17 @@ function initFirebase(){
 }
 
 async function loadAllDriverData(){
+  let labels = {};
+  try{
+    const labelsSnap = await fbDb.collection('settings').doc('driverDirectory').get();
+    labels = (labelsSnap.exists && labelsSnap.data().labels) || {};
+  }catch(e){}
   const driversSnap = await fbDb.collection('drivers').get();
   const drivers = [];
   for(const doc of driversSnap.docs){
     const info = doc.data();
     const daysSnap = await doc.ref.collection('days').get();
-    drivers.push({ driverId: doc.id, name: info.name || doc.id, days: daysSnap.docs.map(d=>d.data()) });
+    drivers.push({ driverId: doc.id, name: labels[doc.id] || info.name || doc.id, days: daysSnap.docs.map(d=>d.data()) });
   }
   return drivers;
 }
