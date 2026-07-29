@@ -259,3 +259,37 @@ server serving the repo — Firebase Auth doesn't behave reliably over `file://`
 confirmed against these two test drivers yet — that still needs the owner's admin account +
 `admins/{uid}` doc to exist first (see checklist above). Code changes in this entry are pushed to
 `main`; Netlify deploy not yet spot-checked live post-push.
+
+### 2026-07-28 — Codex handoff verification
+
+Read this brief and the full current `index.html`, `admin.html`, `firebase-config.js`, and
+`firestore.rules` before making changes. The working tree was clean at commit `1bb7c9c`; no
+application or schema changes were made.
+
+**Verified in this pass:**
+
+- The shared Firebase config is populated for `greenlife-ad21a`.
+- The committed Firestore rules still implement the documented anonymous-driver ownership and
+  admin-read model.
+- Driver sales still store and calculate revenue from each sold item's saved `price` snapshot.
+  The admin calculation also uses `it.price`; it does not look sold-item prices up in `MENU`.
+- Both `index.html` and `admin.html` serve successfully from a local HTTP server (HTTP 200).
+- The two simulated driver identities and adversarial isolation tests documented in the previous
+  entry remain the latest completed live-Firestore driver tests.
+
+**Still open / blocker:**
+
+- The acceptance-criteria check of signing into `admin.html`, viewing Test Driver A and Test Driver
+  B together, and numerically confirming the company total equals the sum of their individual
+  totals is still blocked on the owner-provided Firebase email/password account plus its
+  `admins/{uid}` authorization document. Do not weaken the rules or invent credentials to bypass
+  this.
+- Once owner access is available, explicitly record each driver's expected revenue, the displayed
+  per-driver revenue, and the displayed combined total. Also change a live menu price temporarily
+  (without changing the stored sale documents) and confirm the dashboard's historical revenue does
+  not move.
+- The production Netlify URL is not recorded in the repository and could not be reliably
+  discovered from public search. Obtain it from the owner or Netlify project UI, then spot-check
+  both `/index.html` and `/admin.html` after the final push.
+- A headless visual pass was attempted locally, but the bundled browser runtime exited on a Windows
+  filesystem-permission error. This is an environment limitation, not a passing UI test.
