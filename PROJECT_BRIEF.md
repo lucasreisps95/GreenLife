@@ -722,3 +722,19 @@ not only the plate count.
   not have food-cost data.
 - Production build completed successfully. Feature commit `96905b1` is on `owner-dashboard-v2`
   and should be mirrored to `main`.
+
+### 2026-07-28 — Codex complete Vietnamese dashboard labels and clear removals
+
+Owner reported that selecting Vietnamese translated only parts of the owner dashboard, and that
+the driver-list deletion control was unclear.
+
+- Completed visible Vietnamese labels for Overview, Drivers, and Settings, including dashboard
+  card notes, no-data states, table headings, settings descriptions, save feedback, and controls.
+  Product names, business stop names, and driver names remain unchanged because they are entered
+  business data, not interface text.
+- Replaced the small icon-only delete controls in Settings with clear red **Remove** buttons for
+  products and future driver entries. Synced driver records remain protected: they cannot be
+  deleted from Settings because deleting their history would be unsafe; the screen states this
+  plainly.
+- Production build completed successfully. Feature commit `b3a5573` is on `owner-dashboard-v2`
+  and should be mirrored to `main`.
