@@ -400,3 +400,18 @@ Refined `owner-dashboard-v2` after owner feedback that the first redesign felt t
   render correctly, with no phone-width overflow or browser errors.
 
 The compact refinement is committed as `778103e` on `owner-dashboard-v2`; it is not on `main`.
+
+### 2026-07-28 — Codex standalone owner-dashboard Netlify package
+
+Added `owner-dashboard/` on the `owner-dashboard-v2` branch so the owner dashboard can be deployed
+as its own Netlify site with a clean root URL, without affecting the existing driver app deployment.
+
+- `owner-dashboard/index.html` is the approved compact owner dashboard.
+- `owner-dashboard/firebase-config.js` contains the same public Firebase web configuration required
+  by that independent static site.
+- `owner-dashboard/README.md` documents the Netlify settings: choose branch `owner-dashboard-v2`,
+  leave build command blank, and set publish directory to `owner-dashboard`.
+- Verified locally that the standalone root and its Firebase config both return HTTP 200.
+
+The standalone package is committed as `9c71672`. Future approved changes to `admin.html` must be
+copied into `owner-dashboard/index.html` before redeploying the separate site.
