@@ -2033,6 +2033,34 @@ document.addEventListener('visibilitychange', ()=>{
   if(!document.hidden && state.day) syncToToday(false);
 });
 
+async function repriceHistoricalItem(itemName, newPrice){
+  const changedDays = [];
+  try{
+    const list = await storageList('day:', false);
+    for(const k of (list.keys||[])){
+      try{
+        const r = await storageGet(k, false);
+        const d = JSON.parse(r.value);
+        let dayChanged = false;
+        Object.values(d.stops||{}).forEach(st=>{
+          if(st.items && st.items[itemName] && st.items[itemName].price !== newPrice){
+            st.items[itemName].price = newPrice;
+            dayChanged = true;
+          }
+        });
+        if(dayChanged){
+          await saveDay(d);
+          changedDays.push(d);
+        }
+      }catch(e){}
+    }
+  }catch(e){}
+  if(changedDays.length && fbReady && state.sellerName){
+    for(const d of changedDays){ try{ await cloudPushDay(d); }catch(e){} }
+  }
+  return changedDays;
+}
+
 /* ---------------- INIT ---------------- */
 async function init(){
   try{
@@ -2055,7 +2083,21 @@ async function init(){
     state.allDays = await loadAllDays();
     state.allDays[state.date] = state.day;
     render();
-    initCloud(); // best-effort background cloud sync; app is already usable offline above
+    initCloud().then(async ()=>{
+      let alreadyRepriced = false;
+      try{ await storageGet('reprice_blackened_salmon_175_v1', false); alreadyRepriced = true; }
+      catch(e){}
+      if(!alreadyRepriced){
+        const changed = await repriceHistoricalItem('Blackened Salmon', 17.5);
+        try{ await storageSet('reprice_blackened_salmon_175_v1','done',false); }catch(e6){}
+        if(changed.length){
+          state.allDays = await loadAllDays();
+          state.day = await loadDay(state.date, state.defaultStopNames);
+          state.allDays[state.date] = state.day;
+          render();
+        }
+      }
+    }); // best-effort background cloud sync + one-time historical repricing; app is already usable offline above
   }catch(err){
     document.getElementById('app').innerHTML =
       '<div style="padding:24px;font-family:sans-serif;color:#B5482E;"><h3>Something failed to load</h3>'
