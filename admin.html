@@ -19,6 +19,16 @@
   @media(max-width:1050px){.shell{grid-template-columns:82px minmax(0,1fr)}.sidebar{padding:24px 12px}.brand span:last-child,.nav-label,.nav a span:last-child,.sidebar-foot .signout{display:none}.brand{justify-content:center;padding-left:0;padding-right:0}.nav a{justify-content:center;padding:12px}.language{grid-template-columns:1fr}}
   @media(max-width:820px){.main{padding:22px 18px 90px}.summary-grid{grid-template-columns:1fr 1fr}.layout,.section-grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.top-actions{flex-wrap:wrap;justify-content:flex-end}.status{width:100%;justify-content:flex-end}}
   @media(max-width:580px){.shell{display:block}.sidebar{position:fixed;z-index:20;left:0;right:0;bottom:0;top:auto;width:auto;height:72px;padding:8px 10px;border-right:0;border-top:1px solid var(--line)}.sidebar .brand,.nav-label,.sidebar-foot{display:none}.nav{grid-template-columns:repeat(5,1fr)}.nav a{display:grid;place-items:center;gap:2px;padding:7px 2px;font-size:9px}.nav a span:last-child{display:block}.nav-icon{font-size:18px}.main{padding:20px 13px 94px}.topbar{display:block}.topbar h1{font-size:28px}.top-actions{margin-top:16px;justify-content:flex-start}.status{justify-content:flex-start}.summary-grid{grid-template-columns:1fr}.metric{padding:17px}.metric-value{font-size:28px}.card{padding:17px}.chart{height:210px;gap:5px}.progress-row{grid-template-columns:minmax(90px,1fr) 1.4fr auto}}
+  /* Compact owner view: keep the important information above the fold. */
+  .main{padding:22px 26px 34px}
+  .topbar{margin-bottom:16px}.topbar h1{font-size:29px}
+  .summary-grid{gap:11px;margin-bottom:12px}.metric{padding:14px 16px;border-radius:16px}.metric-value{margin-top:9px;font-size:27px}.metric-note{margin-top:4px}.metric-icon{width:30px;height:30px}
+  .layout{grid-template-columns:minmax(0,1.55fr) minmax(260px,.8fr);gap:12px;margin-bottom:12px}.section-grid{gap:12px;margin-bottom:12px}.card{padding:17px;border-radius:18px}.card-head{margin-bottom:13px}.chart{height:170px;padding-top:5px}
+  .pulse-card{position:relative;overflow:hidden;color:#fff;background:linear-gradient(135deg,#155c55 0%,#287a55 45%,#4da984 100%);border:0;box-shadow:0 14px 30px rgba(28,108,77,.22)}
+  .pulse-card:after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;right:-80px;top:-80px;background:radial-gradient(circle,rgba(255,255,255,.25),rgba(255,255,255,0) 70%)}
+  .pulse-card .card-sub{color:rgba(255,255,255,.75)}.pulse-card h2{color:#fff}.pulse-number{position:relative;z-index:1;font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-1.5px;margin:14px 0 2px}.pulse-copy{position:relative;z-index:1;font-size:13px;color:rgba(255,255,255,.86);line-height:1.45;max-width:290px}.pulse-tags{position:relative;z-index:1;display:flex;gap:7px;flex-wrap:wrap;margin-top:17px}.pulse-tag{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.12);padding:6px 9px;border-radius:99px;font-size:11px;font-weight:700}
+  .quick-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}.quick-stat{padding:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.09);border-radius:12px}.quick-stat b{display:block;font-size:16px}.quick-stat span{font-size:10px;color:rgba(255,255,255,.75)}
+  @media(max-width:820px){.main{padding:18px 15px 88px}.chart{height:155px}.pulse-number{font-size:34px}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -250,9 +260,9 @@ const TEXT = {
     salesTrend:'Sales by day',salesTrendHelp:'Total sales from every driver',attention:'What needs attention',
     noProblems:'Everything looks good',noProblemsHelp:'No unpaid balances or food returns in this period.',
     owedAlert:'Customers still owe money',owedAlertHelp:'Collect {amount} from customer balances.',
-    returnsAlert:'Food was returned',returnsAlertHelp:'{count} returned items are worth about {amount}.',
+    returnsAlert:'Food was not sold',returnsAlertHelp:'Possible sales value: {amount} from {count} unsold items. This is not food cost.',
     driversTitle:'Driver summary',driversHelp:'Compare sales and commission at a glance',driver:'Driver',days:'Days',
-    items:'Items',waste:'Returns',cashTitle:'Cash by driver',cashHelpTitle:'Use this to check each driver’s cash pouch.',
+    items:'Items',waste:'Unsold',cashTitle:'Cash by driver',cashHelpTitle:'Use this to check each driver’s cash pouch.',
     cashSales:'Cash sales',cashAdded:'Cash added',change:'Change given',netCash:'Expected cash',
     best:'Best-selling food',bestHelp:'Most popular items in this period',quantity:'Sold',
     noData:'No driver information for this time period.',loading:'Loading your business information…',
@@ -268,9 +278,9 @@ const TEXT = {
     salesTrend:'Doanh thu theo ngày',salesTrendHelp:'Tổng doanh thu của tất cả tài xế',attention:'Cần chú ý',
     noProblems:'Mọi thứ đều ổn',noProblemsHelp:'Không có tiền nợ hoặc hàng trả trong thời gian này.',
     owedAlert:'Khách còn nợ tiền',owedAlertHelp:'Cần thu {amount} từ khách.',
-    returnsAlert:'Có thức ăn trả lại',returnsAlertHelp:'{count} món trả lại trị giá khoảng {amount}.',
+    returnsAlert:'Có thức ăn chưa bán được',returnsAlertHelp:'Giá trị doanh thu có thể có: {amount} từ {count} món chưa bán. Đây không phải chi phí làm món.',
     driversTitle:'Tóm tắt tài xế',driversHelp:'So sánh doanh thu và hoa hồng',driver:'Tài xế',days:'Ngày',
-    items:'Số món',waste:'Hàng trả',cashTitle:'Tiền mặt theo tài xế',cashHelpTitle:'Dùng để kiểm tra túi tiền của từng tài xế.',
+    items:'Số món',waste:'Chưa bán',cashTitle:'Tiền mặt theo tài xế',cashHelpTitle:'Dùng để kiểm tra túi tiền của từng tài xế.',
     cashSales:'Bán tiền mặt',cashAdded:'Tiền thêm',change:'Tiền thối',netCash:'Tiền dự kiến',
     best:'Món bán chạy',bestHelp:'Những món phổ biến nhất',quantity:'Đã bán',
     noData:'Không có thông tin tài xế trong thời gian này.',loading:'Đang tải thông tin kinh doanh…',
@@ -348,12 +358,19 @@ function renderDashboard(allDrivers){
   content.innerHTML=
     '<section class="summary-grid">'+metricHtml('↗',t('revenue'),fmtMoney(totalRevenue),totalItems+' '+t('sold'))+metricHtml('♟',t('commission'),fmtMoney(totalCommission),t('paidDrivers'))+metricHtml('$',t('cashExpected'),fmtMoney(totalCash),t('cashHelp'),'warning')+metricHtml('!',t('owed'),fmtMoney(totalOwed),t('owedHelp'),totalOwed?'danger':'')+'</section>'+
     '<section class="layout"><div class="card" id="sales"><div class="card-head"><div><h2>'+t('salesTrend')+'</h2><div class="card-sub">'+t('salesTrendHelp')+'</div></div></div><div class="chart">'+dailyRows.map(([date,value])=>'<div class="bar-group"><div class="bar-value">'+fmtShortMoney(value)+'</div><div class="bar" style="height:'+Math.max(3,Math.round(value/maxDaily*175))+'px"></div><div class="bar-label">'+escapeHtml(formatDay(date))+'</div></div>').join('')+'</div></div>'+
-    '<div class="card"><div class="card-head"><div><h2>'+t('attention')+'</h2></div></div><div class="alerts">'+alerts.join('')+'</div></div></section>'+
+    pulseHtml(totalRevenue,totalWasteValue,totalWasteCount,totalOwed,alerts)+'</section>'+
     '<section class="section-grid"><div class="card" id="drivers"><div class="card-head"><div><h2>'+t('driversTitle')+'</h2><div class="card-sub">'+t('driversHelp')+'</div></div></div><div class="table-wrap"><table><thead><tr><th>'+t('driver')+'</th><th class="number">'+t('revenue')+'</th><th class="number">'+t('commission')+'</th><th class="number">'+t('items')+'</th></tr></thead><tbody>'+perDriver.map((d,i)=>'<tr><td><div class="driver-name"><span class="avatar">'+escapeHtml(initials(d.name))+'</span><span><span class="rank">#'+(i+1)+'</span> '+escapeHtml(d.name)+'</span></div></td><td class="number">'+fmtMoney(d.rev)+'</td><td class="number">'+fmtMoney(d.commission)+'</td><td class="number">'+d.itemsSold+'</td></tr>').join('')+'</tbody></table></div></div>'+
     '<div class="card" id="returns"><div class="card-head"><div><h2>'+t('best')+'</h2><div class="card-sub">'+t('bestHelp')+'</div></div></div>'+(bestSellers.length?bestSellers.map(([name,qty])=>'<div class="progress-row"><div class="progress-name" title="'+escapeHtml(name)+'">'+escapeHtml(name)+'</div><div class="track"><div class="fill" style="width:'+Math.round(qty/maxSeller*100)+'%"></div></div><div class="progress-value">'+qty+'</div></div>').join(''):'<div class="empty">'+t('noData')+'</div>')+'</div></section>'+
     '<section class="card" id="cash"><div class="card-head"><div><h2>'+t('cashTitle')+'</h2><div class="card-sub">'+t('cashHelpTitle')+'</div></div></div><div class="table-wrap"><table><thead><tr><th>'+t('driver')+'</th><th class="number">'+t('cashSales')+'</th><th class="number">'+t('cashAdded')+'</th><th class="number">'+t('change')+'</th><th class="number">'+t('netCash')+'</th></tr></thead><tbody>'+perDriver.map(d=>'<tr><td><div class="driver-name"><span class="avatar">'+escapeHtml(initials(d.name))+'</span>'+escapeHtml(d.name)+'</div></td><td class="number">'+fmtMoney(d.cashSales)+'</td><td class="number">'+fmtMoney(d.topups)+'</td><td class="number">'+fmtMoney(d.changeGiven)+'</td><td class="number">'+fmtMoney(d.netCash)+'</td></tr>').join('')+'</tbody></table></div><div class="updated">'+t('updated')+': '+new Intl.DateTimeFormat(currentLanguage==='vi'?'vi-VN':'en-US',{dateStyle:'medium',timeStyle:'short'}).format(new Date())+'</div></section>';
 }
 function metricHtml(icon,label,value,note,kind=''){return '<article class="metric '+kind+'"><div class="metric-head"><span>'+label+'</span><span class="metric-icon">'+icon+'</span></div><div class="metric-value">'+value+'</div><div class="metric-note">'+note+'</div></article>';}
+function pulseHtml(revenue,unsoldValue,unsoldCount,owed,alerts){
+  const hasRisk=unsoldCount>0||owed>0;
+  const title=hasRisk?t('attention'):(currentLanguage==='vi'?'Hôm nay GreenLife đang tốt':'GreenLife is looking good');
+  const main=hasRisk?(unsoldValue>0?fmtMoney(unsoldValue):fmtMoney(owed)):fmtMoney(revenue);
+  const copy=hasRisk?(unsoldValue>0?t('returnsAlertHelp').replace('{count}',unsoldCount).replace('{amount}',fmtMoney(unsoldValue)):t('owedAlertHelp').replace('{amount}',fmtMoney(owed))):(currentLanguage==='vi'?'Đây là tổng doanh thu trong thời gian đã chọn.':'This is your total sales for the selected time.');
+  return '<div class="card pulse-card"><div class="card-head"><div><h2>'+title+'</h2><div class="card-sub">'+(hasRisk?(currentLanguage==='vi'?'Cơ hội doanh thu cần xem':'A revenue opportunity to review'):(currentLanguage==='vi'?'Tổng quan nhanh':'Quick business pulse'))+'</div></div></div><div class="pulse-number">'+main+'</div><div class="pulse-copy">'+copy+'</div><div class="quick-stats"><div class="quick-stat"><b>'+unsoldCount+'</b><span>'+t('waste')+'</span></div><div class="quick-stat"><b>'+fmtMoney(owed)+'</b><span>'+t('owed')+'</span></div></div><div class="pulse-tags"><span class="pulse-tag">'+fmtMoney(revenue)+' '+t('revenue')+'</span><span class="pulse-tag">'+t('connected')+'</span></div></div>';
+}
 function alertHtml(kind,icon,title,body){return '<div class="alert '+kind+'"><div class="alert-icon">'+icon+'</div><div><strong>'+title+'</strong><p>'+body+'</p></div></div>';}
 function fmtShortMoney(n){return n>=1000?'$'+(n/1000).toFixed(1)+'k':'$'+Math.round(n);}
 function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
