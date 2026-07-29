@@ -381,3 +381,22 @@ dashboard were intentionally left unchanged.
 
 Next step: create or use Netlify's deploy preview for `owner-dashboard-v2`, let the owner review it
 on her actual phone/tablet, then merge the branch to `main` only after approval.
+
+### 2026-07-28 — Codex compact dashboard refinement
+
+Refined `owner-dashboard-v2` after owner feedback that the first redesign felt too spread out.
+
+- Reduced whitespace, card padding, chart height, and section spacing so the important information
+  fits much more naturally on a laptop screen.
+- Replaced the mostly empty attention area with a compact, more expressive green “business pulse”
+  card inspired by the owner’s second dashboard reference. It shows total sales in a quick visual
+  summary and becomes a clear warning when there is money to collect or food that was not sold.
+- Corrected the wording around returns: the dashboard now describes this as **possible sales value
+  from unsold food**, explicitly not the cost of making the food. The existing calculation is still
+  based on each returned item’s menu value, so it must never be interpreted as actual food cost or
+  profit loss.
+- Kept English/Vietnamese translations aligned with the new language and verified the refreshed
+  layout with the real Firebase driver data. The same `$32.00` sales and `$9.60` commission totals
+  render correctly, with no phone-width overflow or browser errors.
+
+The compact refinement is committed as `778103e` on `owner-dashboard-v2`; it is not on `main`.
