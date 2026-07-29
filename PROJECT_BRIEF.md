@@ -662,3 +662,27 @@ chart left too much empty space and did not make the values easy to read.
 - Production build completed successfully. The feature is commit `9e0b36f` on
   `owner-dashboard-v2`; Netlify deploys this branch automatically. The matching source will also
   be mirrored to `main`.
+
+### 2026-07-28 — Codex React driver-app rebuild
+
+The driver-facing root page was rebuilt in React, Tailwind CSS, and shadcn-style components, using
+the same reference family as the owner dashboard. This is a visual and workflow rebuild, not a
+data-model redesign.
+
+- The mobile-first driver screen now has large tap targets and three clear views: Route, Returns,
+  and Summary. It keeps stop navigation, renamed stops, arrival/departure timestamps, item sales,
+  payments (including the existing $0.50 Square fee behavior), cash pouch, customer requests,
+  returns, and spreadsheet-ready CSV export.
+- Existing local browser records remain compatible: the new app reads both the previous per-day
+  storage entries and new aggregate local storage. It continues using the existing Firestore
+  `drivers/{driverId}/days/{date}` schema and anonymous-phone identity claim.
+- Price snapshots are preserved: each sale saves `{ sold, price }` when logged, so menu changes
+  cannot change the revenue on prior sales.
+- Added `driver-app/` source and build configuration. Its Vite build emits the root `index.html`
+  and `assets/` folder expected by the existing driver Netlify site, so no Netlify setting changes
+  are required. `npx vite build` completed successfully. There are npm dependency audit findings;
+  do not run a force audit upgrade without review.
+
+Feature commit: `6564cd7` on `owner-dashboard-v2`; this must be mirrored to `main` for the live
+driver site. Before field rollout, test one sale from Lucas's phone and confirm the dashboard
+updates without changing his existing driver name.
