@@ -321,3 +321,30 @@ were used only for verification and were not written to the repository.
    production deploy of the latest commit.
 3. Re-run the two-driver numerical aggregation and historical price-snapshot checks after both
    actions are complete.
+
+### 2026-07-28 — Codex final live verification
+
+The owner completed both human setup actions: the Firebase admin document was created and Netlify
+successfully published the latest `main` branch.
+
+**Verified live:**
+
+- `https://statuesque-florentine-36259d.netlify.app/`, `/admin.html`, and
+  `/firebase-config.js` all return HTTP 200.
+- The owner email/password account authenticates and can read both driver records.
+- Firestore contains two separate driver identities: `test_driver_a` and `test_driver_b`, each with
+  its own day document and one Chicken Enchiladas sale saved at the captured price of `$16`.
+- The live `admin.html` dashboard displays Test Driver A at `$16.00`, Test Driver B at `$16.00`,
+  combined revenue of `$32.00`, combined commission of `$9.60`, and Chicken Enchiladas quantity 2.
+  These values exactly match an independent calculation from the two saved day documents.
+- Historical-price protection was explicitly tested in the live dashboard: after changing the
+  browser's in-memory live-menu price for Chicken Enchiladas from `$16` to `$999` and re-rendering
+  the same Firestore records, total historical revenue remained `$32.00`. No database or repository
+  data was changed during this test.
+
+The temporary browser-verification script contained the supplied owner credentials only while the
+test ran; it was deleted before this log update and was never committed. All acceptance checks that
+can be performed in this environment are now complete. A real two-physical-device field pass is
+still advisable before rollout, but the two independent anonymous identities, write isolation,
+cloud records, admin aggregation, live deployment, and price-snapshot behavior have all been
+verified.
