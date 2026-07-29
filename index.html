@@ -547,6 +547,7 @@ const COMMISSION_RATE = 0.30;
 let state = {
   tab: 'log',
   date: todayStr(),
+  sessionRealDate: todayStr(),
   stopIndex: 0,
   defaultStopNames: null,
   day: null,
@@ -2016,8 +2017,10 @@ async function selectDate(ds){
 
 async function syncToToday(force){
   const real = todayStr();
+  const genuinelyNewDay = state.sessionRealDate !== real;
+  if(genuinelyNewDay) state.sessionRealDate = real;
   if(state.date === real) return false;
-  if(!force && state.manualDate) return false;
+  if(!force && state.manualDate && !genuinelyNewDay) return false;
   state.date = real;
   state.stopIndex = 0;
   state.manualDate = false;
