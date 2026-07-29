@@ -648,3 +648,17 @@ Owner reported that adding Chicken Salad Sandwich on Tuesday appeared to affect 
   translated into Vietnamese), so it is obvious which day is being edited before saving.
 - Built and pushed the safeguard as `1fd01fe` on `owner-dashboard-v2`. The owner-dashboard Netlify
   site deploys this branch automatically. The matching source will also be mirrored to `main`.
+
+### 2026-07-28 — Codex dynamic sales-chart refinement
+
+Reworked the Overview “Sales activity” chart after owner feedback that the prior single-point line
+chart left too much empty space and did not make the values easy to read.
+
+- Replaced it with a compact shadcn-style vertical bar chart, using subdued guide lines and a
+  dollar-value scale on the left, inspired by the provided subscription-chart reference.
+- The scale is dynamic: it calculates from the currently displayed daily sales and rounds upward,
+  so it remains useful when daily sales increase or decrease. Individual day totals and dates stay
+  directly visible.
+- Production build completed successfully. The feature is commit `9e0b36f` on
+  `owner-dashboard-v2`; Netlify deploys this branch automatically. The matching source will also
+  be mirrored to `main`.
