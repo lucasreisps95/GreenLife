@@ -35,11 +35,11 @@ service cloud.firestore {
       }
     }
 
-    // Shared menu and owner-managed driver display labels. Anyone may read the
-    // current catalog, but only the authenticated owner can change it.
+    // Owner chose a no-login settings panel. Anybody with the public dashboard
+    // link can also change future menu prices and display names.
     match /settings/{settingId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if true;
     }
 
     // admins/{uid} — one doc per owner/admin account, created manually in the
