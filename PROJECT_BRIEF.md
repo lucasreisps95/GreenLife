@@ -686,3 +686,10 @@ data-model redesign.
 Feature commit: `6564cd7` on `owner-dashboard-v2`; this must be mirrored to `main` for the live
 driver site. Before field rollout, test one sale from Lucas's phone and confirm the dashboard
 updates without changing his existing driver name.
+
+### 2026-07-28 — Codex driver Excel-export compatibility
+
+After the React rebuild, restored the original Excel export capability in addition to CSV export.
+The Summary view now creates an `.xlsx` workbook with a `Days` sheet and an item-level `Items`
+sheet, using the same sale price snapshots used for dashboard revenue. Build verified successfully.
+Feature commit: `2e73898`; mirror it to `main` with the driver rebuild.
