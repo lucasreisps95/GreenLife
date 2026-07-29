@@ -572,3 +572,28 @@ Owner requested a more practical overview based on data actually recorded in the
 
 Verified `npm run build` after the changes. Feature commit `43ac3fd` is pushed to the Netlify
 production branch. Live deployment should occur automatically.
+
+### 2026-07-28 — Codex route-manifest import assessment (not imported)
+
+The owner supplied `route_manifest_2026-07-28 2.xlsx` and asked to wipe dashboard data and import
+it. Workbook was inspected, but no Firestore data was deleted or written because the requested
+operation needs an explicit safe import decision and Firebase write authority.
+
+- Workbook has a `Days` summary and an `Items` detail sheet. It records Lucas on 2026-07-28 with
+  $473.50 revenue, 36 sold items, 12 unsold items, $302.50 Square, $80.50 Zelle, $46 Venmo, and
+  $44.50 cash. It has item-level price snapshots and named stop sales for nine identifiable stops.
+- The summary says 10 stops while the item sheet identifies nine stops with sales; the zero-sale
+  stop cannot be reconstructed from this export. It also does not identify which individual food
+  items were returned, only the aggregate unsold count/value.
+- **Do not seed `drivers/lucas` directly.** Driver IDs are permanently claimed by each device's
+  anonymous Firebase owner UID. Creating that document from an import would prevent Lucas's actual
+  driver app from claiming/syncing under his name later. A safe historical-import collection (or
+  an explicitly labelled `Lucas (historical)` source) is required instead, then dashboard totals
+  can combine it with future live Lucas data.
+- Current Firestore rules also do not permit a client to delete/seed driver docs or write a
+  historical-import collection. A human must either publish narrowly scoped import rules in Firebase
+  Console or provide a temporary, local-only Firebase deploy credential. Never paste credentials in
+  chat or commit them.
+
+No project code changed in this assessment. The temporary workbook-inspection helper was kept
+outside the repository.
