@@ -618,3 +618,18 @@ leaving Lucas's real phone identity unclaimed for future live sync.
   current repository `firestore.rules` (it contains `match /settings/{settingId}` then
   `allow write: if true;`). Once published, retry the one-time historical import. This public write
   rule is a known integrity risk chosen by the owner for a no-login Settings experience.
+
+### 2026-07-28 — Codex historical Lucas import completed
+
+After the owner published the current Firestore rules, the approved one-time import succeeded.
+
+- Wrote only `settings/historicalData`, containing Lucas's 2026-07-28 spreadsheet history:
+  $473.50 revenue, 36 sold items, 12 aggregate returned/unsold items, $302.50 Square, and nine
+  named sales stops. The owner dashboard is confirmed live with the import-aware React build.
+- The two old test driver docs are hidden from owner-dashboard totals through the historical-data
+  configuration; they were not deleted.
+- The importer never wrote to any `drivers/*` document. A final read showed a `drivers/lucas`
+  document exists (presumably from Lucas's real app); it was not created, updated, or claimed by
+  the import. The historical record uses a separate ID with `mergeKey: "lucas"`, so dashboard
+  totals combine historical Lucas data and future live Lucas phone data safely.
+- Temporary import tooling and data payload files were removed from the repository after success.
