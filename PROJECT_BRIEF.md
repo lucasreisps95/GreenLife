@@ -491,3 +491,24 @@ Verified both the manager page and driver app inline JavaScript parse successful
 `97ce88d` contains the control center. Once Netlify deploys it, open `/manage.html` on the
 standalone dashboard URL, sign in with the Firebase owner account, make a small price change, save,
 then refresh a driver app before logging a new test sale to verify the new snapshot price.
+
+### 2026-07-28 — Codex integrated public Settings tab
+
+At the owner's explicit request, the separate management-page sign-in was removed and the controls
+were placed directly in the standalone owner dashboard as one additional **Settings** navigation
+item. The old `/manage.html` URL now immediately redirects to `/#settings`.
+
+- The Settings tab combines the two everyday control tasks: choose a weekday and change future
+  product prices; change the display names of drivers. The panel is compact, uses plain numbered
+  steps, and keeps the save action next to the relevant task.
+- The dashboard still uses saved item price snapshots for all sold-item revenue. A price change is
+  stored in `settings/menu` for driver apps to use after refresh/reopen, and cannot change prior
+  sales.
+- Because the owner explicitly removed all authorization from this control center, `settings/*`
+  writes are now public (`allow write: if true`). Anyone with the dashboard URL could alter future
+  prices or driver display names. This is a serious integrity trade-off and was made solely at the
+  owner's request for speed and no-login operation.
+- The new dashboard source is committed and pushed to both `main` and the Netlify production branch
+  `owner-dashboard-v2` as `f9f6b67`. Netlify should deploy it automatically. The matching updated
+  Firestore rules still must be copied into Firebase Console and **Published** before Settings can
+  save successfully.
