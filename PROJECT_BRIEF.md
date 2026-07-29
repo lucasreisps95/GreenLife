@@ -293,3 +293,31 @@ application or schema changes were made.
   both `/index.html` and `/admin.html` after the final push.
 - A headless visual pass was attempted locally, but the bundled browser runtime exited on a Windows
   filesystem-permission error. This is an environment limitation, not a passing UI test.
+
+### 2026-07-28 — Codex owner-access and production checks
+
+The owner supplied the Firebase email/password login and the Netlify production URL. Credentials
+were used only for verification and were not written to the repository.
+
+**Results:**
+
+- Firebase Email/Password authentication succeeds. The owner account UID is
+  `eq0DDMPneBbU3RZBo0WkMfcPSb63`.
+- Reading the `drivers` collection as that authenticated account returns HTTP 403. The owner must
+  create a Firestore document at `admins/eq0DDMPneBbU3RZBo0WkMfcPSb63` (document contents may be
+  empty) and ensure the committed `firestore.rules` are deployed. Until then, the admin dashboard
+  cannot read either test driver's data.
+- The supplied production URL is `https://statuesque-florentine-36259d.netlify.app/`. Its root
+  returns HTTP 200, but `/admin.html` and `/firebase-config.js` both return HTTP 404. The live root
+  also does not contain the current Firebase project configuration. Therefore this Netlify site is
+  serving an older or differently configured publish directory and is not deploying the current
+  `main` branch contents described above.
+
+**Human actions required before final verification:**
+
+1. In Firestore, create `admins/eq0DDMPneBbU3RZBo0WkMfcPSb63` and deploy `firestore.rules`.
+2. In Netlify, confirm the project is linked to `lucasreisps95/GreenLife`, production branch
+   `main`, with the repository root as its publish directory (no build command), then trigger a
+   production deploy of the latest commit.
+3. Re-run the two-driver numerical aggregation and historical price-snapshot checks after both
+   actions are complete.
