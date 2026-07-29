@@ -553,3 +553,22 @@ patterns, using `shadcndashboard/shadcndashboard` as the reference.
 - Added a footer attribution link to Shadcn Dashboard, whose reference repository is MIT-licensed.
 
 The feature commit is `a121169` on `owner-dashboard-v2`. Netlify should deploy it automatically.
+
+### 2026-07-28 — Codex owner metrics and bilingual refinements
+
+Owner requested a more practical overview based on data actually recorded in the driver app.
+
+- Replaced the Sales activity bars with a responsive SVG line graph of daily sales.
+- Replaced the unhelpful Cash expected card with **Square received**, calculated from driver-recorded
+  Square payment entries. The dashboard still shows driver commission and returned-food count.
+- Added **Top earning stops**, calculated from sold item price snapshots per named driver-app stop.
+  This is revenue, not profit: the system does not have meal costs, so it must not be called actual
+  profit.
+- Restored the EN/VI toggle for desktop and mobile. Key navigation, filters, overview cards, and
+  settings controls are translated; product names and driver/stop names remain as entered.
+- Redesigned the Settings driver section around a visible name field plus **Add driver** button and
+  clear remove buttons, rather than an icon-only control. Future driver removal never deletes sales.
+- Removed the visible Shadcn attribution footer at the owner’s request.
+
+Verified `npm run build` after the changes. Feature commit `43ac3fd` is pushed to the Netlify
+production branch. Live deployment should occur automatically.
