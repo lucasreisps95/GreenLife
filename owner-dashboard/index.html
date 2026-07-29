@@ -19,7 +19,7 @@
   .login-page{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(140deg,#dceadf,#eef4eb 55%,#dbe9e8)}.login-card{width:min(430px,100%);background:#fff;border:1px solid rgba(255,255,255,.7);border-radius:26px;padding:34px;box-shadow:0 24px 70px rgba(25,74,50,.14)}.login-card .brand{padding:0 0 24px}.login-card h1{font-family:'Space Grotesk',sans-serif;font-size:27px;margin:0 0 8px}.login-card>p{color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 24px}.login-card label{display:block;font-size:12px;font-weight:700;margin:14px 0 7px}.login-card input{width:100%;height:48px;border:1px solid var(--line);border-radius:12px;padding:0 14px;background:#fbfcfb}.login-card .login-btn{width:100%;height:50px;margin-top:18px;border:0;border-radius:13px;background:var(--green);color:#fff;font-weight:700;cursor:pointer}.err{color:var(--red);font-size:12px;margin-top:10px;line-height:1.5}.hint{color:var(--muted);font-size:11px;margin-top:18px;line-height:1.5;word-break:break-word}
   @media(max-width:1050px){.shell{grid-template-columns:82px minmax(0,1fr)}.sidebar{padding:24px 12px}.brand span:last-child,.nav-label,.nav a span:last-child,.sidebar-foot .signout{display:none}.brand{justify-content:center;padding-left:0;padding-right:0}.nav a{justify-content:center;padding:12px}.language{grid-template-columns:1fr}}
   @media(max-width:820px){.main{padding:22px 18px 90px}.summary-grid{grid-template-columns:1fr 1fr}.layout,.section-grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.top-actions{flex-wrap:wrap;justify-content:flex-end}.status{width:100%;justify-content:flex-end}}
-  @media(max-width:580px){.shell{display:block}.sidebar{position:fixed;z-index:20;left:0;right:0;bottom:0;top:auto;width:auto;height:72px;padding:8px 10px;border-right:0;border-top:1px solid var(--line)}.sidebar .brand,.nav-label,.sidebar-foot{display:none}.nav{grid-template-columns:repeat(5,1fr)}.nav a{display:grid;place-items:center;gap:2px;padding:7px 2px;font-size:9px}.nav a span:last-child{display:block}.nav-icon{font-size:18px}.main{padding:20px 13px 94px}.topbar{display:block}.topbar h1{font-size:28px}.top-actions{margin-top:16px;justify-content:flex-start}.status{justify-content:flex-start}.summary-grid{grid-template-columns:1fr}.metric{padding:17px}.metric-value{font-size:28px}.card{padding:17px}.chart{height:210px;gap:5px}.progress-row{grid-template-columns:minmax(90px,1fr) 1.4fr auto}}
+  @media(max-width:580px){.shell{display:block}.sidebar{position:fixed;z-index:20;left:0;right:0;bottom:0;top:auto;width:auto;height:72px;padding:8px 10px;border-right:0;border-top:1px solid var(--line)}.sidebar .brand,.nav-label,.sidebar-foot{display:none}.nav{grid-template-columns:repeat(3,1fr)}.nav a{display:grid;place-items:center;gap:2px;padding:7px 2px;font-size:9px}.nav a span:last-child{display:block}.nav-icon{font-size:18px}.main{padding:20px 13px 94px}.topbar{display:block}.top-actions{margin-top:16px;justify-content:flex-start}.status{justify-content:flex-start}.summary-grid{grid-template-columns:1fr}.metric{padding:17px}.metric-value{font-size:28px}.card{padding:17px}.chart{height:210px;gap:5px}.progress-row{grid-template-columns:minmax(90px,1fr) 1.4fr auto}}
   /* Compact owner view: keep the important information above the fold. */
   .main{padding:22px 26px 34px}
   .topbar{margin-bottom:16px}.topbar h1{font-size:29px}
@@ -30,6 +30,7 @@
   .pulse-card .card-sub{color:rgba(255,255,255,.75)}.pulse-card h2{color:#fff}.pulse-number{position:relative;z-index:1;font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-1.5px;margin:14px 0 2px}.pulse-copy{position:relative;z-index:1;font-size:13px;color:rgba(255,255,255,.86);line-height:1.45;max-width:290px}.pulse-tags{position:relative;z-index:1;display:flex;gap:7px;flex-wrap:wrap;margin-top:17px}.pulse-tag{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.12);padding:6px 9px;border-radius:99px;font-size:11px;font-weight:700}
   .quick-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}.quick-stat{padding:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.09);border-radius:12px}.quick-stat b{display:block;font-size:16px}.quick-stat span{font-size:10px;color:rgba(255,255,255,.75)}
   @media(max-width:820px){.main{padding:18px 15px 88px}.chart{height:155px}.pulse-number{font-size:34px}.settings-layout{grid-template-columns:1fr}}
+  .remove-setting{height:31px;border:0;border-radius:8px;background:#fff0ee;color:var(--red);font-weight:800;cursor:pointer}.setting-row{grid-template-columns:minmax(0,1fr) 84px 31px}.add-product{display:grid;grid-template-columns:minmax(0,1fr) 84px auto;gap:8px;padding:8px 0 2px}.add-product input{height:37px;border:1px dashed #aebcb0;border-radius:9px;padding:0 9px}.add-product button{height:37px}.add-driver{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:10px 0}.add-driver input{height:40px;border:1px dashed #aebcb0;border-radius:10px;padding:0 10px}.driver-setting{grid-template-columns:minmax(0,1fr) 31px;align-items:end}.driver-setting label{grid-column:1/-1}.driver-setting .setting-name{width:100%}.settings-page-title{margin-bottom:18px}.settings-page-title p{margin:6px 0 0;color:var(--muted);font-size:14px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -41,12 +42,9 @@
     <div class="brand"><span class="brand-mark">✦</span><span>GreenLife</span></div>
     <div class="nav-label" data-i18n="menu">Menu</div>
     <nav class="nav" aria-label="Dashboard sections">
-      <a class="active" href="#overview"><span class="nav-icon">⌂</span><span data-i18n="overview">Overview</span></a>
-      <a href="#drivers"><span class="nav-icon">♟</span><span data-i18n="drivers">Drivers</span></a>
-      <a href="#sales"><span class="nav-icon">↗</span><span data-i18n="sales">Sales</span></a>
-      <a href="#cash"><span class="nav-icon">$</span><span data-i18n="cash">Cash</span></a>
-      <a href="#returns"><span class="nav-icon">↩</span><span data-i18n="returns">Returns</span></a>
-      <a href="#settings"><span class="nav-icon">⚙</span><span>Settings</span></a>
+      <a class="active" data-view="overview" href="#overview"><span class="nav-icon">⌂</span><span data-i18n="overview">Overview</span></a>
+      <a data-view="drivers" href="#drivers"><span class="nav-icon">♟</span><span>Drivers</span></a>
+      <a data-view="settings" href="#settings"><span class="nav-icon">⚙</span><span>Settings</span></a>
     </nav>
     <div class="sidebar-foot">
       <div class="language" aria-label="Language">
@@ -203,7 +201,7 @@ function dayCashMoves(day){
 }
 
 // ---- Firebase ----
-let fbDb, sharedMenu, driverLabels={};
+let fbDb, sharedMenu, driverLabels={}, manualDrivers=[];
 function initFirebase(){
   firebase.initializeApp(FIREBASE_CONFIG);
   fbDb = firebase.firestore();
@@ -226,6 +224,7 @@ async function loadSharedSettings(){
   ]);
   sharedMenu = menuSnap.exists && menuSnap.data().weeklyMenu ? JSON.parse(JSON.stringify(menuSnap.data().weeklyMenu)) : JSON.parse(JSON.stringify(MENU));
   driverLabels = labelsSnap.exists ? (labelsSnap.data().labels || {}) : {};
+  manualDrivers = labelsSnap.exists ? (labelsSnap.data().manualDrivers || []) : [];
 }
 
 const TEXT = {
@@ -267,6 +266,7 @@ const TEXT = {
   }
 };
 let currentLanguage = localStorage.getItem('greenlife-admin-language') || 'en';
+let currentView = location.hash==='#settings' ? 'settings' : location.hash==='#drivers' ? 'drivers' : 'overview';
 let currentDrivers = [];
 let autoRefreshTimer;
 function t(key){ return (TEXT[currentLanguage]&&TEXT[currentLanguage][key]) || TEXT.en[key] || key; }
@@ -298,14 +298,14 @@ function applyLanguage(){
   ['today','week','month','all'].forEach((key,i)=>{ options[i].textContent=t(key); });
   document.getElementById('langEn').classList.toggle('active',currentLanguage==='en');
   document.getElementById('langVi').classList.toggle('active',currentLanguage==='vi');
-  if(currentDrivers.length) renderDashboard(currentDrivers);
+  if(currentDrivers.length) renderCurrentView();
 }
 
 function renderDashboard(allDrivers){
   const content = document.getElementById('content');
   const drivers = filterDrivers(allDrivers);
   const totalDays = drivers.reduce((s,d)=>s+d.days.length,0);
-  if(totalDays===0){ content.innerHTML='<div class="card"><div class="empty">'+t('noData')+'</div></div>'+settingsHtml(); return; }
+  if(totalDays===0){ content.innerHTML='<div class="card"><div class="empty">'+t('noData')+'</div></div>'; return; }
   let totalRevenue=0,totalRealFee=0,totalWasteValue=0,totalWasteCount=0,totalOwed=0,totalCash=0,totalItems=0;
   const soldAgg={},daily={};
   const perDriver=drivers.map(drv=>{
@@ -335,21 +335,27 @@ function renderDashboard(allDrivers){
     pulseHtml(totalRevenue,totalWasteValue,totalWasteCount,totalOwed,alerts)+'</section>'+
     '<section class="section-grid"><div class="card" id="drivers"><div class="card-head"><div><h2>'+t('driversTitle')+'</h2><div class="card-sub">'+t('driversHelp')+'</div></div></div><div class="table-wrap"><table><thead><tr><th>'+t('driver')+'</th><th class="number">'+t('revenue')+'</th><th class="number">'+t('commission')+'</th><th class="number">'+t('items')+'</th></tr></thead><tbody>'+perDriver.map((d,i)=>'<tr><td><div class="driver-name"><span class="avatar">'+escapeHtml(initials(d.name))+'</span><span><span class="rank">#'+(i+1)+'</span> '+escapeHtml(d.name)+'</span></div></td><td class="number">'+fmtMoney(d.rev)+'</td><td class="number">'+fmtMoney(d.commission)+'</td><td class="number">'+d.itemsSold+'</td></tr>').join('')+'</tbody></table></div></div>'+
     '<div class="card" id="returns"><div class="card-head"><div><h2>'+t('best')+'</h2><div class="card-sub">'+t('bestHelp')+'</div></div></div>'+(bestSellers.length?bestSellers.map(([name,qty])=>'<div class="progress-row"><div class="progress-name" title="'+escapeHtml(name)+'">'+escapeHtml(name)+'</div><div class="track"><div class="fill" style="width:'+Math.round(qty/maxSeller*100)+'%"></div></div><div class="progress-value">'+qty+'</div></div>').join(''):'<div class="empty">'+t('noData')+'</div>')+'</div></section>'+
-    '<section class="card" id="cash"><div class="card-head"><div><h2>'+t('cashTitle')+'</h2><div class="card-sub">'+t('cashHelpTitle')+'</div></div></div><div class="table-wrap"><table><thead><tr><th>'+t('driver')+'</th><th class="number">'+t('cashSales')+'</th><th class="number">'+t('cashAdded')+'</th><th class="number">'+t('change')+'</th><th class="number">'+t('netCash')+'</th></tr></thead><tbody>'+perDriver.map(d=>'<tr><td><div class="driver-name"><span class="avatar">'+escapeHtml(initials(d.name))+'</span>'+escapeHtml(d.name)+'</div></td><td class="number">'+fmtMoney(d.cashSales)+'</td><td class="number">'+fmtMoney(d.topups)+'</td><td class="number">'+fmtMoney(d.changeGiven)+'</td><td class="number">'+fmtMoney(d.netCash)+'</td></tr>').join('')+'</tbody></table></div><div class="updated">'+t('updated')+': '+new Intl.DateTimeFormat(currentLanguage==='vi'?'vi-VN':'en-US',{dateStyle:'medium',timeStyle:'short'}).format(new Date())+'</div></section>'+settingsHtml();
+    '<section class="card" id="cash"><div class="card-head"><div><h2>'+t('cashTitle')+'</h2><div class="card-sub">'+t('cashHelpTitle')+'</div></div></div><div class="table-wrap"><table><thead><tr><th>'+t('driver')+'</th><th class="number">'+t('cashSales')+'</th><th class="number">'+t('cashAdded')+'</th><th class="number">'+t('change')+'</th><th class="number">'+t('netCash')+'</th></tr></thead><tbody>'+perDriver.map(d=>'<tr><td><div class="driver-name"><span class="avatar">'+escapeHtml(initials(d.name))+'</span>'+escapeHtml(d.name)+'</div></td><td class="number">'+fmtMoney(d.cashSales)+'</td><td class="number">'+fmtMoney(d.topups)+'</td><td class="number">'+fmtMoney(d.changeGiven)+'</td><td class="number">'+fmtMoney(d.netCash)+'</td></tr>').join('')+'</tbody></table></div><div class="updated">'+t('updated')+': '+new Intl.DateTimeFormat(currentLanguage==='vi'?'vi-VN':'en-US',{dateStyle:'medium',timeStyle:'short'}).format(new Date())+'</div></section>';
 }
 function settingsHtml(){
   if(!sharedMenu) return '';
   const weekday=new Date().toLocaleDateString('en-US',{weekday:'long'});
   const selected=sharedMenu[weekday]?weekday:Object.keys(sharedMenu)[0];
-  const priceRows=(day)=>Object.entries(sharedMenu[day]||{}).map(([category,items])=>'<div class="settings-category">'+escapeHtml(category)+'</div>'+items.map(([name,price],i)=>'<div class="setting-row"><label title="'+escapeHtml(name)+'">'+escapeHtml(name)+'</label><input class="setting-price" type="number" min="0" step="0.01" value="'+Number(price).toFixed(2)+'" data-category="'+escapeHtml(category)+'" data-index="'+i+'" aria-label="Price for '+escapeHtml(name)+'"></div>').join('')).join('');
-  const driverRows=currentDrivers.map(d=>'<div class="driver-setting"><label>'+escapeHtml(d.driverId)+'</label><input class="setting-name" data-driver="'+escapeHtml(d.driverId)+'" value="'+escapeHtml(d.name)+'" aria-label="Driver name"></div>').join('') || '<div class="card-sub">Drivers will appear after their first sync.</div>';
-  return '<section class="card settings-card" id="settings"><div class="settings-intro"><div><h2>Settings</h2><p>Change future product prices and the names shown for drivers.</p></div><div class="settings-step">Save changes</div></div><div class="settings-layout"><div><div class="settings-step">1. Choose day, then change a price</div><div class="settings-toolbar"><select id="settingsDay" aria-label="Choose weekday">'+Object.keys(sharedMenu).map(d=>'<option '+(d===selected?'selected':'')+'>'+escapeHtml(d)+'</option>').join('')+'</select><button class="save-settings" id="savePrices">Save prices</button></div><div id="settingsPrices">'+priceRows(selected)+'</div></div><div><div class="settings-step">2. Change driver name</div><div class="driver-settings">'+driverRows+'</div><button class="save-settings" id="saveDriverNames" style="margin-top:10px">Save driver names</button></div></div><div id="settingsMessage" class="settings-message">New prices are used only for future sales. Past sales keep their recorded price.</div></section>';
+  const priceRows=(day)=>Object.entries(sharedMenu[day]||{}).map(([category,items])=>'<div class="settings-category">'+escapeHtml(category)+'</div>'+items.map(([name,price],i)=>'<div class="setting-row"><label title="'+escapeHtml(name)+'">'+escapeHtml(name)+'</label><input class="setting-price" type="number" min="0" step="0.01" value="'+Number(price).toFixed(2)+'" data-category="'+escapeHtml(category)+'" data-index="'+i+'" aria-label="Price for '+escapeHtml(name)+'"><button class="remove-setting" data-remove-product="1" data-category="'+escapeHtml(category)+'" data-index="'+i+'" title="Remove product">×</button></div>').join('')+'<div class="add-product"><input data-new-name="'+escapeHtml(category)+'" placeholder="New product"><input data-new-price="'+escapeHtml(category)+'" type="number" min="0" step="0.01" placeholder="Price"><button class="secondary" data-add-product="'+escapeHtml(category)+'">Add</button></div>').join('');
+  const actual=currentDrivers.map(d=>({id:d.driverId,name:d.name,manual:false}));const allDrivers=[...actual,...manualDrivers.filter(m=>!actual.some(d=>d.id===m.id)).map(m=>({id:m.id,name:driverLabels[m.id]||m.name,manual:true}))];
+  const driverRows=allDrivers.map(d=>'<div class="driver-setting"><label>'+escapeHtml(d.id)+(d.manual?' · new driver':'')+'</label><input class="setting-name" data-driver="'+escapeHtml(d.id)+'" value="'+escapeHtml(d.name)+'" aria-label="Driver name">'+(d.manual?'<button class="remove-setting" data-remove-driver="'+escapeHtml(d.id)+'" title="Remove driver">×</button>':'')+'</div>').join('') || '<div class="card-sub">Add a driver below. They will appear in Overview after their first app sync.</div>';
+  return '<section class="card settings-card" id="settings"><div class="settings-intro"><div><h2>Settings</h2><p>Change future product prices and manage the driver list.</p></div><div class="settings-step">Save changes</div></div><div class="settings-layout"><div><div class="settings-step">1. Products and prices</div><div class="settings-toolbar"><select id="settingsDay" aria-label="Choose weekday">'+Object.keys(sharedMenu).map(d=>'<option '+(d===selected?'selected':'')+'>'+escapeHtml(d)+'</option>').join('')+'</select><button class="save-settings" id="savePrices">Save prices</button></div><div id="settingsPrices">'+priceRows(selected)+'</div></div><div><div class="settings-step">2. Drivers</div><div class="driver-settings">'+driverRows+'</div><div class="add-driver"><input id="newDriverName" placeholder="New driver name"><button class="secondary" id="addDriver">Add driver</button></div><button class="save-settings" id="saveDriverNames">Save driver names</button></div></div><div id="settingsMessage" class="settings-message">New prices are used only for future sales. Past sales keep their recorded price.</div></section>';
 }
-function renderSettingsPrices(){const day=document.getElementById('settingsDay').value;document.getElementById('settingsPrices').innerHTML=Object.entries(sharedMenu[day]||{}).map(([category,items])=>'<div class="settings-category">'+escapeHtml(category)+'</div>'+items.map(([name,price],i)=>'<div class="setting-row"><label title="'+escapeHtml(name)+'">'+escapeHtml(name)+'</label><input class="setting-price" type="number" min="0" step="0.01" value="'+Number(price).toFixed(2)+'" data-category="'+escapeHtml(category)+'" data-index="'+i+'" aria-label="Price for '+escapeHtml(name)+'"></div>').join('')).join('');}
+function renderSettingsPrices(){const day=document.getElementById('settingsDay').value;document.getElementById('settingsPrices').innerHTML=Object.entries(sharedMenu[day]||{}).map(([category,items])=>'<div class="settings-category">'+escapeHtml(category)+'</div>'+items.map(([name,price],i)=>'<div class="setting-row"><label title="'+escapeHtml(name)+'">'+escapeHtml(name)+'</label><input class="setting-price" type="number" min="0" step="0.01" value="'+Number(price).toFixed(2)+'" data-category="'+escapeHtml(category)+'" data-index="'+i+'" aria-label="Price for '+escapeHtml(name)+'"><button class="remove-setting" data-remove-product="1" data-category="'+escapeHtml(category)+'" data-index="'+i+'">×</button></div>').join('')+'<div class="add-product"><input data-new-name="'+escapeHtml(category)+'" placeholder="New product"><input data-new-price="'+escapeHtml(category)+'" type="number" min="0" step="0.01" placeholder="Price"><button class="secondary" data-add-product="'+escapeHtml(category)+'">Add</button></div>').join('');}
 function capturePrices(){const day=document.getElementById('settingsDay').value;document.querySelectorAll('.setting-price').forEach(input=>{sharedMenu[day][input.dataset.category][Number(input.dataset.index)][1]=Math.max(0,Number(input.value)||0);});}
 function setSettingsMessage(message,error=false){const el=document.getElementById('settingsMessage');if(el){el.textContent=message;el.classList.toggle('error',error);}}
 async function savePrices(){capturePrices();try{await fbDb.collection('settings').doc('menu').set({weeklyMenu:sharedMenu,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});setSettingsMessage('Prices saved. Drivers use the new prices after they refresh or reopen their app.');}catch(e){setSettingsMessage('Could not save prices: '+e.message,true);}}
-async function saveDriverNames(){const labels={};document.querySelectorAll('.setting-name').forEach(input=>{if(input.value.trim())labels[input.dataset.driver]=input.value.trim();});try{await fbDb.collection('settings').doc('driverDirectory').set({labels,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});driverLabels=labels;currentDrivers.forEach(d=>{d.name=labels[d.driverId]||d.name;});renderDashboard(currentDrivers);setSettingsMessage('Driver names saved.');}catch(e){setSettingsMessage('Could not save driver names: '+e.message,true);}}
+async function saveDriverNames(){const labels={};document.querySelectorAll('.setting-name').forEach(input=>{if(input.value.trim())labels[input.dataset.driver]=input.value.trim();});try{await fbDb.collection('settings').doc('driverDirectory').set({labels,manualDrivers,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});driverLabels=labels;currentDrivers.forEach(d=>{d.name=labels[d.driverId]||d.name;});setSettingsMessage('Driver names saved.');}catch(e){setSettingsMessage('Could not save driver names: '+e.message,true);}}
+function slugify(name){return name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
+function addProduct(category){capturePrices();const name=document.querySelector('[data-new-name="'+CSS.escape(category)+'"]').value.trim(),price=Number(document.querySelector('[data-new-price="'+CSS.escape(category)+'"]').value);if(!name||!Number.isFinite(price)||price<0){setSettingsMessage('Enter a product name and price first.',true);return;}sharedMenu[document.getElementById('settingsDay').value][category].push([name,price]);renderSettingsPrices();}
+function removeProduct(category,index){capturePrices();sharedMenu[document.getElementById('settingsDay').value][category].splice(Number(index),1);renderSettingsPrices();}
+function addDriver(){const input=document.getElementById('newDriverName'),name=input.value.trim(),id=slugify(name);if(!name||!id){setSettingsMessage('Enter the driver name first.',true);return;}if(currentDrivers.some(d=>d.driverId===id)||manualDrivers.some(d=>d.id===id)){setSettingsMessage('That driver is already in the list.',true);return;}manualDrivers.push({id,name});driverLabels[id]=name;document.getElementById('content').innerHTML=settingsHtml();setSettingsMessage('New driver added. Click “Save driver names.”');}
+function removeDriver(id){manualDrivers=manualDrivers.filter(d=>d.id!==id);delete driverLabels[id];document.getElementById('content').innerHTML=settingsHtml();setSettingsMessage('Driver removed from the list. Existing sales are kept safe.');}
 function metricHtml(icon,label,value,note,kind=''){return '<article class="metric '+kind+'"><div class="metric-head"><span>'+label+'</span><span class="metric-icon">'+icon+'</span></div><div class="metric-value">'+value+'</div><div class="metric-note">'+note+'</div></article>';}
 function pulseHtml(revenue,unsoldValue,unsoldCount,owed,alerts){
   const hasRisk=unsoldCount>0||owed>0;
@@ -362,13 +368,28 @@ function alertHtml(kind,icon,title,body){return '<div class="alert '+kind+'"><di
 function fmtShortMoney(n){return n>=1000?'$'+(n/1000).toFixed(1)+'k':'$'+Math.round(n);}
 function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+function renderDriversView(){
+  const content=document.getElementById('content'),drivers=filterDrivers(currentDrivers);
+  const rows=drivers.map(d=>{let sold=0,returned=0,revenue=0;d.days.forEach(day=>{sold+=Object.values(dayItemsSold(day)).reduce((s,n)=>s+n,0);returned+=dayReturnedValue(day).count;revenue+=dayRevenue(day);});return {name:d.name,taken:sold+returned,sold,returned,revenue,commission:revenue*COMMISSION_RATE};}).sort((a,b)=>b.revenue-a.revenue);
+  content.innerHTML='<div class="settings-page-title"><h2>Driver performance</h2><p>See what each driver took, sold, returned, and earned.</p></div><section class="card"><div class="table-wrap"><table><thead><tr><th>Driver</th><th class="number">Taken*</th><th class="number">Sold</th><th class="number">Returned</th><th class="number">Sales</th><th class="number">Commission</th></tr></thead><tbody>'+(rows.length?rows.map(d=>'<tr><td><div class="driver-name"><span class="avatar">'+escapeHtml(initials(d.name))+'</span>'+escapeHtml(d.name)+'</div></td><td class="number">'+d.taken+'</td><td class="number">'+d.sold+'</td><td class="number">'+d.returned+'</td><td class="number">'+fmtMoney(d.revenue)+'</td><td class="number">'+fmtMoney(d.commission)+'</td></tr>').join(''):'<tr><td colspan="6" class="empty">'+t('noData')+'</td></tr>')+'</tbody></table></div><p class="card-sub" style="margin:12px 0 0">*Taken is estimated as items sold plus items returned, based on the driver records.</p></section>';
+}
+function renderCurrentView(){
+  const top=document.querySelector('.topbar'),title=top.querySelector('h1'),subtitle=document.getElementById('welcomeText'),actions=top.querySelector('.top-actions');
+  document.querySelectorAll('.nav a[data-view]').forEach(a=>a.classList.toggle('active',a.dataset.view===currentView));
+  if(currentView==='settings'){title.textContent='Settings';subtitle.textContent='Menu and driver controls.';actions.classList.add('hidden');document.getElementById('content').innerHTML='<div class="settings-page-title"><h2>Control center</h2><p>Use these controls to prepare future routes. Previous sales are never changed.</p></div>'+settingsHtml();return;}
+  actions.classList.remove('hidden');
+  if(currentView==='drivers'){title.textContent='Drivers';subtitle.textContent='Driver route and sales performance.';renderDriversView();return;}
+  title.textContent=t('overview');subtitle.textContent=t('welcome');renderDashboard(currentDrivers);
+}
+function setView(view){currentView=view;location.hash=view;renderCurrentView();}
+
 async function refresh(){
   const content = document.getElementById('content');
   content.innerHTML = '<div class="card"><div class="empty">'+t('loading')+'</div></div>';
   try{
     await loadSharedSettings();
     currentDrivers = await loadAllDriverData();
-    renderDashboard(currentDrivers);
+    renderCurrentView();
   }catch(e){
     content.innerHTML = '<div class="card"><div class="empty">'
       + 'Could not load data: '+escapeHtml(e.message||String(e))
@@ -377,11 +398,13 @@ async function refresh(){
 }
 
 document.getElementById('refreshBtn').addEventListener('click', refresh);
-document.getElementById('rangeFilter').addEventListener('change', ()=>renderDashboard(currentDrivers));
+document.getElementById('rangeFilter').addEventListener('change', ()=>renderCurrentView());
 document.getElementById('langEn').addEventListener('click', ()=>{ currentLanguage='en';localStorage.setItem('greenlife-admin-language',currentLanguage);applyLanguage(); });
 document.getElementById('langVi').addEventListener('click', ()=>{ currentLanguage='vi';localStorage.setItem('greenlife-admin-language',currentLanguage);applyLanguage(); });
 document.getElementById('content').addEventListener('change',e=>{if(e.target.id==='settingsDay'){capturePrices();renderSettingsPrices();}});
-document.getElementById('content').addEventListener('click',e=>{if(e.target.id==='savePrices')savePrices();if(e.target.id==='saveDriverNames')saveDriverNames();});
+document.getElementById('content').addEventListener('click',e=>{const b=e.target;if(b.id==='savePrices')savePrices();if(b.id==='saveDriverNames')saveDriverNames();if(b.dataset.addProduct)addProduct(b.dataset.addProduct);if(b.dataset.removeProduct)removeProduct(b.dataset.category,b.dataset.index);if(b.id==='addDriver')addDriver();if(b.dataset.removeDriver)removeDriver(b.dataset.removeDriver);});
+document.querySelectorAll('.nav a[data-view]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();setView(a.dataset.view);}));
+window.addEventListener('hashchange',()=>{const view=location.hash==='#settings'?'settings':location.hash==='#drivers'?'drivers':'overview';if(view!==currentView){currentView=view;renderCurrentView();}});
 
 function boot(){
   if(!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey.indexOf('REPLACE_ME')===0){
