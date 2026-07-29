@@ -348,3 +348,36 @@ can be performed in this environment are now complete. A real two-physical-devic
 still advisable before rollout, but the two independent anonymous identities, write isolation,
 cloud records, admin aggregation, live deployment, and price-snapshot behavior have all been
 verified.
+
+### 2026-07-28 — Codex owner dashboard v2 frontend
+
+Created and pushed the review branch `owner-dashboard-v2`; `main` and the current live owner
+dashboard were intentionally left unchanged.
+
+**What changed in `admin.html`:**
+
+- Rebuilt the owner interface around large, plain-language summary cards for total sales, driver
+  commission, expected cash, and customer balances still owed.
+- Added simple date filters for today, this week, this month, and all time.
+- Added a daily sales chart, plain-sentence attention alerts, driver comparison, best sellers, and
+  cash-by-driver reconciliation.
+- Added a persistent English/Vietnamese switch. Vietnamese was chosen because the owner is
+  Vietnamese with limited English; the translation covers login, navigation, filters, metrics,
+  tables, alerts, and status text.
+- Added responsive desktop, tablet, and phone layouts inspired by the two owner-provided dashboard
+  references, while preserving GreenLife's green/teal identity and avoiding dense business jargon.
+- Preserved the existing Firebase auth/schema and every calculation function. Sold revenue still
+  comes only from each item's saved `price` snapshot.
+
+**Verification:**
+
+- Tested the branch locally against the real Firebase project and both existing driver records.
+- Dashboard values remain exact: `$32.00` revenue, `$9.60` commission, two drivers, two items sold.
+- Vietnamese overview renders correctly as `Tổng quan`.
+- No JavaScript page errors occurred and a 390px-wide phone viewport had zero page-level horizontal
+  overflow.
+- A full-page visual screenshot was inspected; temporary screenshot/test files and the supplied
+  owner credentials were removed before committing and were never pushed.
+
+Next step: create or use Netlify's deploy preview for `owner-dashboard-v2`, let the owner review it
+on her actual phone/tablet, then merge the branch to `main` only after approval.
