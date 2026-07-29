@@ -7,3 +7,10 @@ export const GREENLIFE_DEFAULT_MENU = {
   Thursday:{Breakfast:[["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],Salads:[["Super Taco Salad",15],["Turkey Cobb Salad",15]],Sandwiches:[["Chicken Salad Sandwich",15]],Wraps:[["Chicken Spring Rolls",15],["Buffalo Chicken Wrap",15]],"Hot Plates":[["Broccoli Beef w/ Brown Rice",16],["Meat Lasagna",16],["Rosemary Chicken w/ Mashed Potatoes",16]],Sushi:[["California Roll",12],["Rainbow Roll (special order)",18]],"Protein Plates":[["Hot Honey Chicken",15]],Treats:[["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],Drinks:[["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]},
   Friday:{Breakfast:[["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Breakfast Bowl",16]],Salads:[["Super Taco Salad",15],["Grilled Chicken Quinoa Salad",15]],Sandwiches:[["Chicken Salad Sandwich",15],["Smoked Turkey and Swiss",15]],Wraps:[["Chicken Spring Rolls",15],["Summer Turkey Wrap",15]],"Hot Plates":[["Shrimp Spinach Capellini",16],["Chicken Lemon Garlic Pasta",16]],Sushi:[["California Roll",12]],"Protein Plates":[["Chicken Salad Protein Plate",15]],Treats:[["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],Drinks:[["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]}
 };
+
+// Keep the dashboard's starting catalog aligned with the driver app's five-day menu.
+for (const weekdayMenu of Object.values(GREENLIFE_DEFAULT_MENU)) {
+  if (!weekdayMenu.Breakfast.some(([name]) => name === 'Steak Burrito')) {
+    weekdayMenu.Breakfast.splice(2, 0, ['Steak Burrito', 13]);
+  }
+}
