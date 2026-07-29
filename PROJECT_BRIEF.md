@@ -449,3 +449,19 @@ password flow.
 The no-login change is committed as `9e98133`. After Netlify deploys that commit, publish the
 matching `firestore.rules` in Firebase Console → Firestore Database → Rules, then reload the
 standalone dashboard URL.
+
+### 2026-07-28 — Codex five-minute owner dashboard refresh
+
+Added a gentle automatic data refresh to both `admin.html` and the standalone
+`owner-dashboard/index.html`.
+
+- The dashboard now runs its existing read-only refresh function every five minutes and displays a
+  small “Updates every 5 minutes” notice (translated to Vietnamese as well).
+- The manual Refresh button remains available.
+- Verified at a 390px phone viewport: the no-login dashboard still has zero horizontal overflow and
+  the refresh notice renders correctly.
+- This does not write, alter, or recalculate sales. It only re-reads Firestore data. With the two
+  current drivers, it is well within Firestore’s free daily read allowance for normal owner use;
+  public access remains the larger usage/privacy consideration.
+
+The refresh change is committed as `ec68370` on `owner-dashboard-v2`.
