@@ -1871,7 +1871,23 @@ function attachHandlers(){
   });
 
   const menuSelect = document.getElementById('menuSelect');
-  if(menuSelect) menuSelect.addEventListener('change', e=>{ setMenuOverride(e.target.value); });
+  if(menuSelect){
+    menuSelect.addEventListener('change', async e=>{
+      const val = e.target.value;
+      if(val === ''){
+        const real = todayStr();
+        if(state.date !== real){ await selectDate(real); }
+        if(state.day.menuOverride !== null){ await setMenuOverride(''); }
+      } else {
+        setMenuOverride(val);
+      }
+    });
+    menuSelect.addEventListener('click', async ()=>{
+      if(menuSelect.value === '' && state.date !== todayStr()){
+        await selectDate(todayStr());
+      }
+    });
+  }
 
   document.querySelectorAll('.tab').forEach(t=>{
     t.addEventListener('click', ()=>{ state.tab = t.dataset.tab; render(); });
