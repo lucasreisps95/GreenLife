@@ -1165,7 +1165,7 @@ function dayRealSquareFee(day){
   Object.values(day.stops).forEach(st=>{
     (st.payments||[]).forEach(p=>{
       if(p.method === 'Square'){
-        t += p.amount * SQUARE_REAL_RATE + SQUARE_REAL_FLAT;
+        t += r2(p.amount * SQUARE_REAL_RATE + SQUARE_REAL_FLAT);
       }
     });
   });
