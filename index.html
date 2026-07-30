@@ -460,7 +460,8 @@ const TRANSLATIONS = {
     real_fee_title:"Real Square Fee", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
     charged_fee:"You charged (flat $0.50/sale)", real_fee:"Square actually took", fee_gap:"Your gap",
     txn_count:"Square transactions",
-    payment_methods:"Payment methods (all days)", best_sellers:"Best sellers",
+    payment_methods:"Payment methods (all days)", payment_methods_scoped:"Payment methods ({scope})",
+    scope_today:"today", scope_all_days:"all days", best_sellers:"Best sellers",
     waste_title:"Consistently coming back (waste)", lost_sales:"Requested but not carried (lost sales)",
     export_title:"Export", export_excel:"Download Excel workbook (all data, one file)", export_day:"Download day-by-day CSV", export_item:"Download item-by-item CSV",
     export_copy:"Copy summary as text", export_note:"The Excel file has both day and item data as separate tabs, with filters and a frozen header row. CSVs are plain backups.",
@@ -506,7 +507,8 @@ const TRANSLATIONS = {
     real_fee_title:"Cargo real de Square", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
     charged_fee:"Cobraste (fijo $0.50/venta)", real_fee:"Square realmente cobró", fee_gap:"Tu diferencia",
     txn_count:"Transacciones de Square",
-    payment_methods:"Métodos de pago (todos los días)", best_sellers:"Más vendidos",
+    payment_methods:"Métodos de pago (todos los días)", payment_methods_scoped:"Métodos de pago ({scope})",
+    scope_today:"hoy", scope_all_days:"todos los días", best_sellers:"Más vendidos",
     waste_title:"Siempre regresa (desperdicio)", lost_sales:"Pedido pero no disponible (ventas perdidas)",
     export_title:"Exportar", export_excel:"Descargar libro de Excel (todo en un archivo)", export_day:"Descargar CSV por día", export_item:"Descargar CSV por artículo",
     export_copy:"Copiar resumen como texto", export_note:"El archivo de Excel tiene los datos de días y artículos en pestañas separadas, con filtros y encabezado fijo. Los CSV son solo respaldo.",
@@ -904,33 +906,34 @@ function removeCashMove(idx){
   stop.cashMoves.splice(idx,1);
   persistDay();
 }
+function r2(n){ return Math.round((n + Number.EPSILON) * 100) / 100; }
 function dayCashSales(day){
   let t = 0;
   Object.values(day.stops).forEach(st=>{
     (st.payments||[]).forEach(p=>{ if(p.method==='Cash') t += p.amount; });
   });
-  return t;
+  return r2(t);
 }
 function dayChangeGiven(day){
   let t = 0;
   Object.values(day.stops).forEach(st=>{
     (st.cashMoves||[]).forEach(c=>{ if(c.type==='change') t += c.amount; });
   });
-  return t;
+  return r2(t);
 }
 function dayCashTopUps(day){
   let t = 0;
   Object.values(day.stops).forEach(st=>{
     (st.cashMoves||[]).forEach(c=>{ if(c.type==='topup') t += c.amount; });
   });
-  return t;
+  return r2(t);
 }
 function expectedCash(day){
   const start = day.startFloat || 0;
-  return start + dayCashSales(day) + dayCashTopUps(day) - dayChangeGiven(day);
+  return r2(start + dayCashSales(day) + dayCashTopUps(day) - dayChangeGiven(day));
 }
 function stopChangeGiven(stop){
-  return (stop.cashMoves||[]).reduce((s,c)=>s + (c.type==='change'?c.amount:0), 0);
+  return r2((stop.cashMoves||[]).reduce((s,c)=>s + (c.type==='change'?c.amount:0), 0));
 }
 
 function nowTime(){
@@ -1085,15 +1088,15 @@ function stopItemCount(stop){
   return Object.values(stop.items||{}).reduce((s,v)=>s+(v.sold||0), 0);
 }
 function stopCollectedTotal(stop){
-  return (stop.payments||[]).reduce((s,p)=>s+(p.amount-(p.fee||0)), 0);
+  return r2((stop.payments||[]).reduce((s,p)=>s+(p.amount-(p.fee||0)), 0));
 }
 function stopFeesTotal(stop){
-  return (stop.payments||[]).reduce((s,p)=>s+(p.fee||0), 0);
+  return r2((stop.payments||[]).reduce((s,p)=>s+(p.fee||0), 0));
 }
 function dayFeesTotal(day){
   let t = 0;
   Object.values(day.stops).forEach(st=>{ t += stopFeesTotal(st); });
-  return t;
+  return r2(t);
 }
 const SQUARE_REAL_RATE = 0.026;
 const SQUARE_REAL_FLAT = 0.10;
@@ -1106,7 +1109,7 @@ function dayRealSquareFee(day){
       }
     });
   });
-  return Math.round(t*100)/100;
+  return r2(t);
 }
 function dayRealSquareCount(day){
   let n = 0;
@@ -1116,7 +1119,7 @@ function dayRealSquareCount(day){
   return n;
 }
 function stopUnpaid(stop, weekday){
-  return stopRevenue(stop) - stopCollectedTotal(stop);
+  return r2(stopRevenue(stop) - stopCollectedTotal(stop));
 }
 
 function stopRevenue(stop){
@@ -1124,10 +1127,10 @@ function stopRevenue(stop){
   Object.values(stop.items||{}).forEach(it=>{
     total += (it.sold||0) * (it.price!=null ? it.price : 0);
   });
-  return total;
+  return r2(total);
 }
 function dayRevenue(day){
-  return Object.values(day.stops).reduce((s,st)=>s+stopRevenue(st),0);
+  return r2(Object.values(day.stops).reduce((s,st)=>s+stopRevenue(st),0));
 }
 function dayUncollected(day){
   const wd = effectiveWeekday(day);
@@ -1136,7 +1139,7 @@ function dayUncollected(day){
     const g = stopRevenue(st) - stopCollectedTotal(st);
     if(g > 0) gap += g;
   });
-  return gap;
+  return r2(gap);
 }
 
 function computeTopSellers(weekday, n, stopName){
@@ -1552,7 +1555,7 @@ function computeSummaryStats(dayList){
     totalDrive, totalRealFee, totalSquareTxns, soldAgg, returnedAgg, requestAgg, paymentAgg };
 }
 
-function renderStatsCards(stats, headerText){
+function renderStatsCards(stats, headerText, scopeLabel){
   let html = '';
   html += '<div class="card"><h3>'+headerText+'</h3>'
     + '<div class="kpi-row">'
@@ -1564,7 +1567,7 @@ function renderStatsCards(stats, headerText){
     +   '<div class="kpi"><div class="v">'+fmtMoney(stats.totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
     + '</div></div>';
 
-  html += '<div class="card"><h3>'+T('payment_methods')+'</h3>';
+  html += '<div class="card"><h3>'+T('payment_methods_scoped',{scope:scopeLabel})+'</h3>';
   const payTotal = Object.values(stats.paymentAgg).reduce((a,b)=>a+b,0) || 1;
   PAYMENT_METHODS.forEach(m=>{
     const amt = stats.paymentAgg[m] || 0;
@@ -1629,10 +1632,10 @@ function renderSummary(){
   let html = '<div class="panel">';
 
   const todayStats = computeSummaryStats(state.day ? [state.day] : []);
-  html += renderStatsCards(todayStats, T('today_stats'));
+  html += renderStatsCards(todayStats, T('today_stats'), T('scope_today'));
 
   const allStats = computeSummaryStats(days);
-  html += renderStatsCards(allStats, T('across_days',{n:days.length,s:days.length>1?'s':''}));
+  html += renderStatsCards(allStats, T('across_days',{n:days.length,s:days.length>1?'s':''}), T('scope_all_days'));
 
   html += '<div class="card"><h3>'+T('export_title')+'</h3>'
     + '<button class="export-btn xlsx" id="exportXlsx">'+T('export_excel')+'</button>'
@@ -1925,7 +1928,7 @@ function attachHandlers(){
   if(payFill) payFill.addEventListener('click', ()=>{
     const stop = state.day.stops[state.stopIndex];
     const wd = effectiveWeekday(state.day);
-    const remaining = stopRevenue(stop) - stopCollectedTotal(stop);
+    const remaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
     if(remaining > 0.005) addPayment(remaining.toFixed(2));
   });
   const clearStop = document.getElementById('clearStop');
