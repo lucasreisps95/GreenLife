@@ -955,7 +955,7 @@ function logDeparture(){
   if(!v){ toast(T('toast_no_arrival')); return; }
   v.depart = nowTime();
   const canAdvance = state.stopIndex < state.day.stopNames.length - 1;
-  if(canAdvance) state.stopIndex += 1;
+  if(canAdvance){ state.stopIndex += 1; saveStopIndex(); }
   persistDay();
   toast(canAdvance ? T('toast_departure_advance') : T('toast_departure'));
 }
@@ -1071,7 +1071,7 @@ async function setStopCount(newCount){
     }
   } else if(newCount < names.length){
     names.length = newCount;
-    if(state.stopIndex >= newCount) state.stopIndex = newCount - 1;
+    if(state.stopIndex >= newCount){ state.stopIndex = newCount - 1; saveStopIndex(); }
   }
   state.day.stopNames = names;
   state.defaultStopNames = names.slice();
@@ -1896,11 +1896,13 @@ function attachHandlers(){
   const prevStop = document.getElementById('prevStop');
   if(prevStop) prevStop.addEventListener('click', ()=>{
     state.stopIndex = (state.stopIndex - 1 + state.day.stopNames.length) % state.day.stopNames.length;
+    saveStopIndex();
     render();
   });
   const nextStop = document.getElementById('nextStop');
   if(nextStop) nextStop.addEventListener('click', ()=>{
     state.stopIndex = (state.stopIndex + 1) % state.day.stopNames.length;
+    saveStopIndex();
     render();
   });
 
@@ -2022,6 +2024,18 @@ function attachHandlers(){
   });
 }
 
+async function saveStopIndex(){
+  try{ await storageSet('laststop:'+state.date, String(state.stopIndex), false); }catch(e){}
+}
+async function loadStopIndex(dateStr, maxLen){
+  try{
+    const r = await storageGet('laststop:'+dateStr, false);
+    const idx = parseInt(r.value, 10);
+    if(!isNaN(idx) && idx >= 0 && idx < maxLen) return idx;
+  }catch(e){}
+  return 0;
+}
+
 async function resetAllData(){
   try{
     const list = await storageList('day:', false);
@@ -2117,6 +2131,7 @@ async function init(){
       try{ await storageSet('reset_v2','done',false); }catch(e4){}
     }
     state.day = await loadDay(state.date, state.defaultStopNames);
+    state.stopIndex = await loadStopIndex(state.date, state.day.stopNames.length);
     state.allDays = await loadAllDays();
     state.allDays[state.date] = state.day;
     render();
