@@ -431,10 +431,15 @@ const CAT_ES = {
   "Sushi":"Sushi","Protein Plates":"Platos de proteína","Treats":"Postres","Drinks":"Bebidas"
 };
 const PAY_ES = { "Credit Card":"Tarjeta de crédito", "Cash":"Efectivo", "Owed":"Debe" };
+const CAT_PT = {
+  "Breakfast":"Café da manhã","Salads":"Saladas","Sandwiches":"Sanduíches","Wraps":"Wraps","Hot Plates":"Pratos quentes",
+  "Sushi":"Sushi","Protein Plates":"Pratos de proteína","Treats":"Sobremesas","Drinks":"Bebidas"
+};
+const PAY_PT = { "Credit Card":"Cartão de crédito", "Cash":"Dinheiro", "Owed":"Deve" };
 
 const TRANSLATIONS = {
   en: {
-    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary",
+    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary", today_label:"Today",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
@@ -481,7 +486,7 @@ const TRANSLATIONS = {
     cloud_error:"Cloud sync error — saved locally, will retry"
   },
   es: {
-    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen",
+    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen", today_label:"Hoy",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -526,6 +531,53 @@ const TRANSLATIONS = {
     cloud_offline:"Solo local — no sincronizado", cloud_connecting:"Conectando a la nube…",
     cloud_synced:"Sincronizado como {name}", cloud_taken:"Ese nombre ya se usa en otro dispositivo — usa un nombre diferente",
     cloud_error:"Error de sincronización — guardado localmente, se reintentará"
+  },
+  pt: {
+    tab_log:"Registrar parada", tab_unsold:"Não vendido", tab_summary:"Resumo", today_label:"Hoje",
+    revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
+    menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
+    auto_weekday:"Auto ({wd})",
+    stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas na rota hoje:",
+    top_sellers_at:"Mais vendidos em {stop} — toque rápido", top_sellers_generic:"Mais vendidos — toque rápido",
+    no_menu:"Nenhum cardápio para {wd}. Escolha um acima.",
+    arrive_tap:"Toque ao chegar", leave_tap:"Toque ao sair", here_since:"Aqui desde as {t}",
+    here_today:"{d} aqui hoje", now_label:"agora",
+    req_label:"O cliente pediu algo que você não tinha", req_placeholder:"ex. mais Salmão, ou Café gelado", req_add:"Adicionar",
+    pay_label:"Pagamento recebido nesta parada", sold_here:"Vendido aqui", collected:"Recebido",
+    still_to_collect:"Falta receber", over_collected:"Recebido a mais", settled:"Quitado",
+    amount_ph:"Valor ($)", add_btn:"Adicionar", pay_remaining:"Pagar {amt} restante com {method}",
+    fee_note:"+ {fee} taxa automática do Square",
+    cash_pouch:"Bolsa de troco", cash_sub:"deveria estar na sua bolsa agora",
+    float_prompt:"Troco inicial que você carregou hoje:", float_ph:"ex. 60.00", set_btn:"Confirmar",
+    started_with:"Começou com", cash_sales:"+ Vendas em dinheiro", added_cash:"+ Adicionado", change_given:"− Troco dado",
+    change_edit:"Alterar valor inicial", change_ph:"Valor ($)", give_btn:"− Dar", add2_btn:"+ Adicionar",
+    arrivals_log:"Registro de horários de hoje (todas as paradas)", no_arrivals:"Ainda não há chegadas registradas hoje.",
+    total_time:"Tempo total no local", drive_to:"Dirigindo para {stop}", total_drive:"Tempo total dirigindo",
+    unsold_label:"O que voltou sem vender hoje (todas as paradas)", sold_today:"vendido hoje: {n}",
+    across_days:"Em {n} dia{s} registrado{s}", today_stats:"Hoje", total_revenue:"FATURAMENTO TOTAL", your_commission:"SUA COMISSÃO",
+    waste_value:"VALOR DE DESPERDÍCIO", time_on_site:"TEMPO NO LOCAL", square_fees:"TAXAS DO SQUARE",
+    real_fee_title:"Taxa real do Square", real_fee_note:"Baseado na taxa real do Square: 2,6% + $0,10 por transação",
+    charged_fee:"Você cobrou (fixo $0,50/venda)", real_fee:"O Square realmente cobrou", fee_gap:"Sua diferença",
+    txn_count:"Transações do Square",
+    payment_methods:"Métodos de pagamento (todos os dias)", payment_methods_scoped:"Métodos de pagamento ({scope})",
+    scope_today:"hoje", scope_all_days:"todos os dias", best_sellers:"Mais vendidos",
+    waste_title:"Sempre volta (desperdício)", lost_sales:"Pedido mas não disponível (vendas perdidas)",
+    export_title:"Exportar", export_excel:"Baixar planilha do Excel (tudo em um arquivo)", export_day:"Baixar CSV por dia", export_item:"Baixar CSV por item",
+    export_copy:"Copiar resumo como texto", export_note:"O arquivo do Excel tem os dados de dias e itens em abas separadas, com filtros e cabeçalho fixo. Os CSVs são apenas backup.",
+    reset_title:"Redefinir", reset_btn:"Apagar todos os dados registrados", reset_confirm:"Toque de novo para confirmar — isso apaga tudo",
+    reset_note:"Apaga todos os dias registrados. Baixe seus CSVs antes se quiser manter o histórico.",
+    no_data_yet:"Ainda não há dados registrados. Comece a registrar vendas na aba Registrar parada.",
+    toast_sale:"Venda registrada", toast_arrival:"Chegada registrada", toast_departure:"Saída registrada",
+    toast_departure_advance:"Saída registrada — próxima parada", toast_no_arrival:"Registre a chegada primeiro",
+    toast_already_arrived:"Já chegou — registre a saída primeiro",
+    toast_stop_cleared:"Itens da parada apagados", toast_confirm_clear:"Toque em apagar de novo para confirmar",
+    toast_square:"Square {amt} registrado", toast_payment:"Pagamento registrado", toast_change:"Troco registrado",
+    toast_topup:"Recarga registrada", toast_copied:"Copiado para a área de transferência", toast_copy_fail:"Não foi possível copiar — selecione manualmente",
+    toast_downloaded:"Baixado {f}", toast_download_fail:"Download bloqueado — use Copiar",
+    toast_reset_done:"Todos os dados apagados", brand_footer:"GreenLife Fit Foods — registro de rota",
+    cloud_offline:"Somente local — não sincronizado", cloud_connecting:"Conectando à nuvem…",
+    cloud_synced:"Sincronizado como {name}", cloud_taken:"Esse nome já está sincronizando em outro dispositivo — use um nome diferente",
+    cloud_error:"Erro de sincronização — salvo localmente, tentará novamente"
   }
 };
 function T(key, vars){
@@ -533,8 +585,16 @@ function T(key, vars){
   if(vars) Object.entries(vars).forEach(([k,v])=>{ s = s.split('{'+k+'}').join(v); });
   return s;
 }
-function TC(cat){ return state.lang==='es' ? (CAT_ES[cat]||cat) : cat; }
-function TP(method){ return state.lang==='es' ? (PAY_ES[method]||method) : method; }
+function TC(cat){
+  if(state.lang==='es') return CAT_ES[cat]||cat;
+  if(state.lang==='pt') return CAT_PT[cat]||cat;
+  return cat;
+}
+function TP(method){
+  if(state.lang==='es') return PAY_ES[method]||method;
+  if(state.lang==='pt') return PAY_PT[method]||method;
+  return method;
+}
 function cloudStatusLabel(){
   if(state.cloudStatus === 'connecting') return T('cloud_connecting');
   if(state.cloudStatus === 'synced') return T('cloud_synced',{name:escapeAttr(state.sellerName)});
@@ -684,7 +744,7 @@ async function storageList(prefix, shared){
 async function loadPrefs(){
   try{
     const r = await storageGet('lang', false);
-    state.lang = r.value === 'es' ? 'es' : 'en';
+    state.lang = (r.value === 'es' || r.value === 'pt') ? r.value : 'en';
   }catch(e){}
   try{
     const r = await storageGet('seller_name', false);
@@ -692,7 +752,7 @@ async function loadPrefs(){
   }catch(e){}
 }
 async function setLang(lang){
-  state.lang = lang === 'es' ? 'es' : 'en';
+  state.lang = (lang === 'es' || lang === 'pt') ? lang : 'en';
   try{ await storageSet('lang', state.lang, false); }catch(e){}
   render();
 }
@@ -1225,11 +1285,11 @@ async function render(){
     +     '<div><h1>GreenLife</h1><div class="sub">'+weekday.toUpperCase()+'</div></div>'
     +   '</div>'
     +   '<div class="header-right">'
-    +     '<button class="lang-toggle" id="langToggle">'+(state.lang==='es'?'EN':'ES')+'</button>'
+    +     '<button class="lang-toggle" id="langToggle">'+state.lang.toUpperCase()+'</button>'
     +     '<div class="day-stepper">'
     +       '<button class="day-step" id="dayPrev" aria-label="Previous day">‹</button>'
     +       '<button class="date-btn'+(state.date!==todayStr()?' past':'')+'" id="dateBtn"><span class="cal-icon">📅</span><span>'
-    +         (state.date===todayStr() ? (state.lang==='es'?'Hoy':'Today') : fmtDateShort(state.date))+'</span></button>'
+    +         (state.date===todayStr() ? T('today_label') : fmtDateShort(state.date))+'</span></button>'
     +       '<button class="day-step" id="dayNext" aria-label="Next day">›</button>'
     +     '</div>'
     +   '</div>'
@@ -1828,7 +1888,11 @@ function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
 
 function attachHandlers(){
   const langToggle = document.getElementById('langToggle');
-  if(langToggle) langToggle.addEventListener('click', ()=>{ setLang(state.lang==='es'?'en':'es'); });
+  if(langToggle) langToggle.addEventListener('click', ()=>{
+    const order = ['en','es','pt'];
+    const next = order[(order.indexOf(state.lang)+1) % order.length];
+    setLang(next);
+  });
   const sellerInput = document.getElementById('sellerInput');
   if(sellerInput) sellerInput.addEventListener('change', e=>{ setSellerName(e.target.value); });
 
