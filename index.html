@@ -481,6 +481,9 @@ const TRANSLATIONS = {
     cal_go_today:"Go to today", cal_close_btn:"Close",
     selection_title:"{n} selected day{s}", daily_graphic_title:"Daily breakdown", monthly_graphic_title:"By month",
     commission_short:"Commission", waste_short:"Waste",
+    checkout_title:"Checkout", cash_in_hand_label:"Cash in hand", minus_commission_label:"Minus your commission",
+    owe_owner_label:"You owe the owner", owner_owes_you_label:"Owner owes you",
+    checkout_note:"Square money goes straight to the business — only what you physically collected in Cash, Zelle, or Venmo needs to be handed over, minus your commission.",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
@@ -534,6 +537,9 @@ const TRANSLATIONS = {
     cal_go_today:"Ir a hoy", cal_close_btn:"Cerrar",
     selection_title:"{n} día{s} seleccionado{s}", daily_graphic_title:"Desglose diario", monthly_graphic_title:"Por mes",
     commission_short:"Comisión", waste_short:"Desperdicio",
+    checkout_title:"Cierre de caja", cash_in_hand_label:"Efectivo en mano", minus_commission_label:"Menos tu comisión",
+    owe_owner_label:"Le debes al dueño", owner_owes_you_label:"El dueño te debe",
+    checkout_note:"El dinero de Square va directo al negocio — solo lo que cobraste físicamente en Efectivo, Zelle o Venmo se debe entregar, menos tu comisión.",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -587,6 +593,9 @@ const TRANSLATIONS = {
     cal_go_today:"Ir para hoje", cal_close_btn:"Fechar",
     selection_title:"{n} dia{s} selecionado{s}", daily_graphic_title:"Detalhamento diário", monthly_graphic_title:"Por mês",
     commission_short:"Comissão", waste_short:"Desperdício",
+    checkout_title:"Fechamento de caixa", cash_in_hand_label:"Dinheiro em mãos", minus_commission_label:"Menos sua comissão",
+    owe_owner_label:"Você deve ao dono", owner_owes_you_label:"O dono te deve",
+    checkout_note:"O dinheiro do Square vai direto para o negócio — só o que você recebeu fisicamente em Dinheiro, Zelle ou Venmo precisa ser entregue, menos sua comissão.",
     revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
     menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -1793,8 +1802,12 @@ function computeSummaryStats(dayList){
     });
   });
 
+  const cashInHand = r2((paymentAgg['Cash']||0) + (paymentAgg['Zelle']||0) + (paymentAgg['Venmo']||0));
+  const oweOwner = r2(cashInHand - totalCommission);
+
   return { totalRevenue, totalCommission, totalReturned, totalReturnedValue, totalDwell, totalFees,
-    totalDrive, totalRealFee, totalSquareTxns, soldAgg, returnedAgg, requestAgg, paymentAgg };
+    totalDrive, totalRealFee, totalSquareTxns, soldAgg, returnedAgg, requestAgg, paymentAgg,
+    cashInHand, oweOwner };
 }
 
 function renderStatsCards(stats, headerText, scopeLabel){
@@ -1808,6 +1821,21 @@ function renderStatsCards(stats, headerText, scopeLabel){
     +   '<div class="kpi"><div class="v">'+fmtDur(stats.totalDrive)+'</div><div class="k">'+T('total_drive').toUpperCase()+'</div></div>'
     +   '<div class="kpi"><div class="v">'+fmtMoney(stats.totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
     + '</div></div>';
+
+  if(stats.cashInHand > 0.005 || stats.totalCommission > 0.005){
+    const owe = stats.oweOwner;
+    html += '<div class="card"><h3>'+T('checkout_title')+'</h3>'
+      + '<div class="pay-ledger">'
+      +   '<div><span>'+TP('Cash')+'</span><span>'+fmtMoney(stats.paymentAgg['Cash']||0)+'</span></div>'
+      +   '<div><span>Zelle</span><span>'+fmtMoney(stats.paymentAgg['Zelle']||0)+'</span></div>'
+      +   '<div><span>Venmo</span><span>'+fmtMoney(stats.paymentAgg['Venmo']||0)+'</span></div>'
+      +   '<div><span>'+T('cash_in_hand_label')+'</span><span>'+fmtMoney(stats.cashInHand)+'</span></div>'
+      +   '<div><span>'+T('minus_commission_label')+'</span><span>-'+fmtMoney(stats.totalCommission)+'</span></div>'
+      +   '<div class="'+(owe>=0?'owing':'settled')+'"><span>'+(owe>=0?T('owe_owner_label'):T('owner_owes_you_label'))+'</span><span>'+fmtMoney(Math.abs(owe))+'</span></div>'
+      + '</div>'
+      + '<div class="export-note">'+T('checkout_note')+'</div>'
+      + '</div>';
+  }
 
   html += '<div class="card"><h3>'+T('payment_methods_scoped',{scope:scopeLabel})+'</h3>';
   const payTotal = Object.values(stats.paymentAgg).reduce((a,b)=>a+b,0) || 1;
