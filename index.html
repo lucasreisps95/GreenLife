@@ -506,7 +506,7 @@ const TRANSLATIONS = {
     unsold_label:"What came back unsold today (all stops)", sold_today:"sold today: {n}",
     across_days:"Across {n} logged day{s}", today_stats:"Today", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
     waste_value:"WASTE VALUE", time_on_site:"TIME ON SITE", square_fees:"SQUARE FEES",
-    real_fee_title:"Real Square Fee", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
+    real_fee_title:"Real Square Fee", real_fee_title_scoped:"Real Square Fee ({scope})", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
     charged_fee:"You charged (flat $0.50/sale)", real_fee:"Square actually took", fee_gap:"Your gap", net_total:"Net total",
     txn_count:"Square transactions",
     payment_methods:"Payment methods (all days)", payment_methods_scoped:"Payment methods ({scope})",
@@ -562,7 +562,7 @@ const TRANSLATIONS = {
     unsold_label:"Lo que no se vendió hoy (todas las paradas)", sold_today:"vendido hoy: {n}",
     across_days:"En {n} día{s} registrado{s}", today_stats:"Hoy", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
     waste_value:"VALOR DESPERDICIADO", time_on_site:"TIEMPO EN SITIO", square_fees:"CARGOS DE SQUARE",
-    real_fee_title:"Cargo real de Square", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
+    real_fee_title:"Cargo real de Square", real_fee_title_scoped:"Cargo real de Square ({scope})", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
     charged_fee:"Cobraste (fijo $0.50/venta)", real_fee:"Square realmente cobró", fee_gap:"Tu diferencia", net_total:"Total neto",
     txn_count:"Transacciones de Square",
     payment_methods:"Métodos de pago (todos los días)", payment_methods_scoped:"Métodos de pago ({scope})",
@@ -618,7 +618,7 @@ const TRANSLATIONS = {
     unsold_label:"O que voltou sem vender hoje (todas as paradas)", sold_today:"vendido hoje: {n}",
     across_days:"Em {n} dia{s} registrado{s}", today_stats:"Hoje", total_revenue:"FATURAMENTO TOTAL", your_commission:"SUA COMISSÃO",
     waste_value:"VALOR DE DESPERDÍCIO", time_on_site:"TEMPO NO LOCAL", square_fees:"TAXAS DO SQUARE",
-    real_fee_title:"Taxa real do Square", real_fee_note:"Baseado na taxa real do Square: 2,6% + $0,10 por transação",
+    real_fee_title:"Taxa real do Square", real_fee_title_scoped:"Taxa real do Square ({scope})", real_fee_note:"Baseado na taxa real do Square: 2,6% + $0,10 por transação",
     charged_fee:"Você cobrou (fixo $0,50/venda)", real_fee:"O Square realmente cobrou", fee_gap:"Sua diferença", net_total:"Total líquido",
     txn_count:"Transações do Square",
     payment_methods:"Métodos de pagamento (todos os dias)", payment_methods_scoped:"Métodos de pagamento ({scope})",
@@ -1850,7 +1850,7 @@ function renderStatsCards(stats, headerText, scopeLabel){
     const gap = r2(stats.totalFees - stats.totalRealFee);
     const squareCollected = stats.paymentAgg['Square'] || 0;
     const netTotal = r2(squareCollected - stats.totalRealFee);
-    html += '<div class="card"><h3>'+T('real_fee_title')+'</h3>'
+    html += '<div class="card"><h3>'+T('real_fee_title_scoped',{scope:scopeLabel})+'</h3>'
       + '<div class="pay-ledger">'
       +   '<div><span>'+T('txn_count')+'</span><span>'+stats.totalSquareTxns+'</span></div>'
       +   '<div><span>'+T('charged_fee')+'</span><span>'+fmtMoney(stats.totalFees)+'</span></div>'
