@@ -320,6 +320,7 @@
   .cal-day.sel{background:var(--primary);color:#fff;}
   .cal-day.sel.has::after{background:var(--lime);}
   .cal-actions{display:flex;gap:8px;margin-top:15px;}
+  .cal-sel-count{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:12px;font-weight:600;}
   .cal-today{flex:1;padding:13px;border-radius:13px;border:none;background:var(--primary);color:#fff;font-weight:700;font-size:13px;cursor:pointer;}
   .cal-close{flex:1;padding:13px;border-radius:13px;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);color:var(--ink-soft);font-weight:700;font-size:13px;cursor:pointer;}
 
@@ -473,7 +474,10 @@ const TRANSLATIONS = {
   en: {
     tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary", today_label:"Today", qp_items:"to pay",
     monthly_title:"Monthly overview", monthly_tap:"Tap a month to see the breakdown", monthly_no_data:"Not enough data yet to show months",
-    pick_day_btn:"Pick a specific day", day_breakdown:"{date}",
+    pick_day_btn:"Compare specific days", day_breakdown:"{date}",
+    cal_selected_count:"{n} day{s} selected", cal_clear:"Clear", cal_done:"Done",
+    cal_go_today:"Go to today", cal_close_btn:"Close",
+    selection_title:"{n} selected day{s}", daily_graphic_title:"Daily breakdown", monthly_graphic_title:"By month",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
@@ -522,7 +526,10 @@ const TRANSLATIONS = {
   es: {
     tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen", today_label:"Hoy", qp_items:"por cobrar",
     monthly_title:"Resumen mensual", monthly_tap:"Toca un mes para ver el detalle", monthly_no_data:"Aún no hay suficientes datos para mostrar meses",
-    pick_day_btn:"Elegir un día específico", day_breakdown:"{date}",
+    pick_day_btn:"Comparar días específicos", day_breakdown:"{date}",
+    cal_selected_count:"{n} día{s} seleccionado{s}", cal_clear:"Borrar", cal_done:"Listo",
+    cal_go_today:"Ir a hoy", cal_close_btn:"Cerrar",
+    selection_title:"{n} día{s} seleccionado{s}", daily_graphic_title:"Desglose diario", monthly_graphic_title:"Por mes",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -571,7 +578,10 @@ const TRANSLATIONS = {
   pt: {
     tab_log:"Registrar parada", tab_unsold:"Não vendido", tab_summary:"Resumo", today_label:"Hoje", qp_items:"a receber",
     monthly_title:"Resumo mensal", monthly_tap:"Toque em um mês para ver os detalhes", monthly_no_data:"Ainda não há dados suficientes para mostrar meses",
-    pick_day_btn:"Escolher um dia específico", day_breakdown:"{date}",
+    pick_day_btn:"Comparar dias específicos", day_breakdown:"{date}",
+    cal_selected_count:"{n} dia{s} selecionado{s}", cal_clear:"Limpar", cal_done:"Pronto",
+    cal_go_today:"Ir para hoje", cal_close_btn:"Fechar",
+    selection_title:"{n} dia{s} selecionado{s}", daily_graphic_title:"Detalhamento diário", monthly_graphic_title:"Por mês",
     revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
     menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -657,7 +667,7 @@ let state = {
   timingOpen: false,
   calOpen: false,
   calMode: 'nav',
-  selectedDayStat: null,
+  selectedDays: [],
   calMonth: todayStr().slice(0,7),
   lang: 'en',
   sellerName: '',
@@ -1626,16 +1636,23 @@ function renderCalendar(){
   for(let d=1; d<=daysInMonth; d++){
     const ds = cy+'-'+String(cm).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     const cls = ['cal-day'];
-    const selDate = state.calMode === 'summary' ? state.selectedDayStat : state.date;
-    if(ds === selDate) cls.push('sel');
+    const isSel = state.calMode === 'summary' ? state.selectedDays.includes(ds) : ds === state.date;
+    if(isSel) cls.push('sel');
     if(ds === today) cls.push('today');
     if(state.allDays[ds] && dayRevenue(state.allDays[ds]) > 0) cls.push('has');
     h += '<button class="'+cls.join(' ')+'" data-date="'+ds+'">'+d+'</button>';
   }
   h += '</div>';
-  h += '<div class="cal-actions">'
-    + '<button class="cal-today" id="calToday">Go to today</button>'
-    + '<button class="cal-close" id="calClose">Close</button></div>';
+  if(state.calMode === 'summary'){
+    h += '<div class="cal-sel-count">'+T('cal_selected_count',{n:state.selectedDays.length,s:state.selectedDays.length===1?'':'s'})+'</div>';
+    h += '<div class="cal-actions">'
+      + '<button class="cal-close" id="calClear">'+T('cal_clear')+'</button>'
+      + '<button class="cal-today" id="calDone">'+T('cal_done')+'</button></div>';
+  } else {
+    h += '<div class="cal-actions">'
+      + '<button class="cal-today" id="calToday">'+T('cal_go_today')+'</button>'
+      + '<button class="cal-close" id="calClose">'+T('cal_close_btn')+'</button></div>';
+  }
   h += '</div></div>';
   return h;
 }
@@ -1695,14 +1712,41 @@ function renderMonthlyCard(days){
   html += '<button class="export-btn alt" id="pickDayBtn" style="margin-top:12px;">'+T('pick_day_btn')+'</button>';
   html += '</div>';
 
-  if(state.selectedDayStat && state.allDays[state.selectedDayStat]){
-    const dayStats = computeSummaryStats([state.allDays[state.selectedDayStat]]);
-    html += '<div class="card"><h3>'+T('day_breakdown',{date:fmtDateShort(state.selectedDayStat)})+'</h3>'
+  const selDays = (state.selectedDays||[]).slice().sort()
+    .map(ds=>state.allDays[ds]).filter(Boolean);
+
+  if(selDays.length > 0){
+    const selStats = computeSummaryStats(selDays);
+    html += '<div class="card"><h3>'+T('selection_title',{n:selDays.length,s:selDays.length===1?'':'s'})+'</h3>'
       + '<div class="kpi-row">'
-      +   '<div class="kpi"><div class="v">'+fmtMoney(dayStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
-      +   '<div class="kpi gold"><div class="v">'+fmtMoney(dayStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
-      +   '<div class="kpi warn"><div class="v">'+fmtMoney(dayStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+      +   '<div class="kpi"><div class="v">'+fmtMoney(selStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+      +   '<div class="kpi gold"><div class="v">'+fmtMoney(selStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+      +   '<div class="kpi warn"><div class="v">'+fmtMoney(selStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
       + '</div></div>';
+
+    if(selDays.length > 1){
+      const dailyMax = Math.max(...selDays.map(d=>dayRevenue(d)), 0.01);
+      html += '<div class="card"><h3>'+T('daily_graphic_title')+'</h3>';
+      selDays.forEach(d=>{
+        const rev = dayRevenue(d);
+        html += '<div class="bar-row"><div class="top"><span>'+fmtDateShort(d.date)+'</span><span>'+fmtMoney(rev)+'</span></div>'
+          + '<div class="bar-track"><div class="bar-fill" style="width:'+((rev/dailyMax*100).toFixed(0))+'%"></div></div></div>';
+      });
+      html += '</div>';
+
+      const selGroups = groupDaysByMonth(selDays);
+      const selMonthKeys = Object.keys(selGroups).sort();
+      if(selMonthKeys.length > 1){
+        const monthlyInSel = selMonthKeys.map(k=>({key:k, rev: computeSummaryStats(selGroups[k]).totalRevenue}));
+        const monthlyMax = Math.max(...monthlyInSel.map(m=>m.rev), 0.01);
+        html += '<div class="card"><h3>'+T('monthly_graphic_title')+'</h3>';
+        monthlyInSel.forEach(({key,rev})=>{
+          html += '<div class="bar-row"><div class="top"><span>'+monthLabel(key)+'</span><span>'+fmtMoney(rev)+'</span></div>'
+            + '<div class="bar-track"><div class="bar-fill month-sel" style="width:'+((rev/monthlyMax*100).toFixed(0))+'%"></div></div></div>';
+        });
+        html += '</div>';
+      }
+    }
   }
   return html;
 }
@@ -2060,20 +2104,23 @@ function attachHandlers(){
     render();
   });
   const calToday = document.getElementById('calToday');
-  if(calToday) calToday.addEventListener('click', ()=>{
-    if(state.calMode === 'summary'){
-      state.selectedDayStat = todayStr();
-      state.calOpen = false; state.calMode = 'nav';
-      render();
-    } else {
-      selectDate(todayStr());
-    }
+  if(calToday) calToday.addEventListener('click', ()=>{ selectDate(todayStr()); });
+  const calDone = document.getElementById('calDone');
+  if(calDone) calDone.addEventListener('click', ()=>{
+    state.calOpen = false; state.calMode = 'nav';
+    render();
+  });
+  const calClear = document.getElementById('calClear');
+  if(calClear) calClear.addEventListener('click', ()=>{
+    state.selectedDays = [];
+    render();
   });
   document.querySelectorAll('.cal-day').forEach(b=>{
     b.addEventListener('click', ()=>{
       if(state.calMode === 'summary'){
-        state.selectedDayStat = b.dataset.date;
-        state.calOpen = false; state.calMode = 'nav';
+        const ds = b.dataset.date;
+        const idx = state.selectedDays.indexOf(ds);
+        if(idx === -1) state.selectedDays.push(ds); else state.selectedDays.splice(idx,1);
         render();
       } else {
         selectDate(b.dataset.date);
@@ -2238,8 +2285,8 @@ function attachHandlers(){
   const pickDayBtn = document.getElementById('pickDayBtn');
   if(pickDayBtn) pickDayBtn.addEventListener('click', ()=>{
     state.calMode = 'summary';
-    state.calMonth = (state.selectedDayStat || state.selectedMonth || todayStr().slice(0,7)) ;
-    if(state.calMonth.length > 7) state.calMonth = state.calMonth.slice(0,7);
+    const last = state.selectedDays.length ? state.selectedDays[state.selectedDays.length-1] : null;
+    state.calMonth = (last || state.selectedMonth || todayStr()).slice(0,7);
     state.calOpen = true;
     render();
   });
