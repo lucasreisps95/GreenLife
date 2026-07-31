@@ -2381,6 +2381,41 @@ document.addEventListener('visibilitychange', ()=>{
   if(!document.hidden && state.day) syncToToday(false);
 });
 
+async function renameHistoricalItem(oldName, newName, newPrice){
+  const changedDays = [];
+  try{
+    const list = await storageList('day:', false);
+    for(const k of (list.keys||[])){
+      try{
+        const r = await storageGet(k, false);
+        const d = JSON.parse(r.value);
+        let dayChanged = false;
+        Object.values(d.stops||{}).forEach(st=>{
+          if(st.items && st.items[oldName]){
+            const oldEntry = st.items[oldName];
+            if(st.items[newName]){
+              st.items[newName].sold = (st.items[newName].sold||0) + (oldEntry.sold||0);
+              st.items[newName].price = newPrice;
+            } else {
+              st.items[newName] = { sold: oldEntry.sold||0, price: newPrice };
+            }
+            delete st.items[oldName];
+            dayChanged = true;
+          }
+        });
+        if(dayChanged){
+          await saveDay(d);
+          changedDays.push(d);
+        }
+      }catch(e){}
+    }
+  }catch(e){}
+  if(changedDays.length && fbReady && state.sellerName){
+    for(const d of changedDays){ try{ await cloudPushDay(d); }catch(e){} }
+  }
+  return changedDays;
+}
+
 async function repriceHistoricalItem(itemName, newPrice){
   const changedDays = [];
   try{
@@ -2440,6 +2475,19 @@ async function init(){
         const changed = await repriceHistoricalItem('Blackened Salmon', 17.5);
         try{ await storageSet('reprice_blackened_salmon_175_v1','done',false); }catch(e6){}
         if(changed.length){
+          state.allDays = await loadAllDays();
+          state.day = await loadDay(state.date, state.defaultStopNames);
+          state.allDays[state.date] = state.day;
+          render();
+        }
+      }
+      let alreadyRenamed = false;
+      try{ await storageGet('rename_capellini_to_steak_v1', false); alreadyRenamed = true; }
+      catch(e){}
+      if(!alreadyRenamed){
+        const changed2 = await renameHistoricalItem('Shrimp Spinach Capellini', 'Steak and Mashed Potatoes', 17);
+        try{ await storageSet('rename_capellini_to_steak_v1','done',false); }catch(e7){}
+        if(changed2.length){
           state.allDays = await loadAllDays();
           state.day = await loadDay(state.date, state.defaultStopNames);
           state.allDays[state.date] = state.day;
