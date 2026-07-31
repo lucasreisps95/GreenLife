@@ -283,6 +283,8 @@
   .kpi.gold .v{color:var(--lime);background:var(--primary-dark);border-radius:8px;padding:3px 7px;display:inline-block;}
   .kpi .k{font-size:9px;color:var(--ink-soft);margin-top:5px;letter-spacing:0.06em;text-transform:uppercase;}
   .bar-row{margin-bottom:10px;}
+  .day-multi-row{margin-bottom:16px;}
+  .day-multi-sub{display:flex;gap:14px;margin-top:5px;font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
   button.month-row{
     display:block;width:100%;background:none;border:none;padding:0;margin-bottom:10px;
     cursor:pointer;text-align:left;font-family:inherit;
@@ -478,6 +480,7 @@ const TRANSLATIONS = {
     cal_selected_count:"{n} day{s} selected", cal_clear:"Clear", cal_done:"Done",
     cal_go_today:"Go to today", cal_close_btn:"Close",
     selection_title:"{n} selected day{s}", daily_graphic_title:"Daily breakdown", monthly_graphic_title:"By month",
+    commission_short:"Commission", waste_short:"Waste",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
@@ -530,6 +533,7 @@ const TRANSLATIONS = {
     cal_selected_count:"{n} día{s} seleccionado{s}", cal_clear:"Borrar", cal_done:"Listo",
     cal_go_today:"Ir a hoy", cal_close_btn:"Cerrar",
     selection_title:"{n} día{s} seleccionado{s}", daily_graphic_title:"Desglose diario", monthly_graphic_title:"Por mes",
+    commission_short:"Comisión", waste_short:"Desperdicio",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -582,6 +586,7 @@ const TRANSLATIONS = {
     cal_selected_count:"{n} dia{s} selecionado{s}", cal_clear:"Limpar", cal_done:"Pronto",
     cal_go_today:"Ir para hoje", cal_close_btn:"Fechar",
     selection_title:"{n} dia{s} selecionado{s}", daily_graphic_title:"Detalhamento diário", monthly_graphic_title:"Por mês",
+    commission_short:"Comissão", waste_short:"Desperdício",
     revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
     menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -1728,9 +1733,16 @@ function renderMonthlyCard(days){
       const dailyMax = Math.max(...selDays.map(d=>dayRevenue(d)), 0.01);
       html += '<div class="card"><h3>'+T('daily_graphic_title')+'</h3>';
       selDays.forEach(d=>{
-        const rev = dayRevenue(d);
-        html += '<div class="bar-row"><div class="top"><span>'+fmtDateShort(d.date)+'</span><span>'+fmtMoney(rev)+'</span></div>'
-          + '<div class="bar-track"><div class="bar-fill" style="width:'+((rev/dailyMax*100).toFixed(0))+'%"></div></div></div>';
+        const dStats = computeSummaryStats([d]);
+        const rev = dStats.totalRevenue;
+        html += '<div class="bar-row day-multi-row">'
+          + '<div class="top"><span>'+fmtDateShort(d.date)+'</span><span>'+fmtMoney(rev)+'</span></div>'
+          + '<div class="bar-track"><div class="bar-fill" style="width:'+((rev/dailyMax*100).toFixed(0))+'%"></div></div>'
+          + '<div class="day-multi-sub">'
+          +   '<span>'+T('commission_short')+': '+fmtMoney(dStats.totalCommission)+'</span>'
+          +   '<span>'+T('waste_short')+': '+fmtMoney(dStats.totalReturnedValue)+'</span>'
+          + '</div>'
+          + '</div>';
       });
       html += '</div>';
 
