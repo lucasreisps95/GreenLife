@@ -283,6 +283,14 @@
   .kpi.gold .v{color:var(--lime);background:var(--primary-dark);border-radius:8px;padding:3px 7px;display:inline-block;}
   .kpi .k{font-size:9px;color:var(--ink-soft);margin-top:5px;letter-spacing:0.06em;text-transform:uppercase;}
   .bar-row{margin-bottom:10px;}
+  button.month-row{
+    display:block;width:100%;background:none;border:none;padding:0;margin-bottom:10px;
+    cursor:pointer;text-align:left;font-family:inherit;
+  }
+  .month-row .bar-track{height:10px;}
+  .month-row.sel .top span:first-child{color:var(--primary);font-weight:700;}
+  .bar-fill.month-sel{background:linear-gradient(90deg,var(--lime),var(--teal));}
+  .month-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--hairline);}
   .bar-row .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
   .bar-track{height:8px;background:rgba(18,38,53,0.08);border-radius:6px;overflow:hidden;}
   .bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--primary));border-radius:6px;}
@@ -464,6 +472,7 @@ const PAY_PT = { "Credit Card":"Cartão de crédito", "Cash":"Dinheiro", "Owed":
 const TRANSLATIONS = {
   en: {
     tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary", today_label:"Today", qp_items:"to pay",
+    monthly_title:"Monthly overview", monthly_tap:"Tap a month to see the breakdown", monthly_no_data:"Not enough data yet to show months",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
@@ -511,6 +520,7 @@ const TRANSLATIONS = {
   },
   es: {
     tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen", today_label:"Hoy", qp_items:"por cobrar",
+    monthly_title:"Resumen mensual", monthly_tap:"Toca un mes para ver el detalle", monthly_no_data:"Aún no hay suficientes datos para mostrar meses",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -558,6 +568,7 @@ const TRANSLATIONS = {
   },
   pt: {
     tab_log:"Registrar parada", tab_unsold:"Não vendido", tab_summary:"Resumo", today_label:"Hoje", qp_items:"a receber",
+    monthly_title:"Resumo mensal", monthly_tap:"Toque em um mês para ver os detalhes", monthly_no_data:"Ainda não há dados suficientes para mostrar meses",
     revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
     menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -634,6 +645,7 @@ let state = {
   tab: 'log',
   date: todayStr(),
   sessionRealDate: todayStr(),
+  selectedMonth: null,
   stopIndex: 0,
   defaultStopNames: null,
   day: null,
@@ -1622,6 +1634,62 @@ function renderCalendar(){
   return h;
 }
 
+const MONTH_NAMES = {
+  en:["January","February","March","April","May","June","July","August","September","October","November","December"],
+  es:["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],
+  pt:["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"]
+};
+function monthKey(dateStr){ return dateStr.slice(0,7); }
+function monthLabel(key){
+  const [y,m] = key.split('-').map(Number);
+  const names = MONTH_NAMES[state.lang] || MONTH_NAMES.en;
+  return names[m-1]+' '+y;
+}
+function groupDaysByMonth(dayList){
+  const groups = {};
+  dayList.forEach(d=>{
+    const k = monthKey(d.date);
+    if(!groups[k]) groups[k] = [];
+    groups[k].push(d);
+  });
+  return groups;
+}
+
+function renderMonthlyCard(days){
+  const groups = groupDaysByMonth(days);
+  const monthKeys = Object.keys(groups).sort().reverse();
+  if(monthKeys.length < 1){
+    return '<div class="card"><h3>'+T('monthly_title')+'</h3><div class="empty">'+T('monthly_no_data')+'</div></div>';
+  }
+
+  if(!state.selectedMonth || !monthKeys.includes(state.selectedMonth)){
+    state.selectedMonth = monthKeys[0];
+  }
+
+  const monthRevenues = monthKeys.map(k=>({ key:k, rev: computeSummaryStats(groups[k]).totalRevenue }));
+  const maxRev = Math.max(...monthRevenues.map(m=>m.rev), 0.01);
+
+  let html = '<div class="card"><h3>'+T('monthly_title')+'</h3>';
+  monthRevenues.forEach(({key, rev})=>{
+    const isSel = key === state.selectedMonth;
+    html += '<button class="bar-row month-row'+(isSel?' sel':'')+'" data-month="'+key+'">'
+      + '<div class="top"><span>'+monthLabel(key)+'</span><span>'+fmtMoney(rev)+'</span></div>'
+      + '<div class="bar-track"><div class="bar-fill'+(isSel?' month-sel':'')+'" style="width:'+((rev/maxRev*100).toFixed(0))+'%"></div></div>'
+      + '</button>';
+  });
+  html += '<div class="export-note">'+T('monthly_tap')+'</div>';
+
+  const monthStats = computeSummaryStats(groups[state.selectedMonth]);
+  html += '<div class="month-detail">'
+    + '<div class="kpi-row">'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(monthStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+    +   '<div class="kpi gold"><div class="v">'+fmtMoney(monthStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+    +   '<div class="kpi warn"><div class="v">'+fmtMoney(monthStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+    + '</div></div>';
+  html += '</div>';
+  return html;
+}
+
 function computeSummaryStats(dayList){
   let totalRevenue=0, totalCommission=0, totalReturned=0, totalReturnedValue=0, totalDwell=0, totalFees=0, totalDrive=0, totalRealFee=0, totalSquareTxns=0;
   const soldAgg={}, returnedAgg={}, requestAgg={}, paymentAgg={};
@@ -1740,6 +1808,8 @@ function renderSummary(){
 
   const allStats = computeSummaryStats(days);
   html += renderStatsCards(allStats, T('across_days',{n:days.length,s:days.length>1?'s':''}), T('scope_all_days'));
+
+  html += renderMonthlyCard(days);
 
   html += '<div class="card"><h3>'+T('export_title')+'</h3>'
     + '<button class="export-btn xlsx" id="exportXlsx">'+T('export_excel')+'</button>'
@@ -2123,6 +2193,13 @@ function attachHandlers(){
   if(resetBtn) resetBtn.addEventListener('click', ()=>{
     if(state.confirmReset){ state.confirmReset = false; resetAllData(); }
     else { state.confirmReset = true; render(); setTimeout(()=>{ if(state.confirmReset){ state.confirmReset=false; render(); } }, 5000); }
+  });
+
+  document.querySelectorAll('[data-month]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.selectedMonth = b.dataset.month;
+      render();
+    });
   });
 
   const exportXlsx = document.getElementById('exportXlsx');
