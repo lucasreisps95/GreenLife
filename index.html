@@ -316,6 +316,31 @@
   .cal-close{flex:1;padding:13px;border-radius:13px;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);color:var(--ink-soft);font-weight:700;font-size:13px;cursor:pointer;}
 
   /* ---------- Toast ---------- */
+  .qp-spacer{height:135px;}
+  /* ---------- Quick pay bar ---------- */
+  .quickpay{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    max-width:520px;margin:0 auto;
+    background:linear-gradient(142deg,rgba(26,117,159,0.97) 0%,rgba(24,78,119,0.98) 100%);
+    -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+    border-top:1px solid rgba(255,255,255,0.18);
+    border-radius:24px 24px 0 0;
+    box-shadow:0 -8px 30px rgba(18,52,80,0.28);
+    padding:13px 14px calc(13px + env(safe-area-inset-bottom, 0px));
+  }
+  .qp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .qp-left{display:flex;align-items:baseline;gap:7px;}
+  .qp-count{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;}
+  .qp-lbl{font-size:11px;color:rgba(234,243,236,0.7);}
+  .qp-amt{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--lime);letter-spacing:-0.6px;}
+  .qp-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+  .qp-btn{
+    padding:13px 6px;border-radius:13px;border:1px solid rgba(255,255,255,0.22);
+    background:rgba(255,255,255,0.14);color:#EAF3EC;
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;
+  }
+  .qp-btn:active{background:var(--lime);color:var(--primary-dark);border-color:var(--lime);}
+
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
     background:rgba(18,38,53,0.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
     color:#fff;padding:12px 20px;border-radius:30px;font-size:13px;font-weight:500;
@@ -439,7 +464,7 @@ const PAY_PT = { "Credit Card":"Cartão de crédito", "Cash":"Dinheiro", "Owed":
 
 const TRANSLATIONS = {
   en: {
-    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary", today_label:"Today",
+    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary", today_label:"Today", qp_items:"to pay",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
@@ -486,7 +511,7 @@ const TRANSLATIONS = {
     cloud_error:"Cloud sync error — saved locally, will retry"
   },
   es: {
-    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen", today_label:"Hoy",
+    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen", today_label:"Hoy", qp_items:"por cobrar",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -533,7 +558,7 @@ const TRANSLATIONS = {
     cloud_error:"Error de sincronización — guardado localmente, se reintentará"
   },
   pt: {
-    tab_log:"Registrar parada", tab_unsold:"Não vendido", tab_summary:"Resumo", today_label:"Hoje",
+    tab_log:"Registrar parada", tab_unsold:"Não vendido", tab_summary:"Resumo", today_label:"Hoje", qp_items:"a receber",
     revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
     menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -1516,6 +1541,23 @@ async function render(){
     }
     html += '</div>';
 
+    const qpRemaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+    const qpCount = stopItemCount(stop);
+    if(qpRemaining > 0.005){
+      html += '<div class="qp-spacer"></div>'
+        + '<div class="quickpay">'
+        + '<div class="qp-head">'
+        +   '<div class="qp-left"><span class="qp-count">'+qpCount+'</span>'
+        +     '<span class="qp-lbl">'+T('qp_items')+'</span></div>'
+        +   '<div class="qp-amt">'+fmtMoney(qpRemaining)+'</div>'
+        + '</div>'
+        + '<div class="qp-methods">';
+      PAYMENT_METHODS.forEach(m=>{
+        html += '<button class="qp-btn" data-qp="'+escapeAttr(m)+'">'+TP(m)+'</button>';
+      });
+      html += '</div></div>';
+    }
+
     html += '</div>';
   }
 
@@ -2007,6 +2049,17 @@ function attachHandlers(){
   });
   document.querySelectorAll('.reqRemove').forEach(b=>{
     b.addEventListener('click', ()=>removeRequest(parseInt(b.dataset.idx,10)));
+  });
+
+  document.querySelectorAll('[data-qp]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const stop = state.day.stops[state.stopIndex];
+      const remaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+      if(remaining > 0.005){
+        state.activeMethod = b.dataset.qp;
+        addPayment(remaining.toFixed(2));
+      }
+    });
   });
 
   const payFill = document.getElementById('payFill');
