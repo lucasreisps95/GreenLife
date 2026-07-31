@@ -473,6 +473,7 @@ const TRANSLATIONS = {
   en: {
     tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary", today_label:"Today", qp_items:"to pay",
     monthly_title:"Monthly overview", monthly_tap:"Tap a month to see the breakdown", monthly_no_data:"Not enough data yet to show months",
+    pick_day_btn:"Pick a specific day", day_breakdown:"{date}",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
@@ -521,6 +522,7 @@ const TRANSLATIONS = {
   es: {
     tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen", today_label:"Hoy", qp_items:"por cobrar",
     monthly_title:"Resumen mensual", monthly_tap:"Toca un mes para ver el detalle", monthly_no_data:"Aún no hay suficientes datos para mostrar meses",
+    pick_day_btn:"Elegir un día específico", day_breakdown:"{date}",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -569,6 +571,7 @@ const TRANSLATIONS = {
   pt: {
     tab_log:"Registrar parada", tab_unsold:"Não vendido", tab_summary:"Resumo", today_label:"Hoje", qp_items:"a receber",
     monthly_title:"Resumo mensal", monthly_tap:"Toque em um mês para ver os detalhes", monthly_no_data:"Ainda não há dados suficientes para mostrar meses",
+    pick_day_btn:"Escolher um dia específico", day_breakdown:"{date}",
     revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
     menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -653,6 +656,8 @@ let state = {
   activeMethod: 'Cash',
   timingOpen: false,
   calOpen: false,
+  calMode: 'nav',
+  selectedDayStat: null,
   calMonth: todayStr().slice(0,7),
   lang: 'en',
   sellerName: '',
@@ -1621,7 +1626,8 @@ function renderCalendar(){
   for(let d=1; d<=daysInMonth; d++){
     const ds = cy+'-'+String(cm).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     const cls = ['cal-day'];
-    if(ds === state.date) cls.push('sel');
+    const selDate = state.calMode === 'summary' ? state.selectedDayStat : state.date;
+    if(ds === selDate) cls.push('sel');
     if(ds === today) cls.push('today');
     if(state.allDays[ds] && dayRevenue(state.allDays[ds]) > 0) cls.push('has');
     h += '<button class="'+cls.join(' ')+'" data-date="'+ds+'">'+d+'</button>';
@@ -1686,7 +1692,18 @@ function renderMonthlyCard(days){
     +   '<div class="kpi gold"><div class="v">'+fmtMoney(monthStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
     +   '<div class="kpi warn"><div class="v">'+fmtMoney(monthStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
     + '</div></div>';
+  html += '<button class="export-btn alt" id="pickDayBtn" style="margin-top:12px;">'+T('pick_day_btn')+'</button>';
   html += '</div>';
+
+  if(state.selectedDayStat && state.allDays[state.selectedDayStat]){
+    const dayStats = computeSummaryStats([state.allDays[state.selectedDayStat]]);
+    html += '<div class="card"><h3>'+T('day_breakdown',{date:fmtDateShort(state.selectedDayStat)})+'</h3>'
+      + '<div class="kpi-row">'
+      +   '<div class="kpi"><div class="v">'+fmtMoney(dayStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+      +   '<div class="kpi gold"><div class="v">'+fmtMoney(dayStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+      +   '<div class="kpi warn"><div class="v">'+fmtMoney(dayStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+      + '</div></div>';
+  }
   return html;
 }
 
@@ -2024,10 +2041,10 @@ function attachHandlers(){
 
   const calOverlay = document.getElementById('calOverlay');
   if(calOverlay) calOverlay.addEventListener('click', (e)=>{
-    if(e.target.id === 'calOverlay'){ state.calOpen = false; render(); }
+    if(e.target.id === 'calOverlay'){ state.calOpen = false; state.calMode = 'nav'; render(); }
   });
   const calClose = document.getElementById('calClose');
-  if(calClose) calClose.addEventListener('click', ()=>{ state.calOpen = false; render(); });
+  if(calClose) calClose.addEventListener('click', ()=>{ state.calOpen = false; state.calMode = 'nav'; render(); });
   const calPrev = document.getElementById('calPrev');
   if(calPrev) calPrev.addEventListener('click', ()=>{
     let [y,m] = state.calMonth.split('-').map(Number);
@@ -2043,9 +2060,25 @@ function attachHandlers(){
     render();
   });
   const calToday = document.getElementById('calToday');
-  if(calToday) calToday.addEventListener('click', ()=>selectDate(todayStr()));
+  if(calToday) calToday.addEventListener('click', ()=>{
+    if(state.calMode === 'summary'){
+      state.selectedDayStat = todayStr();
+      state.calOpen = false; state.calMode = 'nav';
+      render();
+    } else {
+      selectDate(todayStr());
+    }
+  });
   document.querySelectorAll('.cal-day').forEach(b=>{
-    b.addEventListener('click', ()=>selectDate(b.dataset.date));
+    b.addEventListener('click', ()=>{
+      if(state.calMode === 'summary'){
+        state.selectedDayStat = b.dataset.date;
+        state.calOpen = false; state.calMode = 'nav';
+        render();
+      } else {
+        selectDate(b.dataset.date);
+      }
+    });
   });
 
   const menuSelect = document.getElementById('menuSelect');
@@ -2200,6 +2233,15 @@ function attachHandlers(){
       state.selectedMonth = b.dataset.month;
       render();
     });
+  });
+
+  const pickDayBtn = document.getElementById('pickDayBtn');
+  if(pickDayBtn) pickDayBtn.addEventListener('click', ()=>{
+    state.calMode = 'summary';
+    state.calMonth = (state.selectedDayStat || state.selectedMonth || todayStr().slice(0,7)) ;
+    if(state.calMonth.length > 7) state.calMonth = state.calMonth.slice(0,7);
+    state.calOpen = true;
+    render();
   });
 
   const exportXlsx = document.getElementById('exportXlsx');
