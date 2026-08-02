@@ -828,3 +828,18 @@ for the driver app to work as an assigned-inventory subtraction tool.
   alter past sales. Owner-dashboard build and driver JavaScript syntax checks passed.
 - Feature commit `7daebe5` is on `owner-dashboard-v2` and must be mirrored to `main`. A real
   Lucas phone test is still required before relying on it for a full route.
+
+### 2026-08-02 — Codex categorized daily lists and prominent driver stock
+
+Owner requested that the food picker stop using dropdowns and that both sides of the daily-list
+screen stay visually organized. The driver also needed the remaining item quantity to be prominent
+instead of a small note below the name.
+
+- The owner’s **Food available** panel is now a regular categorized list with an **Add** button
+  next to every item. **Items given to driver** is grouped by those same categories, with large
+  visible plus/minus quantity controls.
+- In assigned-list mode, the driver app now shows a large number of items **left** beside every
+  food and a single **-1** button. The former +1/+2 counter controls are not shown for assigned
+  food. Tapping -1 records that sale and the chosen payment method as before.
+- Owner build and driver JavaScript syntax checks passed. Feature commit `d2fb89a` is on
+  `owner-dashboard-v2` and must be mirrored to `main`.
