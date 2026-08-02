@@ -811,3 +811,20 @@ payment, returns, timing, or export workflow that drivers already know.
 - JavaScript syntax check passed. Feature commit `b9b7e2c` is on `owner-dashboard-v2` and needs
   mirroring to `main`. Field test still required: create a small Lucas daily list, refresh Lucas’s
   phone, sell one item, and verify remaining quantity and owner dashboard sales match.
+
+### 2026-08-02 — Codex simplified daily-list and one-tap driver sales
+
+Owner requested a substantially simpler daily-list experience for a nontechnical user, and asked
+for the driver app to work as an assigned-inventory subtraction tool.
+
+- Replaced the long all-items quantity sheet with a simple flow: choose date and driver, choose
+  one food and quantity, press **Add to list**, adjust the selected list with visible plus/minus
+  buttons, then press one large **Save driver list** button. Existing saved lists still reopen.
+- When a driver has a matching daily list, the driver app now presents each assigned item with its
+  remaining quantity and one **Sold 1** button. The driver selects a payment method once; each
+  tap records one sale and its payment together, decreases the remaining amount, and cannot exceed
+  the owner-assigned quantity. The old route workflow remains as fallback when no list exists.
+- Each one-tap sale still stores its own daily-list price snapshot, so later menu changes cannot
+  alter past sales. Owner-dashboard build and driver JavaScript syntax checks passed.
+- Feature commit `7daebe5` is on `owner-dashboard-v2` and must be mirrored to `main`. A real
+  Lucas phone test is still required before relying on it for a full route.
