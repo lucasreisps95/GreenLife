@@ -856,3 +856,17 @@ Reworked the driver app’s Unsold tab so it is useful with the new assigned-inv
 - The prior manual Unsold controls remain as fallback for days without an owner daily list. Driver
   JavaScript syntax check passed. Feature commit `aa6a066` is on `owner-dashboard-v2` and needs
   mirroring to `main`.
+
+### 2026-08-02 — Codex restored bottom payment bar with payment splits
+
+Owner reported that automatic payment recording per assigned-item sale removed the useful bottom
+payment bar and made orders split across Square, Zelle, and Cash impossible.
+
+- Assigned-item **-1** buttons now record only the food sale. Payment is collected separately for
+  the whole order, restoring the bottom payment area whenever that stop has an unpaid balance.
+- In assigned-list mode, the bottom area is now a **Payment split** panel. Each payment method has
+  a slider and dollar field; drivers can fill two or more methods at once, see the entered total
+  and balance left, then press **Record these payments**. Square still uses the existing fee logic.
+- The original single-method quick-pay buttons remain on non-assigned days. Driver JavaScript
+  syntax check passed. Feature commit `46cc816` is on `owner-dashboard-v2` and needs mirroring to
+  `main`.
