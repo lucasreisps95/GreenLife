@@ -71,52 +71,59 @@
   .brand{display:flex;align-items:center;gap:11px;}
   .logo-mark{width:40px;height:40px;flex-shrink:0;object-fit:contain;border-radius:12px;}
   .logo-mark.sm{width:20px;height:20px;object-fit:contain;border-radius:6px;}
-  .stub h1{font-family:'Space Grotesk',sans-serif;font-size:20px;margin:0 0 1px;letter-spacing:-0.4px;font-weight:600;}
-  .stub .sub{font-size:10px;color:rgba(217,237,146,0.85);font-family:'IBM Plex Mono',monospace;letter-spacing:0.14em;}
+  .stub h1{font-family:'Space Grotesk',sans-serif;font-size:23px;margin:0 0 1px;letter-spacing:-0.4px;font-weight:600;}
+  .stub .sub{font-size:12px;color:rgba(217,237,146,0.85);font-family:'IBM Plex Mono',monospace;letter-spacing:0.14em;}
 
   .header-right{display:flex;align-items:center;gap:7px;}
+  .day-stepper{display:flex;align-items:center;gap:4px;}
+  .day-step{
+    width:30px;height:30px;border-radius:10px;border:1px solid rgba(255,255,255,0.22);
+    background:rgba(255,255,255,0.12);color:#EAF3EC;font-size:17px;font-weight:700;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .day-step:active{background:rgba(255,255,255,0.22);}
   .lang-toggle{
     background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);
-    color:#EAF3EC;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
+    color:#EAF3EC;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;
     padding:9px 10px;border-radius:12px;cursor:pointer;letter-spacing:0.05em;
   }
   .date-btn{
     position:relative;overflow:hidden;
     background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);
-    color:#EAF3EC;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+    color:#EAF3EC;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;
     padding:9px 12px;border-radius:12px;display:flex;align-items:center;gap:6px;cursor:pointer;
   }
   .date-btn input[type=date]{display:none;}
   .date-btn.past{background:var(--lime);border-color:var(--lime);color:var(--primary-dark);}
-  .date-btn .cal-icon{font-size:12px;}
+  .date-btn .cal-icon{font-size:14px;}
 
   .seller-row{margin-top:12px;position:relative;}
   .seller-row input{
     width:100%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
-    color:#EAF3EC;font-size:13px;padding:10px 13px;border-radius:13px;font-family:'Inter',sans-serif;
+    color:#EAF3EC;font-size:15px;padding:10px 13px;border-radius:13px;font-family:'Inter',sans-serif;
   }
   .seller-row input::placeholder{color:rgba(234,243,236,0.55);}
 
   .stub-controls{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap;position:relative;}
   .ctrl{flex:1;min-width:120px;}
-  .ctrl label{display:block;font-size:9px;color:rgba(217,237,146,0.8);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;}
+  .ctrl label{display:block;font-size:10px;color:rgba(217,237,146,0.8);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;}
   .ctrl select,.ctrl input[type=number]{
     width:100%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
-    color:#EAF3EC;font-size:13px;padding:9px 10px;border-radius:12px;font-family:'Inter',sans-serif;
+    color:#EAF3EC;font-size:15px;padding:9px 10px;border-radius:12px;font-family:'Inter',sans-serif;
   }
   .ctrl select option{color:#122635;}
 
   .stub-kpis{display:flex;gap:12px;margin-top:18px;position:relative;}
   .stub-kpi{flex:1;}
-  .stub-kpi .amt{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1;}
-  .stub-kpi .lbl{font-size:10px;color:rgba(234,243,236,0.62);margin-top:5px;letter-spacing:0.03em;}
+  .stub-kpi .amt{font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;letter-spacing:-1px;line-height:1;}
+  .stub-kpi .lbl{font-size:12px;color:rgba(234,243,236,0.62);margin-top:5px;letter-spacing:0.03em;}
   .stub-kpi.commission .amt{color:var(--lime);}
 
   /* ---------- Tabs ---------- */
   .tabs{display:flex;gap:6px;padding:14px 14px 0;}
   .tab{
     flex:1;text-align:center;padding:11px 6px;border-radius:14px;
-    font-size:13px;font-weight:600;color:var(--ink-soft);
+    font-size:15px;font-weight:600;color:var(--ink-soft);
     background:var(--surface);border:1px solid var(--border);
     -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
     cursor:pointer;transition:background .18s,color .18s;
@@ -138,13 +145,13 @@
   .stopper-top{display:flex;align-items:center;justify-content:space-between;}
   .stopper button.nav{
     width:42px;height:42px;border-radius:14px;border:none;
-    background:rgba(255,255,255,0.66);color:var(--primary-dark);font-size:19px;font-weight:700;cursor:pointer;
+    background:rgba(255,255,255,0.66);color:var(--primary-dark);font-size:22px;font-weight:700;cursor:pointer;
   }
   .stop-mid{flex:1;text-align:center;padding:0 6px;}
-  .stop-idx{font-size:9px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:0.12em;}
-  .stop-name-input{width:100%;text-align:center;border:none;background:transparent;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-0.2px;}
+  .stop-idx{font-size:10px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:0.12em;}
+  .stop-name-input{width:100%;text-align:center;border:none;background:transparent;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;color:var(--ink);letter-spacing:-0.2px;}
   .stopcount-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--hairline);}
-  .stopcount-row label{font-size:11px;color:var(--ink-soft);font-weight:600;}
+  .stopcount-row label{font-size:13px;color:var(--ink-soft);font-weight:600;}
   .stopcount-row input{width:58px;text-align:center;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);border-radius:10px;padding:6px;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);}
 
   /* ---------- Arrival / departure ---------- */
@@ -156,19 +163,19 @@
   }
   .big-time-btn.arriving{background:linear-gradient(135deg,var(--primary) 0%,#237074 100%);}
   .big-time-btn.leaving{background:linear-gradient(135deg,var(--lime) 0%,#C4DE7A 100%);color:var(--primary-dark);}
-  .big-time-btn .btl{font-size:14px;font-weight:700;letter-spacing:-0.1px;}
-  .big-time-btn .bts{font-size:11px;font-family:'IBM Plex Mono',monospace;opacity:0.82;}
+  .big-time-btn .btl{font-size:16px;font-weight:700;letter-spacing:-0.1px;}
+  .big-time-btn .bts{font-size:13px;font-family:'IBM Plex Mono',monospace;opacity:0.82;}
   .visit-list{margin-top:9px;}
   .arrival-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;}
-  .arrival-btn{width:100%;padding:12px;border-radius:14px;border:none;background:var(--primary);color:#fff;font-size:13px;font-weight:700;}
+  .arrival-btn{width:100%;padding:12px;border-radius:14px;border:none;background:var(--primary);color:#fff;font-size:15px;font-weight:700;}
   .arrival-log{margin-top:8px;}
 
-  .pair-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px solid var(--hairline);font-family:'IBM Plex Mono',monospace;}
+  .pair-row{display:flex;align-items:center;justify-content:space-between;font-size:14px;padding:7px 0;border-bottom:1px solid var(--hairline);font-family:'IBM Plex Mono',monospace;}
   .pair-row:last-child{border-bottom:none;}
   .pair-row.drive-row{color:var(--ocean);font-style:italic;padding-left:10px;}
   .pair-row .dur{color:var(--primary);font-weight:700;}
   .pair-row .open{color:var(--danger);font-weight:700;}
-  .pair-row button{background:none;border:none;color:var(--ink-soft);font-weight:700;cursor:pointer;font-size:14px;}
+  .pair-row button{background:none;border:none;color:var(--ink-soft);font-weight:700;cursor:pointer;font-size:16px;}
 
   /* ---------- Running order bar ---------- */
   .order-bar{
@@ -183,162 +190,197 @@
     border-color:transparent;box-shadow:var(--shadow-lift);
   }
   .ob-left{display:flex;align-items:baseline;gap:7px;}
-  .ob-count{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--ink-soft);}
-  .ob-lbl{font-size:11px;color:var(--ink-soft);}
+  .ob-count{font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;color:var(--ink-soft);}
+  .ob-lbl{font-size:13px;color:var(--ink-soft);}
   .order-bar.live .ob-count{color:#fff;}
   .order-bar.live .ob-lbl{color:rgba(234,243,236,0.7);}
   .ob-right{display:flex;align-items:center;gap:10px;}
-  .ob-amt{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--ink-soft);letter-spacing:-0.5px;}
+  .ob-amt{font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;color:var(--ink-soft);letter-spacing:-0.5px;}
   .order-bar.live .ob-amt{color:var(--lime);}
-  .ob-clear{background:rgba(255,255,255,0.18);border:none;color:rgba(234,243,236,0.85);font-size:10px;font-weight:700;
+  .ob-clear{background:rgba(255,255,255,0.18);border:none;color:rgba(234,243,236,0.85);font-size:12px;font-weight:700;
     padding:6px 9px;border-radius:9px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;}
 
   /* ---------- Items ---------- */
   .cat-label{
-    font-size:10px;text-transform:uppercase;letter-spacing:0.14em;
+    font-size:12px;text-transform:uppercase;letter-spacing:0.14em;
     color:var(--ink-soft);margin:20px 4px 9px;font-weight:700;
   }
   .cat-label.top-label{color:var(--primary);}
   .item{border-radius:var(--radius-sm);padding:11px 13px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
   .item.top{background:var(--lime-soft);border:1px solid rgba(153,217,140,0.75);}
   .item-info{flex:1;min-width:0;}
-  .item-name{font-size:14px;font-weight:600;letter-spacing:-0.1px;}
-  .item-price{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-top:1px;}
+  .item-name{font-size:16px;font-weight:600;letter-spacing:-0.1px;}
+  .item-price{font-size:13px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-top:1px;}
   .counter{display:flex;align-items:center;gap:7px;}
-  .counter button{width:40px;height:40px;border-radius:13px;border:none;font-size:17px;font-weight:700;flex-shrink:0;cursor:pointer;}
+  .counter button{width:40px;height:40px;border-radius:13px;border:none;font-size:20px;font-weight:700;flex-shrink:0;cursor:pointer;}
   .counter .minus{background:rgba(255,255,255,0.72);color:var(--ink-soft);}
   .counter .plus{background:var(--primary);color:#fff;}
-  .counter .plus2{background:var(--teal);color:var(--primary-dark);font-size:14px;}
-  .counter .count{min-width:24px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:16px;}
-  .counter.big button{width:52px;height:52px;font-size:20px;border-radius:16px;}
-  .counter.big .plus2{font-size:15px;}
-  .counter.big .count{min-width:32px;font-size:20px;}
+  .counter .plus2{background:var(--teal);color:var(--primary-dark);font-size:16px;}
+  .counter .count{min-width:24px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:18px;}
+  .counter.big button{width:52px;height:52px;font-size:23px;border-radius:16px;}
+  .counter.big .plus2{font-size:17px;}
+  .counter.big .count{min-width:32px;font-size:23px;}
 
   /* ---------- Requests / payments / cash ---------- */
   .req-box,.pay-box{border-radius:var(--radius);padding:14px;margin-top:9px;}
-  .req-box .lbl,.pay-box .lbl{font-size:11px;font-weight:700;color:var(--ink-soft);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;}
+  .req-box .lbl,.pay-box .lbl{font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;}
   .req-input-row{display:flex;gap:8px;}
-  .req-input-row input{flex:1;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:10px 11px;font-size:13px;color:var(--ink);}
+  .req-input-row input{flex:1;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:10px 11px;font-size:15px;color:var(--ink);}
   .req-input-row button{background:var(--teal);color:var(--primary-dark);border:none;border-radius:12px;padding:0 15px;font-weight:700;cursor:pointer;}
-  .chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--primary-dark);border-radius:20px;padding:6px 11px;font-size:12px;font-weight:600;margin:7px 6px 0 0;}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--primary-dark);border-radius:20px;padding:6px 11px;font-size:14px;font-weight:600;margin:7px 6px 0 0;}
   .chip.fee{background:rgba(255,255,255,0.6);color:var(--ink-soft);font-style:italic;}
   .chip.time{background:rgba(82,182,154,0.24);color:var(--primary-dark);}
   .chip button{background:none;border:none;color:var(--primary-dark);font-weight:700;cursor:pointer;}
 
-  .pay-ledger{font-family:'IBM Plex Mono',monospace;font-size:12px;margin-bottom:12px;}
+  .pay-ledger{font-family:'IBM Plex Mono',monospace;font-size:14px;margin-bottom:12px;}
   .pay-ledger > div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--hairline);}
   .pay-ledger > div:last-child{border-bottom:none;font-weight:700;padding-top:8px;}
   .pay-ledger .owing{color:var(--danger);}
   .pay-ledger .settled{color:var(--primary);}
   .pay-ledger .over{color:var(--ocean);}
   .pay-fill{width:100%;padding:13px;margin-top:9px;border-radius:14px;border:none;
-    background:linear-gradient(135deg,var(--primary),#237074);color:#fff;font-weight:700;font-size:13px;box-shadow:var(--shadow);cursor:pointer;}
+    background:linear-gradient(135deg,var(--primary),#237074);color:#fff;font-weight:700;font-size:15px;box-shadow:var(--shadow);cursor:pointer;}
 
   .method-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px;}
-  .method-chip{padding:9px 12px;border-radius:12px;border:1px solid var(--hairline);background:rgba(255,255,255,0.55);font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  .method-chip{padding:9px 12px;border-radius:12px;border:1px solid var(--hairline);background:rgba(255,255,255,0.55);font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
   .method-chip.active{background:var(--primary);color:#fff;border-color:transparent;}
   .pay-add-row{display:flex;gap:8px;}
-  .pay-add-row input{flex:1;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:10px 11px;font-size:13px;color:var(--ink);}
+  .pay-add-row input{flex:1;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:10px 11px;font-size:15px;color:var(--ink);}
   .pay-add-row button{background:var(--primary);color:#fff;border:none;border-radius:12px;padding:0 15px;font-weight:700;cursor:pointer;}
-  .pay-sum{font-size:12px;color:var(--ink-soft);margin-top:9px;font-family:'IBM Plex Mono',monospace;}
-  .fee-note{font-size:11px;color:var(--ocean);margin-top:7px;font-weight:600;}
+  .pay-sum{font-size:14px;color:var(--ink-soft);margin-top:9px;font-family:'IBM Plex Mono',monospace;}
+  .fee-note{font-size:13px;color:var(--ocean);margin-top:7px;font-weight:600;}
 
   .cash-box{border-radius:var(--radius);padding:15px;margin-top:9px;}
   .cash-head{display:flex;align-items:baseline;justify-content:space-between;}
-  .cash-head .lbl{font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.08em;}
-  .cash-amt{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--primary);letter-spacing:-0.8px;}
-  .cash-sub{font-size:11px;color:var(--ink-soft);margin-top:1px;margin-bottom:12px;}
-  .float-prompt{background:var(--lime-soft);border-radius:13px;padding:11px;font-size:12px;font-weight:600;color:var(--primary-dark);margin-bottom:11px;}
-  .cash-breakdown{font-family:'IBM Plex Mono',monospace;font-size:12px;margin-bottom:11px;}
+  .cash-head .lbl{font-size:13px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.08em;}
+  .cash-amt{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:var(--primary);letter-spacing:-0.8px;}
+  .cash-sub{font-size:13px;color:var(--ink-soft);margin-top:1px;margin-bottom:12px;}
+  .float-prompt{background:var(--lime-soft);border-radius:13px;padding:11px;font-size:14px;font-weight:600;color:var(--primary-dark);margin-bottom:11px;}
+  .cash-breakdown{font-family:'IBM Plex Mono',monospace;font-size:14px;margin-bottom:11px;}
   .cash-breakdown > div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--hairline);}
   .cash-breakdown > div:last-child{border-bottom:none;}
   .edit-float{justify-content:flex-end !important;}
-  .edit-float button{background:none;border:none;color:var(--ocean);font-size:11px;font-weight:700;text-decoration:underline;cursor:pointer;font-family:'Inter',sans-serif;}
+  .edit-float button{background:none;border:none;color:var(--ocean);font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;font-family:'Inter',sans-serif;}
   .change-row{display:flex;gap:6px;}
-  .change-row input{flex:1;min-width:0;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:12px 11px;font-size:16px;color:var(--ink);}
-  .change-row button{background:var(--danger);color:#fff;border:none;border-radius:12px;padding:0 16px;font-weight:700;font-size:13px;cursor:pointer;}
+  .change-row input{flex:1;min-width:0;border:1px solid var(--hairline);background:rgba(255,255,255,0.66);border-radius:12px;padding:12px 11px;font-size:18px;color:var(--ink);}
+  .change-row button{background:var(--danger);color:#fff;border:none;border-radius:12px;padding:0 16px;font-weight:700;font-size:15px;cursor:pointer;}
   .change-row button.topup{background:var(--primary);padding:0 13px;}
   .quick-change{display:flex;gap:6px;margin-top:9px;}
-  .qc{flex:1;padding:12px 0;border-radius:12px;border:1px solid var(--hairline);background:rgba(255,255,255,0.55);font-weight:700;font-size:14px;color:var(--ink);cursor:pointer;}
+  .qc{flex:1;padding:12px 0;border-radius:12px;border:1px solid var(--hairline);background:rgba(255,255,255,0.55);font-weight:700;font-size:16px;color:var(--ink);cursor:pointer;}
 
   /* ---------- Unsold ---------- */
   .eod-item{border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-  .eod-item .item-name{font-size:14px;font-weight:600;}
-  .eod-sold-hint{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-top:1px;}
+  .eod-item .item-name{font-size:16px;font-weight:600;}
+  .eod-sold-hint{font-size:13px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-top:1px;}
 
   /* ---------- Summary ---------- */
   .card{border-radius:var(--radius);padding:16px;margin-bottom:12px;}
-  .card h3{margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;letter-spacing:-0.2px;}
+  .card h3{margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;letter-spacing:-0.2px;}
   .kpi-row{display:flex;gap:9px;flex-wrap:wrap;}
   .kpi{flex:1;min-width:92px;background:rgba(255,255,255,0.5);border:1px solid var(--border);border-radius:14px;padding:12px 10px;text-align:center;}
-  .kpi .v{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.4px;}
+  .kpi .v{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:21px;letter-spacing:-0.4px;}
   .kpi.warn .v{color:var(--danger);}
   .kpi.gold .v{color:var(--lime);background:var(--primary-dark);border-radius:8px;padding:3px 7px;display:inline-block;}
-  .kpi .k{font-size:9px;color:var(--ink-soft);margin-top:5px;letter-spacing:0.06em;text-transform:uppercase;}
+  .kpi .k{font-size:10px;color:var(--ink-soft);margin-top:5px;letter-spacing:0.06em;text-transform:uppercase;}
   .bar-row{margin-bottom:10px;}
-  .bar-row .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
+  .day-multi-row{margin-bottom:16px;}
+  .day-multi-sub{display:flex;gap:14px;margin-top:5px;font-size:13px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
+  button.month-row{
+    display:block;width:100%;background:none;border:none;padding:0;margin-bottom:10px;
+    cursor:pointer;text-align:left;font-family:inherit;
+  }
+  .month-row .bar-track{height:10px;}
+  .month-row.sel .top span:first-child{color:var(--primary);font-weight:700;}
+  .bar-fill.month-sel{background:linear-gradient(90deg,var(--lime),var(--teal));}
+  .month-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--hairline);}
+  .bar-row .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;}
   .bar-track{height:8px;background:rgba(18,38,53,0.08);border-radius:6px;overflow:hidden;}
   .bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--primary));border-radius:6px;}
   .bar-fill.waste{background:linear-gradient(90deg,var(--danger-vivid),var(--danger));}
-  .export-btn{width:100%;padding:14px;border-radius:14px;border:none;background:var(--primary-dark);color:#fff;font-weight:700;font-size:13px;margin-top:4px;margin-bottom:7px;cursor:pointer;box-shadow:var(--shadow);}
+  .export-btn{width:100%;padding:14px;border-radius:14px;border:none;background:var(--primary-dark);color:#fff;font-weight:700;font-size:15px;margin-top:4px;margin-bottom:7px;cursor:pointer;box-shadow:var(--shadow);}
   .export-btn.alt{background:var(--ocean);}
   .export-btn.ghost{background:rgba(255,255,255,0.6);color:var(--ink-soft);box-shadow:none;}
   .export-btn.danger{background:var(--danger);}
   .export-btn.xlsx{background:linear-gradient(135deg,var(--primary),#237074);}
-  .export-note{font-size:11px;color:var(--ink-soft);margin-top:5px;line-height:1.5;}
-  .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:22px 0;}
+  .export-note{font-size:13px;color:var(--ink-soft);margin-top:5px;line-height:1.5;}
+  .empty{color:var(--ink-soft);font-size:15px;text-align:center;padding:22px 0;}
 
   .brand-footer{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 0 6px;
-    color:var(--ink-soft);font-size:11px;font-weight:600;letter-spacing:0.04em;opacity:0.8;}
+    color:var(--ink-soft);font-size:13px;font-weight:600;letter-spacing:0.04em;opacity:0.8;}
 
   /* ---------- Calendar ---------- */
   .cal-overlay{position:fixed;inset:0;background:rgba(18,38,53,0.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
   .cal-sheet{background:rgba(255,255,255,0.9);border-radius:24px;padding:18px;width:100%;max-width:340px;box-shadow:var(--shadow-lift);}
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
-  .cal-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;}
-  .cal-nav{width:40px;height:40px;border-radius:13px;border:none;background:var(--lime-soft);color:var(--primary-dark);font-size:20px;font-weight:700;cursor:pointer;}
+  .cal-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;}
+  .cal-nav{width:40px;height:40px;border-radius:13px;border:none;background:var(--lime-soft);color:var(--primary-dark);font-size:23px;font-weight:700;cursor:pointer;}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-  .cal-dow{text-align:center;font-size:9px;font-weight:700;color:var(--ink-soft);padding:5px 0;letter-spacing:0.08em;}
-  .cal-day{aspect-ratio:1;border:none;background:rgba(255,255,255,0.6);border-radius:11px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;position:relative;padding:0;}
+  .cal-dow{text-align:center;font-size:10px;font-weight:700;color:var(--ink-soft);padding:5px 0;letter-spacing:0.08em;}
+  .cal-day{aspect-ratio:1;border:none;background:rgba(255,255,255,0.6);border-radius:11px;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer;position:relative;padding:0;}
   .cal-day.has::after{content:'';position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--teal);}
   .cal-day.today{outline:2px solid var(--primary);}
   .cal-day.sel{background:var(--primary);color:#fff;}
   .cal-day.sel.has::after{background:var(--lime);}
   .cal-actions{display:flex;gap:8px;margin-top:15px;}
-  .cal-today{flex:1;padding:13px;border-radius:13px;border:none;background:var(--primary);color:#fff;font-weight:700;font-size:13px;cursor:pointer;}
-  .cal-close{flex:1;padding:13px;border-radius:13px;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);color:var(--ink-soft);font-weight:700;font-size:13px;cursor:pointer;}
+  .cal-sel-count{text-align:center;font-size:14px;color:var(--ink-soft);margin-top:12px;font-weight:600;}
+  .cal-today{flex:1;padding:13px;border-radius:13px;border:none;background:var(--primary);color:#fff;font-weight:700;font-size:15px;cursor:pointer;}
+  .cal-close{flex:1;padding:13px;border-radius:13px;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);color:var(--ink-soft);font-weight:700;font-size:15px;cursor:pointer;}
 
   /* ---------- Toast ---------- */
+  .qp-spacer{height:135px;}
+  /* ---------- Quick pay bar ---------- */
+  .quickpay{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    max-width:520px;margin:0 auto;
+    background:linear-gradient(142deg,#1A759F 0%,#184E77 100%);
+    border-top:1px solid rgba(255,255,255,0.18);
+    border-radius:24px 24px 0 0;
+    box-shadow:0 -8px 30px rgba(18,52,80,0.28);
+    padding:13px 14px calc(13px + env(safe-area-inset-bottom, 0px));
+  }
+  .qp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .qp-left{display:flex;align-items:baseline;gap:7px;}
+  .qp-count{font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;color:#fff;}
+  .qp-lbl{font-size:13px;color:rgba(234,243,236,0.7);}
+  .qp-amt{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:var(--lime);letter-spacing:-0.6px;}
+  .qp-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+  .qp-btn{
+    padding:13px 6px;border-radius:13px;border:1px solid rgba(255,255,255,0.22);
+    background:rgba(255,255,255,0.14);color:#EAF3EC;
+    font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
+  }
+  .qp-btn:active{background:var(--lime);color:var(--primary-dark);border-color:var(--lime);}
+
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
     background:rgba(18,38,53,0.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-    color:#fff;padding:12px 20px;border-radius:30px;font-size:13px;font-weight:500;
+    color:#fff;padding:12px 20px;border-radius:30px;font-size:15px;font-weight:500;
     opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:var(--shadow-lift);z-index:200;}
   .toast.show{opacity:1;}
 
   /* ---------- Mobile ---------- */
   @media (max-width:520px){
     .counter{gap:6px;}
-    .counter button{width:48px;height:48px;font-size:20px;}
-    .counter .plus2{font-size:15px;}
-    .counter .count{min-width:28px;font-size:18px;}
-    .counter.big button{width:58px;height:58px;font-size:22px;}
-    .counter.big .plus2{font-size:16px;}
-    .counter.big .count{min-width:34px;font-size:21px;}
+    .counter button{width:48px;height:48px;font-size:23px;}
+    .counter .plus2{font-size:17px;}
+    .counter .count{min-width:28px;font-size:21px;}
+    .counter.big button{width:58px;height:58px;font-size:25px;}
+    .counter.big .plus2{font-size:18px;}
+    .counter.big .count{min-width:34px;font-size:24px;}
     .item{padding:12px 13px;}
-    .item-name{font-size:15px;}
-    .tab{padding:13px 6px;font-size:14px;}
-    .stopper button.nav{width:46px;height:46px;font-size:21px;}
-    .method-chip{padding:11px 13px;font-size:13px;}
-    .req-input-row input,.pay-add-row input{font-size:16px;padding:12px 11px;}
-    .req-input-row button,.pay-add-row button{padding:0 18px;font-size:14px;}
+    .item-name{font-size:17px;}
+    .tab{padding:13px 6px;font-size:16px;}
+    .stopper button.nav{width:46px;height:46px;font-size:24px;}
+    .method-chip{padding:11px 13px;font-size:15px;}
+    .req-input-row input,.pay-add-row input{font-size:18px;padding:12px 11px;}
+    .req-input-row button,.pay-add-row button{padding:0 18px;font-size:16px;}
     .big-time-btn{padding:17px 12px;}
-    .big-time-btn .btl{font-size:16px;}
-    .export-btn{padding:15px;font-size:14px;}
-    .stop-name-input{font-size:16px;}
-    .ctrl select,.ctrl input[type=number]{font-size:16px;padding:10px;}
-    .seller-row input{font-size:16px;padding:12px 13px;}
+    .big-time-btn .btl{font-size:18px;}
+    .export-btn{padding:15px;font-size:16px;}
+    .stop-name-input{font-size:18px;}
+    .ctrl select,.ctrl input[type=number]{font-size:18px;padding:10px;}
+    .seller-row input{font-size:18px;padding:12px 13px;}
     .date-btn,.lang-toggle{padding:10px 12px;}
-    .stub-kpi .amt{font-size:28px;}
+    .stub-kpi .amt{font-size:32px;}
   }
 
   @media (prefers-reduced-motion:reduce){
@@ -372,7 +414,7 @@ let MENU = {
   Tuesday: {
     Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Burrito",13],["Steak Breakfast Bowl",16]],
     Salads: [["Chef Salad",15],["Asian Crunchy Salad",15]],
-    Sandwiches: [["Turkey Club",15],["Smoked Turkey and Swiss",15]],
+    Sandwiches: [["Turkey Club",15],["Smoked Turkey and Swiss",15],["Chicken Salad Sandwich",15]],
     Wraps: [["Chicken Spring Rolls",15],["Thai Chicken Wrap",15]],
     "Hot Plates": [["Chicken Enchiladas",16],["Chicken Chile Verde",16],["Shrimp/Chicken Pesto Pasta",16]],
     Sushi: [["California Roll",12]],
@@ -383,10 +425,10 @@ let MENU = {
   Wednesday: {
     Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Burrito",13],["Steak Breakfast Bowl",16]],
     Salads: [["House Chopped Salad",15],["Thai Grilled Chicken Salad",15]],
-    Sandwiches: [["Italian Sandwich",15],["Smoked Turkey and Swiss",15]],
+    Sandwiches: [["Smoked Turkey and Swiss",15],["Chicken Salad Sandwich",15]],
     Wraps: [["Chicken Spring Rolls",15],["Mediterranean Wrap",15]],
-    "Hot Plates": [["Chicken Chow Mein",16],["Teriyaki Chicken",16],["Blackened Salmon",16]],
-    Sushi: [["Crunchy Roll",12]],
+    "Hot Plates": [["Chicken Chow Mein",16],["Teriyaki Chicken",16],["Blackened Salmon",17.5]],
+    Sushi: [["Crunchy Roll",13.5]],
     "Protein Plates": [["Blackened Chicken Protein Plate",15]],
     Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
     Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
@@ -394,11 +436,11 @@ let MENU = {
   Thursday: {
     Breakfast: [["Breakfast Bacon Burrito",12],["Breakfast Chorizo Burrito",12],["Steak Burrito",13],["Steak Breakfast Bowl",16]],
     Salads: [["Super Taco Salad",15],["Turkey Cobb Salad",15]],
-    Sandwiches: [["Chicken Salad Sandwich",15]],
+    Sandwiches: [["Chicken Salad Sandwich",15],["Smoked Turkey and Swiss",15]],
     Wraps: [["Chicken Spring Rolls",15],["Buffalo Chicken Wrap",15]],
     "Hot Plates": [["Broccoli Beef w/ Brown Rice",16],["Meat Lasagna",16],["Rosemary Chicken w/ Mashed Potatoes",16]],
     Sushi: [["California Roll",12],["Rainbow Roll (special order)",18]],
-    "Protein Plates": [["Hot Honey Chicken",15]],
+    "Protein Plates": [["Hot Honey Chicken",15],["Tuna Protein Plate",16]],
     Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
     Drinks: [["Orange Juice",8],["Green Juice",8],["Berry Juice",8]]
   },
@@ -407,7 +449,7 @@ let MENU = {
     Salads: [["Super Taco Salad",15],["Grilled Chicken Quinoa Salad",15]],
     Sandwiches: [["Chicken Salad Sandwich",15],["Smoked Turkey and Swiss",15]],
     Wraps: [["Chicken Spring Rolls",15],["Summer Turkey Wrap",15]],
-    "Hot Plates": [["Shrimp Spinach Capellini",16],["Chicken Lemon Garlic Pasta",16]],
+    "Hot Plates": [["Steak and Mashed Potatoes",17],["Chicken Lemon Garlic Pasta",16]],
     Sushi: [["California Roll",12]],
     "Protein Plates": [["Chicken Salad Protein Plate",15]],
     Treats: [["Cookies",8],["Brownies",8],["Fruit Salad",9],["Fruit Parfait",9.5],["Ham and Cheese Croissants (2pcs)",10],["Pasta Salad",9.5],["Watermelon",7],["Mango",9]],
@@ -424,10 +466,24 @@ const CAT_ES = {
   "Sushi":"Sushi","Protein Plates":"Platos de proteína","Treats":"Postres","Drinks":"Bebidas"
 };
 const PAY_ES = { "Credit Card":"Tarjeta de crédito", "Cash":"Efectivo", "Owed":"Debe" };
+const CAT_PT = {
+  "Breakfast":"Café da manhã","Salads":"Saladas","Sandwiches":"Sanduíches","Wraps":"Wraps","Hot Plates":"Pratos quentes",
+  "Sushi":"Sushi","Protein Plates":"Pratos de proteína","Treats":"Sobremesas","Drinks":"Bebidas"
+};
+const PAY_PT = { "Credit Card":"Cartão de crédito", "Cash":"Dinheiro", "Owed":"Deve" };
 
 const TRANSLATIONS = {
   en: {
-    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary",
+    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary", today_label:"Today", qp_items:"to pay",
+    monthly_title:"Monthly overview", monthly_tap:"Tap a month to see the breakdown", monthly_no_data:"Not enough data yet to show months",
+    pick_day_btn:"Compare specific days", day_breakdown:"{date}",
+    cal_selected_count:"{n} day{s} selected", cal_clear:"Clear", cal_done:"Done",
+    cal_go_today:"Go to today", cal_close_btn:"Close",
+    selection_title:"{n} selected day{s}", daily_graphic_title:"Daily breakdown", monthly_graphic_title:"By month",
+    commission_short:"Commission", waste_short:"Waste",
+    checkout_title:"Checkout", cash_in_hand_label:"Cash in hand", minus_commission_label:"Minus your commission",
+    owe_owner_label:"You owe the owner", owner_owes_you_label:"Owner owes you",
+    checkout_note:"Square money goes straight to the business — only what you physically collected in Cash, Zelle, or Venmo needs to be handed over, minus your commission.",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
@@ -448,12 +504,13 @@ const TRANSLATIONS = {
     arrivals_log:"Today's time log (all stops)", no_arrivals:"No arrivals logged yet today.",
     total_time:"Total time on site", drive_to:"Driving to {stop}", total_drive:"Total driving time",
     unsold_label:"What came back unsold today (all stops)", sold_today:"sold today: {n}",
-    across_days:"Across {n} logged day{s}", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
+    across_days:"Across {n} logged day{s}", today_stats:"Today", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
     waste_value:"WASTE VALUE", time_on_site:"TIME ON SITE", square_fees:"SQUARE FEES",
-    real_fee_title:"Real Square Fee", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
-    charged_fee:"You charged (flat $0.50/sale)", real_fee:"Square actually took", fee_gap:"Your gap",
+    real_fee_title:"Real Square Fee", real_fee_title_scoped:"Real Square Fee ({scope})", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
+    charged_fee:"You charged (flat $0.50/sale)", real_fee:"Square actually took", fee_gap:"Your gap", net_total:"Net total",
     txn_count:"Square transactions",
-    payment_methods:"Payment methods (all days)", best_sellers:"Best sellers",
+    payment_methods:"Payment methods (all days)", payment_methods_scoped:"Payment methods ({scope})",
+    scope_today:"today", scope_all_days:"all days", best_sellers:"Best sellers",
     waste_title:"Consistently coming back (waste)", lost_sales:"Requested but not carried (lost sales)",
     export_title:"Export", export_excel:"Download Excel workbook (all data, one file)", export_day:"Download day-by-day CSV", export_item:"Download item-by-item CSV",
     export_copy:"Copy summary as text", export_note:"The Excel file has both day and item data as separate tabs, with filters and a frozen header row. CSVs are plain backups.",
@@ -473,7 +530,16 @@ const TRANSLATIONS = {
     cloud_error:"Cloud sync error — saved locally, will retry"
   },
   es: {
-    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen",
+    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen", today_label:"Hoy", qp_items:"por cobrar",
+    monthly_title:"Resumen mensual", monthly_tap:"Toca un mes para ver el detalle", monthly_no_data:"Aún no hay suficientes datos para mostrar meses",
+    pick_day_btn:"Comparar días específicos", day_breakdown:"{date}",
+    cal_selected_count:"{n} día{s} seleccionado{s}", cal_clear:"Borrar", cal_done:"Listo",
+    cal_go_today:"Ir a hoy", cal_close_btn:"Cerrar",
+    selection_title:"{n} día{s} seleccionado{s}", daily_graphic_title:"Desglose diario", monthly_graphic_title:"Por mes",
+    commission_short:"Comisión", waste_short:"Desperdicio",
+    checkout_title:"Cierre de caja", cash_in_hand_label:"Efectivo en mano", minus_commission_label:"Menos tu comisión",
+    owe_owner_label:"Le debes al dueño", owner_owes_you_label:"El dueño te debe",
+    checkout_note:"El dinero de Square va directo al negocio — solo lo que cobraste físicamente en Efectivo, Zelle o Venmo se debe entregar, menos tu comisión.",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
@@ -494,12 +560,13 @@ const TRANSLATIONS = {
     arrivals_log:"Registro de tiempo de hoy (todas las paradas)", no_arrivals:"Aún no hay llegadas registradas hoy.",
     total_time:"Tiempo total en el lugar", drive_to:"Manejando a {stop}", total_drive:"Tiempo total manejando",
     unsold_label:"Lo que no se vendió hoy (todas las paradas)", sold_today:"vendido hoy: {n}",
-    across_days:"En {n} día{s} registrado{s}", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
+    across_days:"En {n} día{s} registrado{s}", today_stats:"Hoy", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
     waste_value:"VALOR DESPERDICIADO", time_on_site:"TIEMPO EN SITIO", square_fees:"CARGOS DE SQUARE",
-    real_fee_title:"Cargo real de Square", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
-    charged_fee:"Cobraste (fijo $0.50/venta)", real_fee:"Square realmente cobró", fee_gap:"Tu diferencia",
+    real_fee_title:"Cargo real de Square", real_fee_title_scoped:"Cargo real de Square ({scope})", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
+    charged_fee:"Cobraste (fijo $0.50/venta)", real_fee:"Square realmente cobró", fee_gap:"Tu diferencia", net_total:"Total neto",
     txn_count:"Transacciones de Square",
-    payment_methods:"Métodos de pago (todos los días)", best_sellers:"Más vendidos",
+    payment_methods:"Métodos de pago (todos los días)", payment_methods_scoped:"Métodos de pago ({scope})",
+    scope_today:"hoy", scope_all_days:"todos los días", best_sellers:"Más vendidos",
     waste_title:"Siempre regresa (desperdicio)", lost_sales:"Pedido pero no disponible (ventas perdidas)",
     export_title:"Exportar", export_excel:"Descargar libro de Excel (todo en un archivo)", export_day:"Descargar CSV por día", export_item:"Descargar CSV por artículo",
     export_copy:"Copiar resumen como texto", export_note:"El archivo de Excel tiene los datos de días y artículos en pestañas separadas, con filtros y encabezado fijo. Los CSV son solo respaldo.",
@@ -517,6 +584,62 @@ const TRANSLATIONS = {
     cloud_offline:"Solo local — no sincronizado", cloud_connecting:"Conectando a la nube…",
     cloud_synced:"Sincronizado como {name}", cloud_taken:"Ese nombre ya se usa en otro dispositivo — usa un nombre diferente",
     cloud_error:"Error de sincronización — guardado localmente, se reintentará"
+  },
+  pt: {
+    tab_log:"Registrar parada", tab_unsold:"Não vendido", tab_summary:"Resumo", today_label:"Hoje", qp_items:"a receber",
+    monthly_title:"Resumo mensal", monthly_tap:"Toque em um mês para ver os detalhes", monthly_no_data:"Ainda não há dados suficientes para mostrar meses",
+    pick_day_btn:"Comparar dias específicos", day_breakdown:"{date}",
+    cal_selected_count:"{n} dia{s} selecionado{s}", cal_clear:"Limpar", cal_done:"Pronto",
+    cal_go_today:"Ir para hoje", cal_close_btn:"Fechar",
+    selection_title:"{n} dia{s} selecionado{s}", daily_graphic_title:"Detalhamento diário", monthly_graphic_title:"Por mês",
+    commission_short:"Comissão", waste_short:"Desperdício",
+    checkout_title:"Fechamento de caixa", cash_in_hand_label:"Dinheiro em mãos", minus_commission_label:"Menos sua comissão",
+    owe_owner_label:"Você deve ao dono", owner_owes_you_label:"O dono te deve",
+    checkout_note:"O dinheiro do Square vai direto para o negócio — só o que você recebeu fisicamente em Dinheiro, Zelle ou Venmo precisa ser entregue, menos sua comissão.",
+    revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
+    menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
+    auto_weekday:"Auto ({wd})",
+    stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas na rota hoje:",
+    top_sellers_at:"Mais vendidos em {stop} — toque rápido", top_sellers_generic:"Mais vendidos — toque rápido",
+    no_menu:"Nenhum cardápio para {wd}. Escolha um acima.",
+    arrive_tap:"Toque ao chegar", leave_tap:"Toque ao sair", here_since:"Aqui desde as {t}",
+    here_today:"{d} aqui hoje", now_label:"agora",
+    req_label:"O cliente pediu algo que você não tinha", req_placeholder:"ex. mais Salmão, ou Café gelado", req_add:"Adicionar",
+    pay_label:"Pagamento recebido nesta parada", sold_here:"Vendido aqui", collected:"Recebido",
+    still_to_collect:"Falta receber", over_collected:"Recebido a mais", settled:"Quitado",
+    amount_ph:"Valor ($)", add_btn:"Adicionar", pay_remaining:"Pagar {amt} restante com {method}",
+    fee_note:"+ {fee} taxa automática do Square",
+    cash_pouch:"Bolsa de troco", cash_sub:"deveria estar na sua bolsa agora",
+    float_prompt:"Troco inicial que você carregou hoje:", float_ph:"ex. 60.00", set_btn:"Confirmar",
+    started_with:"Começou com", cash_sales:"+ Vendas em dinheiro", added_cash:"+ Adicionado", change_given:"− Troco dado",
+    change_edit:"Alterar valor inicial", change_ph:"Valor ($)", give_btn:"− Dar", add2_btn:"+ Adicionar",
+    arrivals_log:"Registro de horários de hoje (todas as paradas)", no_arrivals:"Ainda não há chegadas registradas hoje.",
+    total_time:"Tempo total no local", drive_to:"Dirigindo para {stop}", total_drive:"Tempo total dirigindo",
+    unsold_label:"O que voltou sem vender hoje (todas as paradas)", sold_today:"vendido hoje: {n}",
+    across_days:"Em {n} dia{s} registrado{s}", today_stats:"Hoje", total_revenue:"FATURAMENTO TOTAL", your_commission:"SUA COMISSÃO",
+    waste_value:"VALOR DE DESPERDÍCIO", time_on_site:"TEMPO NO LOCAL", square_fees:"TAXAS DO SQUARE",
+    real_fee_title:"Taxa real do Square", real_fee_title_scoped:"Taxa real do Square ({scope})", real_fee_note:"Baseado na taxa real do Square: 2,6% + $0,10 por transação",
+    charged_fee:"Você cobrou (fixo $0,50/venda)", real_fee:"O Square realmente cobrou", fee_gap:"Sua diferença", net_total:"Total líquido",
+    txn_count:"Transações do Square",
+    payment_methods:"Métodos de pagamento (todos os dias)", payment_methods_scoped:"Métodos de pagamento ({scope})",
+    scope_today:"hoje", scope_all_days:"todos os dias", best_sellers:"Mais vendidos",
+    waste_title:"Sempre volta (desperdício)", lost_sales:"Pedido mas não disponível (vendas perdidas)",
+    export_title:"Exportar", export_excel:"Baixar planilha do Excel (tudo em um arquivo)", export_day:"Baixar CSV por dia", export_item:"Baixar CSV por item",
+    export_copy:"Copiar resumo como texto", export_note:"O arquivo do Excel tem os dados de dias e itens em abas separadas, com filtros e cabeçalho fixo. Os CSVs são apenas backup.",
+    reset_title:"Redefinir", reset_btn:"Apagar todos os dados registrados", reset_confirm:"Toque de novo para confirmar — isso apaga tudo",
+    reset_note:"Apaga todos os dias registrados. Baixe seus CSVs antes se quiser manter o histórico.",
+    no_data_yet:"Ainda não há dados registrados. Comece a registrar vendas na aba Registrar parada.",
+    toast_sale:"Venda registrada", toast_arrival:"Chegada registrada", toast_departure:"Saída registrada",
+    toast_departure_advance:"Saída registrada — próxima parada", toast_no_arrival:"Registre a chegada primeiro",
+    toast_already_arrived:"Já chegou — registre a saída primeiro",
+    toast_stop_cleared:"Itens da parada apagados", toast_confirm_clear:"Toque em apagar de novo para confirmar",
+    toast_square:"Square {amt} registrado", toast_payment:"Pagamento registrado", toast_change:"Troco registrado",
+    toast_topup:"Recarga registrada", toast_copied:"Copiado para a área de transferência", toast_copy_fail:"Não foi possível copiar — selecione manualmente",
+    toast_downloaded:"Baixado {f}", toast_download_fail:"Download bloqueado — use Copiar",
+    toast_reset_done:"Todos os dados apagados", brand_footer:"GreenLife Fit Foods — registro de rota",
+    cloud_offline:"Somente local — não sincronizado", cloud_connecting:"Conectando à nuvem…",
+    cloud_synced:"Sincronizado como {name}", cloud_taken:"Esse nome já está sincronizando em outro dispositivo — use um nome diferente",
+    cloud_error:"Erro de sincronização — salvo localmente, tentará novamente"
   }
 };
 function T(key, vars){
@@ -524,8 +647,16 @@ function T(key, vars){
   if(vars) Object.entries(vars).forEach(([k,v])=>{ s = s.split('{'+k+'}').join(v); });
   return s;
 }
-function TC(cat){ return state.lang==='es' ? (CAT_ES[cat]||cat) : cat; }
-function TP(method){ return state.lang==='es' ? (PAY_ES[method]||method) : method; }
+function TC(cat){
+  if(state.lang==='es') return CAT_ES[cat]||cat;
+  if(state.lang==='pt') return CAT_PT[cat]||cat;
+  return cat;
+}
+function TP(method){
+  if(state.lang==='es') return PAY_ES[method]||method;
+  if(state.lang==='pt') return PAY_PT[method]||method;
+  return method;
+}
 function cloudStatusLabel(){
   if(state.cloudStatus === 'connecting') return T('cloud_connecting');
   if(state.cloudStatus === 'synced') return T('cloud_synced',{name:escapeAttr(state.sellerName)});
@@ -540,6 +671,8 @@ const COMMISSION_RATE = 0.30;
 let state = {
   tab: 'log',
   date: todayStr(),
+  sessionRealDate: todayStr(),
+  selectedMonth: null,
   stopIndex: 0,
   defaultStopNames: null,
   day: null,
@@ -547,6 +680,8 @@ let state = {
   activeMethod: 'Cash',
   timingOpen: false,
   calOpen: false,
+  calMode: 'nav',
+  selectedDays: [],
   calMonth: todayStr().slice(0,7),
   lang: 'en',
   sellerName: '',
@@ -556,6 +691,12 @@ let state = {
 function todayStr(){
   const d = new Date();
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+}
+function shiftDate(dateStr, days){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate() + days);
+  return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,'0')+"-"+String(dt.getDate()).padStart(2,'0');
 }
 function weekdayOf(dateStr){
   const [y,m,d] = dateStr.split('-').map(Number);
@@ -668,7 +809,7 @@ async function storageList(prefix, shared){
 async function loadPrefs(){
   try{
     const r = await storageGet('lang', false);
-    state.lang = r.value === 'es' ? 'es' : 'en';
+    state.lang = (r.value === 'es' || r.value === 'pt') ? r.value : 'en';
   }catch(e){}
   try{
     const r = await storageGet('seller_name', false);
@@ -676,7 +817,7 @@ async function loadPrefs(){
   }catch(e){}
 }
 async function setLang(lang){
-  state.lang = lang === 'es' ? 'es' : 'en';
+  state.lang = (lang === 'es' || lang === 'pt') ? lang : 'en';
   try{ await storageSet('lang', state.lang, false); }catch(e){}
   render();
 }
@@ -890,33 +1031,34 @@ function removeCashMove(idx){
   stop.cashMoves.splice(idx,1);
   persistDay();
 }
+function r2(n){ return Math.round((n + Number.EPSILON) * 100) / 100; }
 function dayCashSales(day){
   let t = 0;
   Object.values(day.stops).forEach(st=>{
     (st.payments||[]).forEach(p=>{ if(p.method==='Cash') t += p.amount; });
   });
-  return t;
+  return r2(t);
 }
 function dayChangeGiven(day){
   let t = 0;
   Object.values(day.stops).forEach(st=>{
     (st.cashMoves||[]).forEach(c=>{ if(c.type==='change') t += c.amount; });
   });
-  return t;
+  return r2(t);
 }
 function dayCashTopUps(day){
   let t = 0;
   Object.values(day.stops).forEach(st=>{
     (st.cashMoves||[]).forEach(c=>{ if(c.type==='topup') t += c.amount; });
   });
-  return t;
+  return r2(t);
 }
 function expectedCash(day){
   const start = day.startFloat || 0;
-  return start + dayCashSales(day) + dayCashTopUps(day) - dayChangeGiven(day);
+  return r2(start + dayCashSales(day) + dayCashTopUps(day) - dayChangeGiven(day));
 }
 function stopChangeGiven(stop){
-  return (stop.cashMoves||[]).reduce((s,c)=>s + (c.type==='change'?c.amount:0), 0);
+  return r2((stop.cashMoves||[]).reduce((s,c)=>s + (c.type==='change'?c.amount:0), 0));
 }
 
 function nowTime(){
@@ -938,7 +1080,7 @@ function logDeparture(){
   if(!v){ toast(T('toast_no_arrival')); return; }
   v.depart = nowTime();
   const canAdvance = state.stopIndex < state.day.stopNames.length - 1;
-  if(canAdvance) state.stopIndex += 1;
+  if(canAdvance){ state.stopIndex += 1; saveStopIndex(); }
   persistDay();
   toast(canAdvance ? T('toast_departure_advance') : T('toast_departure'));
 }
@@ -1054,7 +1196,7 @@ async function setStopCount(newCount){
     }
   } else if(newCount < names.length){
     names.length = newCount;
-    if(state.stopIndex >= newCount) state.stopIndex = newCount - 1;
+    if(state.stopIndex >= newCount){ state.stopIndex = newCount - 1; saveStopIndex(); }
   }
   state.day.stopNames = names;
   state.defaultStopNames = names.slice();
@@ -1071,15 +1213,15 @@ function stopItemCount(stop){
   return Object.values(stop.items||{}).reduce((s,v)=>s+(v.sold||0), 0);
 }
 function stopCollectedTotal(stop){
-  return (stop.payments||[]).reduce((s,p)=>s+(p.amount-(p.fee||0)), 0);
+  return r2((stop.payments||[]).reduce((s,p)=>s+(p.amount-(p.fee||0)), 0));
 }
 function stopFeesTotal(stop){
-  return (stop.payments||[]).reduce((s,p)=>s+(p.fee||0), 0);
+  return r2((stop.payments||[]).reduce((s,p)=>s+(p.fee||0), 0));
 }
 function dayFeesTotal(day){
   let t = 0;
   Object.values(day.stops).forEach(st=>{ t += stopFeesTotal(st); });
-  return t;
+  return r2(t);
 }
 const SQUARE_REAL_RATE = 0.026;
 const SQUARE_REAL_FLAT = 0.10;
@@ -1088,11 +1230,11 @@ function dayRealSquareFee(day){
   Object.values(day.stops).forEach(st=>{
     (st.payments||[]).forEach(p=>{
       if(p.method === 'Square'){
-        t += p.amount * SQUARE_REAL_RATE + SQUARE_REAL_FLAT;
+        t += r2(p.amount * SQUARE_REAL_RATE + SQUARE_REAL_FLAT);
       }
     });
   });
-  return Math.round(t*100)/100;
+  return r2(t);
 }
 function dayRealSquareCount(day){
   let n = 0;
@@ -1102,7 +1244,7 @@ function dayRealSquareCount(day){
   return n;
 }
 function stopUnpaid(stop, weekday){
-  return stopRevenue(stop) - stopCollectedTotal(stop);
+  return r2(stopRevenue(stop) - stopCollectedTotal(stop));
 }
 
 function stopRevenue(stop){
@@ -1110,10 +1252,10 @@ function stopRevenue(stop){
   Object.values(stop.items||{}).forEach(it=>{
     total += (it.sold||0) * (it.price!=null ? it.price : 0);
   });
-  return total;
+  return r2(total);
 }
 function dayRevenue(day){
-  return Object.values(day.stops).reduce((s,st)=>s+stopRevenue(st),0);
+  return r2(Object.values(day.stops).reduce((s,st)=>s+stopRevenue(st),0));
 }
 function dayUncollected(day){
   const wd = effectiveWeekday(day);
@@ -1122,7 +1264,7 @@ function dayUncollected(day){
     const g = stopRevenue(st) - stopCollectedTotal(st);
     if(g > 0) gap += g;
   });
-  return gap;
+  return r2(gap);
 }
 
 function computeTopSellers(weekday, n, stopName){
@@ -1208,9 +1350,13 @@ async function render(){
     +     '<div><h1>GreenLife</h1><div class="sub">'+weekday.toUpperCase()+'</div></div>'
     +   '</div>'
     +   '<div class="header-right">'
-    +     '<button class="lang-toggle" id="langToggle">'+(state.lang==='es'?'EN':'ES')+'</button>'
-    +     '<button class="date-btn'+(state.date!==todayStr()?' past':'')+'" id="dateBtn"><span class="cal-icon">📅</span><span>'
-    +       (state.date===todayStr() ? (state.lang==='es'?'Hoy':'Today') : fmtDateShort(state.date))+'</span></button>'
+    +     '<button class="lang-toggle" id="langToggle">'+state.lang.toUpperCase()+'</button>'
+    +     '<div class="day-stepper">'
+    +       '<button class="day-step" id="dayPrev" aria-label="Previous day">‹</button>'
+    +       '<button class="date-btn'+(state.date!==todayStr()?' past':'')+'" id="dateBtn"><span class="cal-icon">📅</span><span>'
+    +         (state.date===todayStr() ? T('today_label') : fmtDateShort(state.date))+'</span></button>'
+    +       '<button class="day-step" id="dayNext" aria-label="Next day">›</button>'
+    +     '</div>'
     +   '</div>'
     + '</div>'
     + '<div class="seller-row"><input type="text" id="sellerInput" placeholder="'+T('seller_label')+'" value="'+escapeAttr(state.sellerName)+'">'
@@ -1435,6 +1581,23 @@ async function render(){
     }
     html += '</div>';
 
+    const qpRemaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+    const qpCount = stopItemCount(stop);
+    if(qpRemaining > 0.005){
+      html += '<div class="qp-spacer"></div>'
+        + '<div class="quickpay">'
+        + '<div class="qp-head">'
+        +   '<div class="qp-left"><span class="qp-count">'+qpCount+'</span>'
+        +     '<span class="qp-lbl">'+T('qp_items')+'</span></div>'
+        +   '<div class="qp-amt">'+fmtMoney(qpRemaining)+'</div>'
+        + '</div>'
+        + '<div class="qp-methods">';
+      PAYMENT_METHODS.forEach(m=>{
+        html += '<button class="qp-btn" data-qp="'+escapeAttr(m)+'">'+TP(m)+'</button>';
+      });
+      html += '</div></div>';
+    }
+
     html += '</div>';
   }
 
@@ -1487,29 +1650,134 @@ function renderCalendar(){
   for(let d=1; d<=daysInMonth; d++){
     const ds = cy+'-'+String(cm).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     const cls = ['cal-day'];
-    if(ds === state.date) cls.push('sel');
+    const isSel = state.calMode === 'summary' ? state.selectedDays.includes(ds) : ds === state.date;
+    if(isSel) cls.push('sel');
     if(ds === today) cls.push('today');
     if(state.allDays[ds] && dayRevenue(state.allDays[ds]) > 0) cls.push('has');
     h += '<button class="'+cls.join(' ')+'" data-date="'+ds+'">'+d+'</button>';
   }
   h += '</div>';
-  h += '<div class="cal-actions">'
-    + '<button class="cal-today" id="calToday">Go to today</button>'
-    + '<button class="cal-close" id="calClose">Close</button></div>';
+  if(state.calMode === 'summary'){
+    h += '<div class="cal-sel-count">'+T('cal_selected_count',{n:state.selectedDays.length,s:state.selectedDays.length===1?'':'s'})+'</div>';
+    h += '<div class="cal-actions">'
+      + '<button class="cal-close" id="calClear">'+T('cal_clear')+'</button>'
+      + '<button class="cal-today" id="calDone">'+T('cal_done')+'</button></div>';
+  } else {
+    h += '<div class="cal-actions">'
+      + '<button class="cal-today" id="calToday">'+T('cal_go_today')+'</button>'
+      + '<button class="cal-close" id="calClose">'+T('cal_close_btn')+'</button></div>';
+  }
   h += '</div></div>';
   return h;
 }
 
-function renderSummary(){
-  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?1:-1);
-  if(days.length===0){
-    return '<div class="panel"><div class="empty">'+T('no_data_yet')+'</div></div>';
+const MONTH_NAMES = {
+  en:["January","February","March","April","May","June","July","August","September","October","November","December"],
+  es:["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],
+  pt:["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"]
+};
+function monthKey(dateStr){ return dateStr.slice(0,7); }
+function monthLabel(key){
+  const [y,m] = key.split('-').map(Number);
+  const names = MONTH_NAMES[state.lang] || MONTH_NAMES.en;
+  return names[m-1]+' '+y;
+}
+function groupDaysByMonth(dayList){
+  const groups = {};
+  dayList.forEach(d=>{
+    const k = monthKey(d.date);
+    if(!groups[k]) groups[k] = [];
+    groups[k].push(d);
+  });
+  return groups;
+}
+
+function renderMonthlyCard(days){
+  const groups = groupDaysByMonth(days);
+  const monthKeys = Object.keys(groups).sort().reverse();
+  if(monthKeys.length < 1){
+    return '<div class="card"><h3>'+T('monthly_title')+'</h3><div class="empty">'+T('monthly_no_data')+'</div></div>';
   }
-  let totalRevenue = 0, totalCommission = 0, totalReturned = 0, totalReturnedValue = 0, totalDwell = 0, totalFees = 0, totalDrive = 0, totalRealFee = 0, totalSquareTxns = 0;
-  const soldAgg = {}, returnedAgg = {}, requestAgg = {}, paymentAgg = {};
+
+  if(!state.selectedMonth || !monthKeys.includes(state.selectedMonth)){
+    state.selectedMonth = monthKeys[0];
+  }
+
+  const monthRevenues = monthKeys.map(k=>({ key:k, rev: computeSummaryStats(groups[k]).totalRevenue }));
+  const maxRev = Math.max(...monthRevenues.map(m=>m.rev), 0.01);
+
+  let html = '<div class="card"><h3>'+T('monthly_title')+'</h3>';
+  monthRevenues.forEach(({key, rev})=>{
+    const isSel = key === state.selectedMonth;
+    html += '<button class="bar-row month-row'+(isSel?' sel':'')+'" data-month="'+key+'">'
+      + '<div class="top"><span>'+monthLabel(key)+'</span><span>'+fmtMoney(rev)+'</span></div>'
+      + '<div class="bar-track"><div class="bar-fill'+(isSel?' month-sel':'')+'" style="width:'+((rev/maxRev*100).toFixed(0))+'%"></div></div>'
+      + '</button>';
+  });
+  html += '<div class="export-note">'+T('monthly_tap')+'</div>';
+
+  const monthStats = computeSummaryStats(groups[state.selectedMonth]);
+  html += '<div class="month-detail">'
+    + '<div class="kpi-row">'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(monthStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+    +   '<div class="kpi gold"><div class="v">'+fmtMoney(monthStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+    +   '<div class="kpi warn"><div class="v">'+fmtMoney(monthStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+    + '</div></div>';
+  html += '<button class="export-btn alt" id="pickDayBtn" style="margin-top:12px;">'+T('pick_day_btn')+'</button>';
+  html += '</div>';
+
+  const selDays = (state.selectedDays||[]).slice().sort()
+    .map(ds=>state.allDays[ds]).filter(Boolean);
+
+  if(selDays.length > 0){
+    const selStats = computeSummaryStats(selDays);
+    html += '<div class="card"><h3>'+T('selection_title',{n:selDays.length,s:selDays.length===1?'':'s'})+'</h3>'
+      + '<div class="kpi-row">'
+      +   '<div class="kpi"><div class="v">'+fmtMoney(selStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+      +   '<div class="kpi gold"><div class="v">'+fmtMoney(selStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+      +   '<div class="kpi warn"><div class="v">'+fmtMoney(selStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+      + '</div></div>';
+
+    if(selDays.length > 1){
+      const dailyMax = Math.max(...selDays.map(d=>dayRevenue(d)), 0.01);
+      html += '<div class="card"><h3>'+T('daily_graphic_title')+'</h3>';
+      selDays.forEach(d=>{
+        const dStats = computeSummaryStats([d]);
+        const rev = dStats.totalRevenue;
+        html += '<div class="bar-row day-multi-row">'
+          + '<div class="top"><span>'+fmtDateShort(d.date)+'</span><span>'+fmtMoney(rev)+'</span></div>'
+          + '<div class="bar-track"><div class="bar-fill" style="width:'+((rev/dailyMax*100).toFixed(0))+'%"></div></div>'
+          + '<div class="day-multi-sub">'
+          +   '<span>'+T('commission_short')+': '+fmtMoney(dStats.totalCommission)+'</span>'
+          +   '<span>'+T('waste_short')+': '+fmtMoney(dStats.totalReturnedValue)+'</span>'
+          + '</div>'
+          + '</div>';
+      });
+      html += '</div>';
+
+      const selGroups = groupDaysByMonth(selDays);
+      const selMonthKeys = Object.keys(selGroups).sort();
+      if(selMonthKeys.length > 1){
+        const monthlyInSel = selMonthKeys.map(k=>({key:k, rev: computeSummaryStats(selGroups[k]).totalRevenue}));
+        const monthlyMax = Math.max(...monthlyInSel.map(m=>m.rev), 0.01);
+        html += '<div class="card"><h3>'+T('monthly_graphic_title')+'</h3>';
+        monthlyInSel.forEach(({key,rev})=>{
+          html += '<div class="bar-row"><div class="top"><span>'+monthLabel(key)+'</span><span>'+fmtMoney(rev)+'</span></div>'
+            + '<div class="bar-track"><div class="bar-fill month-sel" style="width:'+((rev/monthlyMax*100).toFixed(0))+'%"></div></div></div>';
+        });
+        html += '</div>';
+      }
+    }
+  }
+  return html;
+}
+
+function computeSummaryStats(dayList){
+  let totalRevenue=0, totalCommission=0, totalReturned=0, totalReturnedValue=0, totalDwell=0, totalFees=0, totalDrive=0, totalRealFee=0, totalSquareTxns=0;
+  const soldAgg={}, returnedAgg={}, requestAgg={}, paymentAgg={};
   PAYMENT_METHODS.forEach(m=>paymentAgg[m]=0);
 
-  days.forEach(d=>{
+  dayList.forEach(d=>{
     const wd = effectiveWeekday(d);
     const menu = MENU[wd];
     const priceOf = name => { if(!menu) return 0; const f = Object.values(menu).flat().find(x=>x[0]===name); return f?f[1]:0; };
@@ -1534,40 +1802,67 @@ function renderSummary(){
     });
   });
 
-  let html = '<div class="panel">';
-  html += '<div class="card"><h3>'+T('across_days',{n:days.length,s:days.length>1?'s':''})+'</h3>'
+  const cashInHand = r2((paymentAgg['Cash']||0) + (paymentAgg['Zelle']||0) + (paymentAgg['Venmo']||0));
+  const oweOwner = r2(cashInHand - totalCommission);
+
+  return { totalRevenue, totalCommission, totalReturned, totalReturnedValue, totalDwell, totalFees,
+    totalDrive, totalRealFee, totalSquareTxns, soldAgg, returnedAgg, requestAgg, paymentAgg,
+    cashInHand, oweOwner };
+}
+
+function renderStatsCards(stats, headerText, scopeLabel){
+  let html = '';
+  html += '<div class="card"><h3>'+headerText+'</h3>'
     + '<div class="kpi-row">'
-    +   '<div class="kpi"><div class="v">'+fmtMoney(totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
-    +   '<div class="kpi gold"><div class="v">'+fmtMoney(totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
-    +   '<div class="kpi warn"><div class="v">'+fmtMoney(totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
-    +   '<div class="kpi"><div class="v">'+fmtDur(totalDwell)+'</div><div class="k">'+T('time_on_site')+'</div></div>'
-    +   '<div class="kpi"><div class="v">'+fmtDur(totalDrive)+'</div><div class="k">'+T('total_drive').toUpperCase()+'</div></div>'
-    +   '<div class="kpi"><div class="v">'+fmtMoney(totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(stats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+    +   '<div class="kpi gold"><div class="v">'+fmtMoney(stats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+    +   '<div class="kpi warn"><div class="v">'+fmtMoney(stats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtDur(stats.totalDwell)+'</div><div class="k">'+T('time_on_site')+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtDur(stats.totalDrive)+'</div><div class="k">'+T('total_drive').toUpperCase()+'</div></div>'
+    +   '<div class="kpi"><div class="v">'+fmtMoney(stats.totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
     + '</div></div>';
 
-  html += '<div class="card"><h3>'+T('payment_methods')+'</h3>';
-  const payTotal = Object.values(paymentAgg).reduce((a,b)=>a+b,0) || 1;
+  if(stats.cashInHand > 0.005 || stats.totalCommission > 0.005){
+    const owe = stats.oweOwner;
+    html += '<div class="card"><h3>'+T('checkout_title')+'</h3>'
+      + '<div class="pay-ledger">'
+      +   '<div><span>'+TP('Cash')+'</span><span>'+fmtMoney(stats.paymentAgg['Cash']||0)+'</span></div>'
+      +   '<div><span>Zelle</span><span>'+fmtMoney(stats.paymentAgg['Zelle']||0)+'</span></div>'
+      +   '<div><span>Venmo</span><span>'+fmtMoney(stats.paymentAgg['Venmo']||0)+'</span></div>'
+      +   '<div><span>'+T('cash_in_hand_label')+'</span><span>'+fmtMoney(stats.cashInHand)+'</span></div>'
+      +   '<div><span>'+T('minus_commission_label')+'</span><span>-'+fmtMoney(stats.totalCommission)+'</span></div>'
+      +   '<div class="'+(owe>=0?'owing':'settled')+'"><span>'+(owe>=0?T('owe_owner_label'):T('owner_owes_you_label'))+'</span><span>'+fmtMoney(Math.abs(owe))+'</span></div>'
+      + '</div>'
+      + '<div class="export-note">'+T('checkout_note')+'</div>'
+      + '</div>';
+  }
+
+  html += '<div class="card"><h3>'+T('payment_methods_scoped',{scope:scopeLabel})+'</h3>';
+  const payTotal = Object.values(stats.paymentAgg).reduce((a,b)=>a+b,0) || 1;
   PAYMENT_METHODS.forEach(m=>{
-    const amt = paymentAgg[m] || 0;
+    const amt = stats.paymentAgg[m] || 0;
     html += '<div class="bar-row"><div class="top"><span>'+TP(m)+'</span><span>'+fmtMoney(amt)+'</span></div>'
       + '<div class="bar-track"><div class="bar-fill" style="width:'+((amt/payTotal*100).toFixed(0))+'%"></div></div></div>';
   });
   html += '</div>';
 
-  if(totalSquareTxns > 0){
-    const gap = totalFees - totalRealFee;
-    html += '<div class="card"><h3>'+T('real_fee_title')+'</h3>'
+  if(stats.totalSquareTxns > 0){
+    const gap = r2(stats.totalFees - stats.totalRealFee);
+    const squareCollected = stats.paymentAgg['Square'] || 0;
+    const netTotal = r2(squareCollected - stats.totalRealFee);
+    html += '<div class="card"><h3>'+T('real_fee_title_scoped',{scope:scopeLabel})+'</h3>'
       + '<div class="pay-ledger">'
-      +   '<div><span>'+T('txn_count')+'</span><span>'+totalSquareTxns+'</span></div>'
-      +   '<div><span>'+T('charged_fee')+'</span><span>'+fmtMoney(totalFees)+'</span></div>'
-      +   '<div><span>'+T('real_fee')+'</span><span>'+fmtMoney(totalRealFee)+'</span></div>'
+      +   '<div><span>'+T('txn_count')+'</span><span>'+stats.totalSquareTxns+'</span></div>'
+      +   '<div><span>'+T('charged_fee')+'</span><span>'+fmtMoney(stats.totalFees)+'</span></div>'
+      +   '<div><span>'+T('real_fee')+'</span><span>'+fmtMoney(stats.totalRealFee)+'</span></div>'
+      +   '<div><span>'+T('net_total')+'</span><span>'+fmtMoney(netTotal)+'</span></div>'
       +   '<div class="'+(gap>=0?'settled':'owing')+'"><span>'+T('fee_gap')+'</span><span>'+(gap>=0?'+':'')+fmtMoney(gap)+'</span></div>'
       + '</div>'
       + '<div class="export-note">'+T('real_fee_note')+'</div>'
       + '</div>';
   }
 
-  const soldSorted = Object.entries(soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const soldSorted = Object.entries(stats.soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(soldSorted.length){
     const maxSold = soldSorted[0][1];
     html += '<div class="card"><h3>'+T('best_sellers')+'</h3>';
@@ -1578,7 +1873,7 @@ function renderSummary(){
     html += '</div>';
   }
 
-  const retSorted = Object.entries(returnedAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const retSorted = Object.entries(stats.returnedAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(retSorted.length){
     const maxRet = retSorted[0][1];
     html += '<div class="card"><h3>'+T('waste_title')+'</h3>';
@@ -1589,7 +1884,7 @@ function renderSummary(){
     html += '</div>';
   }
 
-  const reqSorted = Object.entries(requestAgg).sort((a,b)=>b[1]-a[1]);
+  const reqSorted = Object.entries(stats.requestAgg).sort((a,b)=>b[1]-a[1]);
   if(reqSorted.length){
     html += '<div class="card"><h3>'+T('lost_sales')+'</h3>';
     reqSorted.forEach(([name,qty])=>{
@@ -1597,6 +1892,25 @@ function renderSummary(){
     });
     html += '</div>';
   }
+
+  return html;
+}
+
+function renderSummary(){
+  const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?1:-1);
+  if(days.length===0){
+    return '<div class="panel"><div class="empty">'+T('no_data_yet')+'</div></div>';
+  }
+
+  let html = '<div class="panel">';
+
+  const todayStats = computeSummaryStats(state.day ? [state.day] : []);
+  html += renderStatsCards(todayStats, T('today_stats'), T('scope_today'));
+
+  const allStats = computeSummaryStats(days);
+  html += renderStatsCards(allStats, T('across_days',{n:days.length,s:days.length>1?'s':''}), T('scope_all_days'));
+
+  html += renderMonthlyCard(days);
 
   html += '<div class="card"><h3>'+T('export_title')+'</h3>'
     + '<button class="export-btn xlsx" id="exportXlsx">'+T('export_excel')+'</button>'
@@ -1789,9 +2103,18 @@ function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
 
 function attachHandlers(){
   const langToggle = document.getElementById('langToggle');
-  if(langToggle) langToggle.addEventListener('click', ()=>{ setLang(state.lang==='es'?'en':'es'); });
+  if(langToggle) langToggle.addEventListener('click', ()=>{
+    const order = ['en','es','pt'];
+    const next = order[(order.indexOf(state.lang)+1) % order.length];
+    setLang(next);
+  });
   const sellerInput = document.getElementById('sellerInput');
   if(sellerInput) sellerInput.addEventListener('change', e=>{ setSellerName(e.target.value); });
+
+  const dayPrev = document.getElementById('dayPrev');
+  if(dayPrev) dayPrev.addEventListener('click', ()=>{ selectDate(shiftDate(state.date, -1)); });
+  const dayNext = document.getElementById('dayNext');
+  if(dayNext) dayNext.addEventListener('click', ()=>{ selectDate(shiftDate(state.date, 1)); });
 
   const dateBtn = document.getElementById('dateBtn');
   if(dateBtn) dateBtn.addEventListener('click', ()=>{
@@ -1802,10 +2125,10 @@ function attachHandlers(){
 
   const calOverlay = document.getElementById('calOverlay');
   if(calOverlay) calOverlay.addEventListener('click', (e)=>{
-    if(e.target.id === 'calOverlay'){ state.calOpen = false; render(); }
+    if(e.target.id === 'calOverlay'){ state.calOpen = false; state.calMode = 'nav'; render(); }
   });
   const calClose = document.getElementById('calClose');
-  if(calClose) calClose.addEventListener('click', ()=>{ state.calOpen = false; render(); });
+  if(calClose) calClose.addEventListener('click', ()=>{ state.calOpen = false; state.calMode = 'nav'; render(); });
   const calPrev = document.getElementById('calPrev');
   if(calPrev) calPrev.addEventListener('click', ()=>{
     let [y,m] = state.calMonth.split('-').map(Number);
@@ -1821,13 +2144,48 @@ function attachHandlers(){
     render();
   });
   const calToday = document.getElementById('calToday');
-  if(calToday) calToday.addEventListener('click', ()=>selectDate(todayStr()));
+  if(calToday) calToday.addEventListener('click', ()=>{ selectDate(todayStr()); });
+  const calDone = document.getElementById('calDone');
+  if(calDone) calDone.addEventListener('click', ()=>{
+    state.calOpen = false; state.calMode = 'nav';
+    render();
+  });
+  const calClear = document.getElementById('calClear');
+  if(calClear) calClear.addEventListener('click', ()=>{
+    state.selectedDays = [];
+    render();
+  });
   document.querySelectorAll('.cal-day').forEach(b=>{
-    b.addEventListener('click', ()=>selectDate(b.dataset.date));
+    b.addEventListener('click', ()=>{
+      if(state.calMode === 'summary'){
+        const ds = b.dataset.date;
+        const idx = state.selectedDays.indexOf(ds);
+        if(idx === -1) state.selectedDays.push(ds); else state.selectedDays.splice(idx,1);
+        render();
+      } else {
+        selectDate(b.dataset.date);
+      }
+    });
   });
 
   const menuSelect = document.getElementById('menuSelect');
-  if(menuSelect) menuSelect.addEventListener('change', e=>{ setMenuOverride(e.target.value); });
+  if(menuSelect){
+    menuSelect.addEventListener('change', async e=>{
+      const val = e.target.value;
+      if(val === ''){
+        const real = todayStr();
+        if(state.date !== real){ await selectDate(real); }
+        if(state.day.menuOverride !== null){ await setMenuOverride(''); }
+      } else {
+        setMenuOverride(val);
+      }
+    });
+    menuSelect.addEventListener('click', async ()=>{
+      if(menuSelect.value === '' && state.date !== todayStr()){
+        await selectDate(todayStr());
+      }
+    });
+  }
 
   document.querySelectorAll('.tab').forEach(t=>{
     t.addEventListener('click', ()=>{ state.tab = t.dataset.tab; render(); });
@@ -1836,11 +2194,13 @@ function attachHandlers(){
   const prevStop = document.getElementById('prevStop');
   if(prevStop) prevStop.addEventListener('click', ()=>{
     state.stopIndex = (state.stopIndex - 1 + state.day.stopNames.length) % state.day.stopNames.length;
+    saveStopIndex();
     render();
   });
   const nextStop = document.getElementById('nextStop');
   if(nextStop) nextStop.addEventListener('click', ()=>{
     state.stopIndex = (state.stopIndex + 1) % state.day.stopNames.length;
+    saveStopIndex();
     render();
   });
 
@@ -1880,11 +2240,22 @@ function attachHandlers(){
     b.addEventListener('click', ()=>removeRequest(parseInt(b.dataset.idx,10)));
   });
 
+  document.querySelectorAll('[data-qp]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const stop = state.day.stops[state.stopIndex];
+      const remaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+      if(remaining > 0.005){
+        state.activeMethod = b.dataset.qp;
+        addPayment(remaining.toFixed(2));
+      }
+    });
+  });
+
   const payFill = document.getElementById('payFill');
   if(payFill) payFill.addEventListener('click', ()=>{
     const stop = state.day.stops[state.stopIndex];
     const wd = effectiveWeekday(state.day);
-    const remaining = stopRevenue(stop) - stopCollectedTotal(stop);
+    const remaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
     if(remaining > 0.005) addPayment(remaining.toFixed(2));
   });
   const clearStop = document.getElementById('clearStop');
@@ -1944,6 +2315,22 @@ function attachHandlers(){
     else { state.confirmReset = true; render(); setTimeout(()=>{ if(state.confirmReset){ state.confirmReset=false; render(); } }, 5000); }
   });
 
+  document.querySelectorAll('[data-month]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.selectedMonth = b.dataset.month;
+      render();
+    });
+  });
+
+  const pickDayBtn = document.getElementById('pickDayBtn');
+  if(pickDayBtn) pickDayBtn.addEventListener('click', ()=>{
+    state.calMode = 'summary';
+    const last = state.selectedDays.length ? state.selectedDays[state.selectedDays.length-1] : null;
+    state.calMonth = (last || state.selectedMonth || todayStr()).slice(0,7);
+    state.calOpen = true;
+    render();
+  });
+
   const exportXlsx = document.getElementById('exportXlsx');
   if(exportXlsx) exportXlsx.addEventListener('click', downloadXLSX);
   const exportDayCsv = document.getElementById('exportDayCsv');
@@ -1960,6 +2347,18 @@ function attachHandlers(){
     try{ await navigator.clipboard.writeText(text); toast(T('toast_copied')); }
     catch(e){ toast(T('toast_copy_fail')); }
   });
+}
+
+async function saveStopIndex(){
+  try{ await storageSet('laststop:'+state.date, String(state.stopIndex), false); }catch(e){}
+}
+async function loadStopIndex(dateStr, maxLen){
+  try{
+    const r = await storageGet('laststop:'+dateStr, false);
+    const idx = parseInt(r.value, 10);
+    if(!isNaN(idx) && idx >= 0 && idx < maxLen) return idx;
+  }catch(e){}
+  return 0;
 }
 
 async function resetAllData(){
@@ -1994,8 +2393,10 @@ async function selectDate(ds){
 
 async function syncToToday(force){
   const real = todayStr();
+  const genuinelyNewDay = state.sessionRealDate !== real;
+  if(genuinelyNewDay) state.sessionRealDate = real;
   if(state.date === real) return false;
-  if(!force && state.manualDate) return false;
+  if(!force && state.manualDate && !genuinelyNewDay) return false;
   state.date = real;
   state.stopIndex = 0;
   state.manualDate = false;
@@ -2007,6 +2408,69 @@ async function syncToToday(force){
 document.addEventListener('visibilitychange', ()=>{
   if(!document.hidden && state.day) syncToToday(false);
 });
+
+async function renameHistoricalItem(oldName, newName, newPrice){
+  const changedDays = [];
+  try{
+    const list = await storageList('day:', false);
+    for(const k of (list.keys||[])){
+      try{
+        const r = await storageGet(k, false);
+        const d = JSON.parse(r.value);
+        let dayChanged = false;
+        Object.values(d.stops||{}).forEach(st=>{
+          if(st.items && st.items[oldName]){
+            const oldEntry = st.items[oldName];
+            if(st.items[newName]){
+              st.items[newName].sold = (st.items[newName].sold||0) + (oldEntry.sold||0);
+              st.items[newName].price = newPrice;
+            } else {
+              st.items[newName] = { sold: oldEntry.sold||0, price: newPrice };
+            }
+            delete st.items[oldName];
+            dayChanged = true;
+          }
+        });
+        if(dayChanged){
+          await saveDay(d);
+          changedDays.push(d);
+        }
+      }catch(e){}
+    }
+  }catch(e){}
+  if(changedDays.length && fbReady && state.sellerName){
+    for(const d of changedDays){ try{ await cloudPushDay(d); }catch(e){} }
+  }
+  return changedDays;
+}
+
+async function repriceHistoricalItem(itemName, newPrice){
+  const changedDays = [];
+  try{
+    const list = await storageList('day:', false);
+    for(const k of (list.keys||[])){
+      try{
+        const r = await storageGet(k, false);
+        const d = JSON.parse(r.value);
+        let dayChanged = false;
+        Object.values(d.stops||{}).forEach(st=>{
+          if(st.items && st.items[itemName] && st.items[itemName].price !== newPrice){
+            st.items[itemName].price = newPrice;
+            dayChanged = true;
+          }
+        });
+        if(dayChanged){
+          await saveDay(d);
+          changedDays.push(d);
+        }
+      }catch(e){}
+    }
+  }catch(e){}
+  if(changedDays.length && fbReady && state.sellerName){
+    for(const d of changedDays){ try{ await cloudPushDay(d); }catch(e){} }
+  }
+  return changedDays;
+}
 
 /* ---------------- INIT ---------------- */
 async function init(){
@@ -2027,10 +2491,38 @@ async function init(){
       try{ await storageSet('reset_v2','done',false); }catch(e4){}
     }
     state.day = await loadDay(state.date, state.defaultStopNames);
+    state.stopIndex = await loadStopIndex(state.date, state.day.stopNames.length);
     state.allDays = await loadAllDays();
     state.allDays[state.date] = state.day;
     render();
-    initCloud(); // best-effort background cloud sync; app is already usable offline above
+    initCloud().then(async ()=>{
+      let alreadyRepriced = false;
+      try{ await storageGet('reprice_blackened_salmon_175_v1', false); alreadyRepriced = true; }
+      catch(e){}
+      if(!alreadyRepriced){
+        const changed = await repriceHistoricalItem('Blackened Salmon', 17.5);
+        try{ await storageSet('reprice_blackened_salmon_175_v1','done',false); }catch(e6){}
+        if(changed.length){
+          state.allDays = await loadAllDays();
+          state.day = await loadDay(state.date, state.defaultStopNames);
+          state.allDays[state.date] = state.day;
+          render();
+        }
+      }
+      let alreadyRenamed = false;
+      try{ await storageGet('rename_capellini_to_steak_v1', false); alreadyRenamed = true; }
+      catch(e){}
+      if(!alreadyRenamed){
+        const changed2 = await renameHistoricalItem('Shrimp Spinach Capellini', 'Steak and Mashed Potatoes', 17);
+        try{ await storageSet('rename_capellini_to_steak_v1','done',false); }catch(e7){}
+        if(changed2.length){
+          state.allDays = await loadAllDays();
+          state.day = await loadDay(state.date, state.defaultStopNames);
+          state.allDays[state.date] = state.day;
+          render();
+        }
+      }
+    }); // best-effort background cloud sync + one-time historical repricing; app is already usable offline above
   }catch(err){
     document.getElementById('app').innerHTML =
       '<div style="padding:24px;font-family:sans-serif;color:#B5482E;"><h3>Something failed to load</h3>'
