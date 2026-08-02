@@ -386,6 +386,9 @@
   @media (prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important;}
   }
+  .assignment-banner{max-width:720px;margin:12px auto 0;padding:12px 14px;border:1px solid #bce7d1;border-radius:14px;background:#ecfdf3;color:#166534;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;font-weight:600}
+  .assignment-banner strong,.assignment-banner span{display:block}.assignment-banner span{margin-top:2px;color:#277a52;font-size:12px}.assignment-banner .assignment-check{margin:0;border-radius:999px;background:#d1fae5;padding:6px 9px;white-space:nowrap;font-size:11px}.assignment-banner.muted{border-color:#dbe3e0;background:#f8faf9;color:#53635b}.assignment-banner.muted span{color:#718077}
+  @media(max-width:600px){.assignment-banner{margin-left:10px;margin-right:10px;align-items:flex-start;flex-direction:column}.assignment-banner .assignment-check{margin-top:3px}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -685,7 +688,8 @@ let state = {
   calMonth: todayStr().slice(0,7),
   lang: 'en',
   sellerName: '',
-  cloudStatus: 'offline'
+  cloudStatus: 'offline',
+  assignment: null
 };
 
 function todayStr(){
@@ -827,7 +831,7 @@ async function setSellerName(name){
   if(fbReady && state.sellerName){
     const result = await claimDriver(state.sellerName);
     state.cloudStatus = result.status;
-    if(result.status === 'synced') await hydrateFromCloud();
+    if(result.status === 'synced') { await hydrateFromCloud(); await loadDailyAssignment(); }
     render();
   }
 }
@@ -910,7 +914,7 @@ async function initCloud(){
   if(state.sellerName){
     const result = await claimDriver(state.sellerName);
     state.cloudStatus = result.status;
-    if(result.status === 'synced') await hydrateFromCloud();
+    if(result.status === 'synced') { await hydrateFromCloud(); await loadDailyAssignment(); }
   } else {
     state.cloudStatus = 'offline';
   }
@@ -928,6 +932,48 @@ async function loadManagedMenu(){
     const managed = snap.exists && snap.data().weeklyMenu;
     if(isManagedMenu(managed)) MENU = managed;
   }catch(e){ /* Use the built-in menu if settings cannot be reached. */ }
+}
+function assignmentForCurrentDay(){
+  const assignment = state.assignment;
+  if(!assignment || assignment.date !== state.date || assignment.driverId !== driverIdFor(state.sellerName)) return null;
+  return Array.isArray(assignment.lines) ? assignment : null;
+}
+function assignmentMenu(assignment){
+  if(!assignment) return null;
+  const out = {};
+  assignment.lines.forEach(line=>{
+    if(!line || !line.name || !line.category) return;
+    if(!out[line.category]) out[line.category] = [];
+    out[line.category].push([line.name, Number(line.price)||0]);
+  });
+  return out;
+}
+function displayMenuForDay(weekday){
+  return assignmentMenu(assignmentForCurrentDay()) || MENU[weekday];
+}
+function assignedQuantity(itemName){
+  const assignment = assignmentForCurrentDay();
+  if(!assignment) return null;
+  const line = assignment.lines.find(item=>item.name === itemName);
+  return line ? Math.max(0, Number(line.assigned)||0) : 0;
+}
+function soldTodayForItem(itemName){
+  return Object.values(state.day.stops||{}).reduce((sum, stop)=>sum + ((stop.items||{})[itemName]?.sold || 0), 0);
+}
+function remainingAssigned(itemName){
+  const assigned = assignedQuantity(itemName);
+  return assigned === null ? null : Math.max(0, assigned - soldTodayForItem(itemName));
+}
+async function loadDailyAssignment(){
+  state.assignment = null;
+  const driverId = driverIdFor(state.sellerName);
+  if(!fbDb || !driverId || !state.date) return;
+  try{
+    const monthId = 'assignments-'+state.date.slice(0,7);
+    const snap = await fbDb.collection('settings').doc(monthId).get();
+    const entries = snap.exists ? (snap.data().entries || {}) : {};
+    state.assignment = entries[driverId+'__'+state.date] || null;
+  }catch(e){ /* Offline or unavailable: continue with the regular menu. */ }
 }
 // Claiming is write-only (no read-before-write): a plain set()-with-merge is
 // evaluated by Firestore as "create" the first time (allowed if we're setting
@@ -993,14 +1039,29 @@ function priceForItem(name, weekday){
   const found = Object.values(menu).flat().find(x=>x[0]===name);
   return found ? found[1] : null;
 }
+function priceForSale(name, weekday){
+  const assignment = assignmentForCurrentDay();
+  if(assignment){
+    const line = assignment.lines.find(item=>item.name === name);
+    if(line && Number.isFinite(Number(line.price))) return Number(line.price);
+  }
+  return priceForItem(name, weekday);
+}
 function bump(itemName, delta){
   const stop = state.day.stops[state.stopIndex];
+  if(delta > 0){
+    const remaining = remainingAssigned(itemName);
+    if(remaining !== null){
+      if(remaining <= 0){ toast('No more of this assigned item left.'); return; }
+      delta = Math.min(delta, remaining);
+    }
+  }
   if(!stop.items[itemName]) stop.items[itemName] = {sold:0, price:null};
   const it = stop.items[itemName];
   it.sold = Math.max(0, it.sold + delta);
   if(it.price == null){
     const wd = effectiveWeekday(state.day);
-    const p = priceForItem(itemName, wd);
+    const p = priceForSale(itemName, wd);
     if(p != null) it.price = p;
   }
   persistDay();
@@ -1331,7 +1392,8 @@ function dayVisitsList(day){
 async function render(){
   const app = document.getElementById('app');
   const weekday = effectiveWeekday(state.day);
-  const menu = MENU[weekday];
+  const activeAssignment = assignmentForCurrentDay();
+  const menu = displayMenuForDay(weekday);
   const rev = dayRevenue(state.day);
   const commission = rev * COMMISSION_RATE;
   const stopName = state.day.stopNames[state.stopIndex];
@@ -1371,6 +1433,14 @@ async function render(){
     +   '<div class="stub-kpi commission"><div class="amt">'+fmtMoney(commission)+'</div><div class="lbl">'+T('commission_label')+'</div></div>'
     + '</div>'
   + '</div>';
+
+  if(activeAssignment){
+    const assignedTotal = activeAssignment.lines.reduce((sum, line)=>sum+(Number(line.assigned)||0),0);
+    const soldTotal = activeAssignment.lines.reduce((sum, line)=>sum+soldTodayForItem(line.name),0);
+    html += '<div class="assignment-banner"><div><strong>Today\'s assigned items</strong><span>'+Math.max(0,assignedTotal-soldTotal)+' items left from '+assignedTotal+'</span></div><span class="assignment-check">✓ List sent by owner</span></div>';
+  } else if(state.sellerName){
+    html += '<div class="assignment-banner muted"><div><strong>No daily list yet</strong><span>Your regular menu is shown until the owner sends your list.</span></div></div>';
+  }
 
   html += '<div class="tabs">'
     + '<div class="tab '+(state.tab==='log'?'active':'')+'" data-tab="log">'+T('tab_log')+'</div>'
@@ -1430,7 +1500,7 @@ async function render(){
         + '</div></div>';
 
       const topResult = computeTopSellers(weekday, 4, stopName);
-      const topSellers = topResult.items;
+      const topSellers = activeAssignment ? [] : topResult.items;
       if(topSellers.length){
         const topLabelText = topResult.isLocal
           ? T('top_sellers_at').replace('{stop}', stopName)
@@ -1453,8 +1523,9 @@ async function render(){
         html += '<div class="cat-label">'+TC(cat)+'</div>';
         items.forEach(([name, price])=>{
           const sold = (stop.items[name] && stop.items[name].sold) || 0;
+          const remaining = activeAssignment ? remainingAssigned(name) : null;
           html += '<div class="item">'
-            + '<div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+'</div></div>'
+            + '<div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+(remaining!==null ? ' · <b>'+remaining+' left</b>' : '')+'</div></div>'
             + '<div class="counter">'
             +   '<button class="minus" data-item="'+escapeAttr(name)+'" data-delta="-1">−</button>'
             +   '<span class="count">'+sold+'</span>'
@@ -2388,6 +2459,7 @@ async function selectDate(ds){
   state.calOpen = false;
   state.day = await loadDay(state.date, state.defaultStopNames);
   state.allDays[state.date] = state.day;
+  await loadDailyAssignment();
   render();
 }
 
@@ -2402,6 +2474,7 @@ async function syncToToday(force){
   state.manualDate = false;
   state.day = await loadDay(state.date, state.defaultStopNames);
   state.allDays[state.date] = state.day;
+  await loadDailyAssignment();
   render();
   return true;
 }
