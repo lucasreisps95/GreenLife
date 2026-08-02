@@ -901,3 +901,21 @@ section, and that a mistaken assigned-item sale could only be corrected by clear
 - Driver JavaScript syntax and whitespace checks passed. Feature commit `c12528e` is on
   `owner-dashboard-v2` and must be mirrored to `main` before finishing. Field test: log one item,
   undo it, log it again, then use the Pay reminder and collect it through the bottom bar.
+
+### 2026-08-02 — Codex persistent payment bar and independent undo
+
+Owner confirmed the prior Undo restriction was unacceptable and that the payment bar must be
+reliably reachable even after a payment has been recorded.
+
+- Assigned-item **Undo** now always puts back one item; it no longer requires clearing the stop or
+  removing a payment first. If the sale had already been paid, the driver is reminded to check the
+  payment. The persistent payment bar provides a clear **Remove [method] [amount]** button for
+  correcting that payment without clearing the entire stop.
+- The blue bottom payment bar now remains available for every stop with one or more logged items,
+  instead of disappearing as soon as its unpaid balance reaches zero. When money is due it shows
+  the usual payment-method buttons; when complete or over-collected it shows a plain status and
+  the payment correction buttons. This restores a consistent place to handle payments.
+- Driver JavaScript syntax and whitespace checks passed. Feature commit `2e9455e` is on
+  `owner-dashboard-v2` and must be mirrored to `main` before finishing. Field test: log a sale,
+  undo it before and after a payment, then remove the payment from the bottom bar if correction
+  is needed.
