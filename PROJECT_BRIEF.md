@@ -794,3 +794,20 @@ affecting historical driver sales.
 - Build 2 remains open: update the driver app to load its own assigned list, record each sale by
   reducing that assignment, and reconcile unsold items as returns. Preserve the existing stored
   sale-price snapshot rule when doing this.
+
+### 2026-08-02 — Codex daily-list driver integration (Build 2, initial rollout)
+
+Connected the existing driver app to the owner-created daily lists without replacing the route,
+payment, returns, timing, or export workflow that drivers already know.
+
+- Once a driver’s name and selected date match a saved owner list, the app loads that list from
+  `settings/assignments-YYYY-MM`, shows only assigned items, displays the remaining count beside
+  each item, and prevents a driver from selling more than was assigned.
+- A sale still saves its item price inside the sales record. When a daily list is active, that
+  price comes from the owner’s saved daily-list price snapshot; otherwise the normal menu price is
+  used. Past sales are not recalculated.
+- If no matching list is available, or the phone is offline, the original normal-menu workflow
+  remains available. The driver can refresh/reopen after the owner saves a list to load it.
+- JavaScript syntax check passed. Feature commit `b9b7e2c` is on `owner-dashboard-v2` and needs
+  mirroring to `main`. Field test still required: create a small Lucas daily list, refresh Lucas’s
+  phone, sell one item, and verify remaining quantity and owner dashboard sales match.
