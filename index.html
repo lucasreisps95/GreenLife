@@ -350,6 +350,7 @@
     font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
   }
   .qp-btn:active{background:var(--lime);color:var(--primary-dark);border-color:var(--lime);}
+  .quickpay.splitpay{max-height:68vh;overflow:auto}.split-spacer{height:410px}.split-help{margin:-2px 0 11px;color:rgba(234,243,236,.78);font-size:12px;line-height:1.35}.split-list{display:grid;gap:7px}.split-row{display:grid;grid-template-columns:78px 1fr 82px;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:700}.split-row input[type=range]{accent-color:var(--lime);min-width:0}.split-row input[type=number]{width:82px;border:1px solid rgba(255,255,255,.3);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;padding:8px 6px;text-align:right;font:inherit}.split-row input[type=number]::placeholder{color:rgba(255,255,255,.55)}.split-total{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.18);color:rgba(234,243,236,.78);font-size:12px}.split-total b{color:var(--lime);font-size:18px}.split-save{width:100%;margin-top:11px;border:0;border-radius:12px;background:var(--lime);color:var(--primary-dark);padding:13px;font-size:15px;font-weight:900;cursor:pointer}
 
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
     background:rgba(18,38,53,0.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
@@ -388,7 +389,7 @@
   }
   .assignment-banner{max-width:720px;margin:12px auto 0;padding:12px 14px;border:1px solid #bce7d1;border-radius:14px;background:#ecfdf3;color:#166534;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;font-weight:600}
   .assignment-banner strong,.assignment-banner span{display:block}.assignment-banner span{margin-top:2px;color:#277a52;font-size:12px}.assignment-banner .assignment-check{margin:0;border-radius:999px;background:#d1fae5;padding:6px 9px;white-space:nowrap;font-size:11px}.assignment-banner.muted{border-color:#dbe3e0;background:#f8faf9;color:#53635b}.assignment-banner.muted span{color:#718077}
-  .assignment-sale-method{margin:13px 0;padding:13px;border:1px solid #bce7d1;border-radius:14px;background:#f0fdf4}.assignment-sale-method strong{display:block;color:#166534;font-size:14px}.assignment-sale-method span{display:block;margin-top:3px;color:#438162;font-size:12px}.assignment-sale-method .method-row{margin-top:10px}.assigned-item{border-color:#c9e8d7;background:#fbfffc}.assigned-sale-controls{display:flex;align-items:center;gap:9px}.assigned-left-count{display:grid;min-width:58px;height:54px;place-items:center;border-radius:12px;background:#e8f8ee;color:#166534;font-size:25px;font-weight:900;line-height:1}.assigned-left-count small{display:block;margin-top:-4px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.assigned-sell{min-width:66px;height:54px;border:0;border-radius:12px;background:#168653;color:#fff;font-size:21px;font-weight:900;cursor:pointer}.assigned-sell:disabled{background:#cbd5d1;color:#6b7280;cursor:not-allowed}.assignment-mode .pay-box{display:none}
+  .assignment-sale-method{display:none}.assigned-item{border-color:#c9e8d7;background:#fbfffc}.assigned-sale-controls{display:flex;align-items:center;gap:9px}.assigned-left-count{display:grid;min-width:58px;height:54px;place-items:center;border-radius:12px;background:#e8f8ee;color:#166534;font-size:25px;font-weight:900;line-height:1}.assigned-left-count small{display:block;margin-top:-4px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.assigned-sell{min-width:66px;height:54px;border:0;border-radius:12px;background:#168653;color:#fff;font-size:21px;font-weight:900;cursor:pointer}.assigned-sell:disabled{background:#cbd5d1;color:#6b7280;cursor:not-allowed}.assignment-mode .pay-box{display:none}
   .return-summary{margin-bottom:14px;padding:15px;border:1px solid #bce7d1;border-radius:14px;background:#f0fdf4;color:#166534}.return-summary strong{display:block;font-size:17px}.return-summary span{display:block;margin-top:5px;font-size:14px}.return-summary p{margin:8px 0 0;color:#438162;font-size:12px;line-height:1.4}.return-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border-bottom:1px solid #edf2ef}.return-numbers{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.return-numbers span{border-radius:999px;background:#f1f5f3;padding:5px 8px;color:#54645b;font-size:11px}.return-numbers .return-left{background:#fff3dc;color:#9a5b00}.confirm-returns{width:100%;margin-top:18px;border:0;border-radius:13px;background:#168653;color:#fff;padding:15px;font-size:15px;font-weight:800;cursor:pointer}.return-saved{text-align:center;color:#438162;font-size:12px;font-weight:700}
   @media(max-width:600px){.assignment-banner{margin-left:10px;margin-right:10px;align-items:flex-start;flex-direction:column}.assignment-banner .assignment-check{margin-top:3px}}
 </style>
@@ -1077,10 +1078,6 @@ function sellAssignedItem(itemName){
   const item = stop.items[itemName];
   if(item.price == null) item.price = priceForSale(itemName, effectiveWeekday(state.day)) || 0;
   item.sold += 1;
-  const fee = state.activeMethod === 'Square' ? SQUARE_FEE : 0;
-  const payment = { method: state.activeMethod, amount: Math.round((item.price + fee) * 100) / 100 };
-  if(fee) payment.fee = fee;
-  stop.payments.push(payment);
   persistDay();
   toast('Sale logged');
 }
@@ -1703,18 +1700,27 @@ async function render(){
     const qpRemaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
     const qpCount = stopItemCount(stop);
     if(qpRemaining > 0.005){
-      html += '<div class="qp-spacer"></div>'
-        + '<div class="quickpay">'
+      html += '<div class="qp-spacer'+(activeAssignment?' split-spacer':'')+'"></div>'
+        + '<div class="quickpay'+(activeAssignment?' splitpay':'')+'">'
         + '<div class="qp-head">'
         +   '<div class="qp-left"><span class="qp-count">'+qpCount+'</span>'
         +     '<span class="qp-lbl">'+T('qp_items')+'</span></div>'
         +   '<div class="qp-amt">'+fmtMoney(qpRemaining)+'</div>'
         + '</div>'
-        + '<div class="qp-methods">';
-      PAYMENT_METHODS.forEach(m=>{
-        html += '<button class="qp-btn" data-qp="'+escapeAttr(m)+'">'+TP(m)+'</button>';
-      });
-      html += '</div></div>';
+        ;
+      if(activeAssignment){
+        html += '<div class="split-help">Split this order between any payment methods. Leave unused methods at $0.</div><div class="split-list">';
+        PAYMENT_METHODS.forEach(m=>{
+          html += '<label class="split-row"><span>'+TP(m)+'</span><input type="range" min="0" max="'+qpRemaining.toFixed(2)+'" step="0.01" value="0" data-split-range="'+escapeAttr(m)+'"><input type="number" min="0" max="'+qpRemaining.toFixed(2)+'" step="0.01" value="" placeholder="$0.00" data-split-amount="'+escapeAttr(m)+'"></label>';
+        });
+        html += '</div><div class="split-total"><span>Payment entered</span><b id="splitEntered">$0.00</b><span id="splitLeft">'+fmtMoney(qpRemaining)+' left</span></div><button class="split-save" id="splitPaySave">Record these payments</button></div>';
+      } else {
+        html += '<div class="qp-methods">';
+        PAYMENT_METHODS.forEach(m=>{
+          html += '<button class="qp-btn" data-qp="'+escapeAttr(m)+'">'+TP(m)+'</button>';
+        });
+        html += '</div></div>';
+      }
     }
 
     html += '</div>';
@@ -2391,6 +2397,47 @@ function attachHandlers(){
         addPayment(remaining.toFixed(2));
       }
     });
+  });
+
+  const splitAmounts = [...document.querySelectorAll('[data-split-amount]')];
+  const updateSplitTotals = () => {
+    const entered = r2(splitAmounts.reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0));
+    const stop = state.day.stops[state.stopIndex];
+    const due = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+    const enteredEl = document.getElementById('splitEntered'), leftEl = document.getElementById('splitLeft');
+    if(enteredEl) enteredEl.textContent = fmtMoney(entered);
+    if(leftEl) leftEl.textContent = fmtMoney(Math.max(0, due-entered))+' left';
+  };
+  document.querySelectorAll('[data-split-range]').forEach(range=>{
+    range.addEventListener('input', ()=>{
+      const input = document.querySelector('[data-split-amount="'+range.dataset.splitRange+'"]');
+      if(input) input.value = Number(range.value) ? Number(range.value).toFixed(2) : '';
+      updateSplitTotals();
+    });
+  });
+  splitAmounts.forEach(input=>{
+    input.addEventListener('input', ()=>{
+      const range = document.querySelector('[data-split-range="'+input.dataset.splitAmount+'"]');
+      if(range) range.value = Math.min(Number(range.max), Math.max(0, parseFloat(input.value) || 0));
+      updateSplitTotals();
+    });
+  });
+  const splitPaySave = document.getElementById('splitPaySave');
+  if(splitPaySave) splitPaySave.addEventListener('click', ()=>{
+    const stop = state.day.stops[state.stopIndex];
+    const due = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+    const entries = splitAmounts.map(input=>({ method:input.dataset.splitAmount, amount:r2(parseFloat(input.value)||0) })).filter(entry=>entry.amount>0);
+    const total = r2(entries.reduce((sum, entry)=>sum+entry.amount,0));
+    if(!entries.length){ toast('Enter at least one payment amount.'); return; }
+    if(total > due + 0.005){ toast('Payment is more than the order total.'); return; }
+    entries.forEach(entry=>{
+      const fee = entry.method === 'Square' ? SQUARE_FEE : 0;
+      const payment = { method:entry.method, amount:r2(entry.amount+fee) };
+      if(fee) payment.fee = fee;
+      stop.payments.push(payment);
+    });
+    persistDay();
+    toast('Payments recorded');
   });
 
   const payFill = document.getElementById('payFill');
