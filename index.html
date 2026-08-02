@@ -388,6 +388,7 @@
   }
   .assignment-banner{max-width:720px;margin:12px auto 0;padding:12px 14px;border:1px solid #bce7d1;border-radius:14px;background:#ecfdf3;color:#166534;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;font-weight:600}
   .assignment-banner strong,.assignment-banner span{display:block}.assignment-banner span{margin-top:2px;color:#277a52;font-size:12px}.assignment-banner .assignment-check{margin:0;border-radius:999px;background:#d1fae5;padding:6px 9px;white-space:nowrap;font-size:11px}.assignment-banner.muted{border-color:#dbe3e0;background:#f8faf9;color:#53635b}.assignment-banner.muted span{color:#718077}
+  .assignment-sale-method{margin:13px 0;padding:13px;border:1px solid #bce7d1;border-radius:14px;background:#f0fdf4}.assignment-sale-method strong{display:block;color:#166534;font-size:14px}.assignment-sale-method span{display:block;margin-top:3px;color:#438162;font-size:12px}.assignment-sale-method .method-row{margin-top:10px}.assigned-item{border-color:#c9e8d7;background:#fbfffc}.assigned-sell{min-width:88px;height:44px;border:0;border-radius:12px;background:#168653;color:#fff;font-size:15px;font-weight:800;cursor:pointer}.assigned-sell:disabled{background:#cbd5d1;color:#6b7280;cursor:not-allowed}.assignment-mode .pay-box{display:none}
   @media(max-width:600px){.assignment-banner{margin-left:10px;margin-right:10px;align-items:flex-start;flex-direction:column}.assignment-banner .assignment-check{margin-top:3px}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -1066,6 +1067,22 @@ function bump(itemName, delta){
   }
   persistDay();
 }
+function sellAssignedItem(itemName){
+  const remaining = remainingAssigned(itemName);
+  if(remaining === null){ bump(itemName, 1); return; }
+  if(remaining <= 0){ toast('No more of this assigned item left.'); return; }
+  const stop = state.day.stops[state.stopIndex];
+  if(!stop.items[itemName]) stop.items[itemName] = {sold:0, price:null};
+  const item = stop.items[itemName];
+  if(item.price == null) item.price = priceForSale(itemName, effectiveWeekday(state.day)) || 0;
+  item.sold += 1;
+  const fee = state.activeMethod === 'Square' ? SQUARE_FEE : 0;
+  const payment = { method: state.activeMethod, amount: Math.round((item.price + fee) * 100) / 100 };
+  if(fee) payment.fee = fee;
+  stop.payments.push(payment);
+  persistDay();
+  toast('Sale logged');
+}
 function setStartFloat(v){
   const n = parseFloat(v);
   state.day.startFloat = (isNaN(n) || n < 0) ? null : Math.round(n*100)/100;
@@ -1449,7 +1466,7 @@ async function render(){
   + '</div>';
 
   if(state.tab==='log'){
-    html += '<div class="panel">';
+    html += '<div class="panel'+(activeAssignment?' assignment-mode':'')+'">';
     html += '<div class="stopper">'
       + '<div class="stopper-top">'
       +   '<button class="nav" id="prevStop">‹</button>'
@@ -1499,6 +1516,12 @@ async function render(){
         + (sCount>0 ? '<button class="ob-clear" id="clearStop">clear</button>' : '')
         + '</div></div>';
 
+      if(activeAssignment){
+        html += '<div class="assignment-sale-method"><div><strong>Payment for the next sale</strong><span>Choose once, then tap Sold 1.</span></div><div class="method-row">';
+        PAYMENT_METHODS.forEach(m=>{ html += '<div class="method-chip '+(state.activeMethod===m?'active':'')+'" data-method="'+m+'">'+TP(m)+'</div>'; });
+        html += '</div></div>';
+      }
+
       const topResult = computeTopSellers(weekday, 4, stopName);
       const topSellers = activeAssignment ? [] : topResult.items;
       if(topSellers.length){
@@ -1524,6 +1547,13 @@ async function render(){
         items.forEach(([name, price])=>{
           const sold = (stop.items[name] && stop.items[name].sold) || 0;
           const remaining = activeAssignment ? remainingAssigned(name) : null;
+          const controls = activeAssignment
+            ? '<button class="assigned-sell" data-assigned-sale="'+escapeAttr(name)+'" '+(remaining<=0?'disabled':'')+'>Sold 1</button>'
+            : null;
+          if(controls){
+            html += '<div class="item assigned-item"><div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+' · '+remaining+' left</div></div>'+controls+'</div>';
+            return;
+          }
           html += '<div class="item">'
             + '<div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+(remaining!==null ? ' · <b>'+remaining+' left</b>' : '')+'</div></div>'
             + '<div class="counter">'
@@ -2297,6 +2327,9 @@ function attachHandlers(){
       bump(b.dataset.item, parseInt(b.dataset.delta,10));
       if(b.dataset.delta==='1') toast(T('toast_sale'));
     });
+  });
+  document.querySelectorAll('[data-assigned-sale]').forEach(b=>{
+    b.addEventListener('click', ()=>sellAssignedItem(b.dataset.assignedSale));
   });
   document.querySelectorAll('[data-ritem]').forEach(b=>{
     b.addEventListener('click', ()=>{ bumpReturn(b.dataset.ritem, parseInt(b.dataset.rdelta,10)); });
