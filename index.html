@@ -350,7 +350,14 @@
     font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
   }
   .qp-btn:active{background:var(--lime);color:var(--primary-dark);border-color:var(--lime);}
-  .quickpay.splitpay{max-height:68vh;overflow:auto}.split-spacer{height:410px}.split-help{margin:-2px 0 11px;color:rgba(234,243,236,.78);font-size:12px;line-height:1.35}.split-list{display:grid;gap:7px}.split-row{display:grid;grid-template-columns:78px 1fr 82px;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:700}.split-row input[type=range]{accent-color:var(--lime);min-width:0}.split-row input[type=number]{width:82px;border:1px solid rgba(255,255,255,.3);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;padding:8px 6px;text-align:right;font:inherit}.split-row input[type=number]::placeholder{color:rgba(255,255,255,.55)}.split-total{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.18);color:rgba(234,243,236,.78);font-size:12px}.split-total b{color:var(--lime);font-size:18px}.split-save{width:100%;margin-top:11px;border:0;border-radius:12px;background:var(--lime);color:var(--primary-dark);padding:13px;font-size:15px;font-weight:900;cursor:pointer}
+  .split-spacer{height:230px;}
+  .split-toggle{display:block;width:100%;margin-top:8px;padding:9px;border:1px solid rgba(255,255,255,.32);border-radius:11px;background:transparent;color:#fff;font:700 13px 'Inter',sans-serif;cursor:pointer;}
+  .split-form{display:grid;grid-template-columns:1fr 88px auto;gap:7px;margin-top:8px;align-items:center;}
+  .split-form select,.split-form input{min-width:0;border:1px solid rgba(255,255,255,.32);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;padding:10px 7px;font:600 13px 'Inter',sans-serif;}
+  .split-form select option{color:var(--ink);background:#fff;}
+  .split-add,.split-close{border:0;border-radius:9px;padding:10px 9px;background:var(--lime);color:var(--primary-dark);font:800 13px 'Inter',sans-serif;cursor:pointer;}
+  .split-close{margin-top:7px;width:100%;background:transparent;color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.25);}
+  .split-added{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}.split-chip{padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.14);color:rgba(255,255,255,.9);font-size:11px;font-weight:700;}
 
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
     background:rgba(18,38,53,0.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
@@ -684,6 +691,7 @@ let state = {
   day: null,
   allDays: {},
   activeMethod: 'Cash',
+  splitOpen: false,
   timingOpen: false,
   calOpen: false,
   calMode: 'nav',
@@ -1242,6 +1250,16 @@ function addPayment(amountStr){
   persistDay();
   toast(fee>0 ? T('toast_square',{amt:fmtMoney(total)}) : T('toast_payment'));
 }
+function addSplitPayment(method, amountStr){
+  const amount = r2(parseFloat(amountStr));
+  const stop = state.day.stops[state.stopIndex];
+  const remaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+  if(!amount || amount <= 0){ toast('Enter an amount first.'); return; }
+  if(amount > remaining + 0.005){ toast('That is more than the amount left.'); return; }
+  state.activeMethod = method;
+  state.splitOpen = true;
+  addPayment(amount.toFixed(2));
+}
 function removePayment(idx){
   const stop = state.day.stops[state.stopIndex];
   stop.payments.splice(idx,1);
@@ -1700,27 +1718,29 @@ async function render(){
     const qpRemaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
     const qpCount = stopItemCount(stop);
     if(qpRemaining > 0.005){
-      html += '<div class="qp-spacer'+(activeAssignment?' split-spacer':'')+'"></div>'
-        + '<div class="quickpay'+(activeAssignment?' splitpay':'')+'">'
+      html += '<div class="qp-spacer'+(activeAssignment && state.splitOpen?' split-spacer':'')+'"></div>'
+        + '<div class="quickpay">'
         + '<div class="qp-head">'
         +   '<div class="qp-left"><span class="qp-count">'+qpCount+'</span>'
         +     '<span class="qp-lbl">'+T('qp_items')+'</span></div>'
         +   '<div class="qp-amt">'+fmtMoney(qpRemaining)+'</div>'
         + '</div>'
         ;
+      html += '<div class="qp-methods">';
+      PAYMENT_METHODS.forEach(m=>{
+        html += '<button class="qp-btn" data-qp="'+escapeAttr(m)+'">'+TP(m)+'</button>';
+      });
+      html += '</div>';
       if(activeAssignment){
-        html += '<div class="split-help">Split this order between any payment methods. Leave unused methods at $0.</div><div class="split-list">';
-        PAYMENT_METHODS.forEach(m=>{
-          html += '<label class="split-row"><span>'+TP(m)+'</span><input type="range" min="0" max="'+qpRemaining.toFixed(2)+'" step="0.01" value="0" data-split-range="'+escapeAttr(m)+'"><input type="number" min="0" max="'+qpRemaining.toFixed(2)+'" step="0.01" value="" placeholder="$0.00" data-split-amount="'+escapeAttr(m)+'"></label>';
-        });
-        html += '</div><div class="split-total"><span>Payment entered</span><b id="splitEntered">$0.00</b><span id="splitLeft">'+fmtMoney(qpRemaining)+' left</span></div><button class="split-save" id="splitPaySave">Record these payments</button></div>';
-      } else {
-        html += '<div class="qp-methods">';
-        PAYMENT_METHODS.forEach(m=>{
-          html += '<button class="qp-btn" data-qp="'+escapeAttr(m)+'">'+TP(m)+'</button>';
-        });
-        html += '</div></div>';
+        html += '<button class="split-toggle" id="splitToggle">'+(state.splitOpen?'Hide split payment':'Split payment')+'</button>';
+        if(state.splitOpen){
+          const paymentChips = (stop.payments||[]).map(p=>'<span class="split-chip">'+TP(p.method)+' '+fmtMoney(r2(p.amount-(p.fee||0)))+'</span>').join('');
+          html += '<div class="split-form"><select id="splitMethod">'+PAYMENT_METHODS.map(m=>'<option value="'+escapeAttr(m)+'">'+TP(m)+'</option>').join('')+'</select><input id="splitAmount" type="number" min="0.01" max="'+qpRemaining.toFixed(2)+'" step="0.01" inputmode="decimal" placeholder="$ amount"><button class="split-add" id="splitAdd">Add</button></div>'
+            + '<button class="split-close" id="splitClose">Close split payment</button>'
+            + (paymentChips?'<div class="split-added">'+paymentChips+'</div>':'');
+        }
       }
+      html += '</div>';
     }
 
     html += '</div>';
@@ -2399,45 +2419,21 @@ function attachHandlers(){
     });
   });
 
-  const splitAmounts = [...document.querySelectorAll('[data-split-amount]')];
-  const updateSplitTotals = () => {
-    const entered = r2(splitAmounts.reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0));
-    const stop = state.day.stops[state.stopIndex];
-    const due = r2(stopRevenue(stop) - stopCollectedTotal(stop));
-    const enteredEl = document.getElementById('splitEntered'), leftEl = document.getElementById('splitLeft');
-    if(enteredEl) enteredEl.textContent = fmtMoney(entered);
-    if(leftEl) leftEl.textContent = fmtMoney(Math.max(0, due-entered))+' left';
-  };
-  document.querySelectorAll('[data-split-range]').forEach(range=>{
-    range.addEventListener('input', ()=>{
-      const input = document.querySelector('[data-split-amount="'+range.dataset.splitRange+'"]');
-      if(input) input.value = Number(range.value) ? Number(range.value).toFixed(2) : '';
-      updateSplitTotals();
-    });
+  const splitToggle = document.getElementById('splitToggle');
+  if(splitToggle) splitToggle.addEventListener('click', ()=>{
+    state.splitOpen = !state.splitOpen;
+    render();
   });
-  splitAmounts.forEach(input=>{
-    input.addEventListener('input', ()=>{
-      const range = document.querySelector('[data-split-range="'+input.dataset.splitAmount+'"]');
-      if(range) range.value = Math.min(Number(range.max), Math.max(0, parseFloat(input.value) || 0));
-      updateSplitTotals();
-    });
+  const splitClose = document.getElementById('splitClose');
+  if(splitClose) splitClose.addEventListener('click', ()=>{
+    state.splitOpen = false;
+    render();
   });
-  const splitPaySave = document.getElementById('splitPaySave');
-  if(splitPaySave) splitPaySave.addEventListener('click', ()=>{
-    const stop = state.day.stops[state.stopIndex];
-    const due = r2(stopRevenue(stop) - stopCollectedTotal(stop));
-    const entries = splitAmounts.map(input=>({ method:input.dataset.splitAmount, amount:r2(parseFloat(input.value)||0) })).filter(entry=>entry.amount>0);
-    const total = r2(entries.reduce((sum, entry)=>sum+entry.amount,0));
-    if(!entries.length){ toast('Enter at least one payment amount.'); return; }
-    if(total > due + 0.005){ toast('Payment is more than the order total.'); return; }
-    entries.forEach(entry=>{
-      const fee = entry.method === 'Square' ? SQUARE_FEE : 0;
-      const payment = { method:entry.method, amount:r2(entry.amount+fee) };
-      if(fee) payment.fee = fee;
-      stop.payments.push(payment);
-    });
-    persistDay();
-    toast('Payments recorded');
+  const splitAdd = document.getElementById('splitAdd');
+  if(splitAdd) splitAdd.addEventListener('click', ()=>{
+    const method = document.getElementById('splitMethod');
+    const amount = document.getElementById('splitAmount');
+    if(method && amount) addSplitPayment(method.value, amount.value);
   });
 
   const payFill = document.getElementById('payFill');
