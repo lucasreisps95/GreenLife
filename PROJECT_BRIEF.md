@@ -843,3 +843,16 @@ instead of a small note below the name.
   food. Tapping -1 records that sale and the chosen payment method as before.
 - Owner build and driver JavaScript syntax checks passed. Feature commit `d2fb89a` is on
   `owner-dashboard-v2` and must be mirrored to `main`.
+
+### 2026-08-02 — Codex useful Unsold tab for assigned routes
+
+Reworked the driver app’s Unsold tab so it is useful with the new assigned-inventory workflow.
+
+- When a daily list is active, the tab is now an **End-of-day check** grouped by food category. It
+  shows each item’s assigned quantity, sold quantity, and remaining quantity, plus route totals.
+- The driver presses one clear **Finish route: save items left as returns** button at the end. This
+  writes the remaining assigned quantities into the existing `day.returns` field, preserving the
+  dashboard’s returned-food reporting and possible-sales-value calculations.
+- The prior manual Unsold controls remain as fallback for days without an owner daily list. Driver
+  JavaScript syntax check passed. Feature commit `aa6a066` is on `owner-dashboard-v2` and needs
+  mirroring to `main`.
