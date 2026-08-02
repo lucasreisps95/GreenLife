@@ -770,3 +770,10 @@ Breakfast section on Monday through Friday.
   on saved price snapshots.
 - Owner-dashboard production build passed. Feature commit `fa746fb` is on `owner-dashboard-v2`
   and should be mirrored to `main`.
+
+### 2026-08-02 — Codex Lucas Cloud Code handoff
+
+Prepared `LUCAS_HANDOFF.md` so Lucas can start from an empty Cloud Code session after receiving
+his own GitHub, Netlify, and Firebase account invitations. It records the project links, branch
+deployment arrangement, and the safeguards that must be preserved when working on sales, menus,
+and Firestore. No credentials or private keys are stored in the repository.
