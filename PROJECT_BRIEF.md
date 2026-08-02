@@ -777,3 +777,20 @@ Prepared `LUCAS_HANDOFF.md` so Lucas can start from an empty Cloud Code session 
 his own GitHub, Netlify, and Firebase account invitations. It records the project links, branch
 deployment arrangement, and the safeguards that must be preserved when working on sales, menus,
 and Firestore. No credentials or private keys are stored in the repository.
+
+### 2026-08-02 — Codex owner daily driver lists (Build 1)
+
+Implemented the first half of the paper-sheet replacement: the owner dashboard now has a separate
+**Daily lists** screen. The owner chooses a weekday date and driver, enters only the quantities
+handed to that driver, and saves the list. Each saved line includes its category, item name,
+quantity, and that day’s price snapshot. Existing lists can be reopened and updated without
+affecting historical driver sales.
+
+- Daily lists are stored in the existing public `settings/assignments-YYYY-MM` documents rather
+  than a new public Firestore collection. This keeps the previous owner-approved no-login access
+  boundary unchanged. Each month contains separately keyed driver/date entries.
+- The owner dashboard build completed successfully. Feature commit `17b96a3` is on
+  `owner-dashboard-v2` and needs mirroring to `main`.
+- Build 2 remains open: update the driver app to load its own assigned list, record each sale by
+  reducing that assignment, and reconcile unsold items as returns. Preserve the existing stored
+  sale-price snapshot rule when doing this.
