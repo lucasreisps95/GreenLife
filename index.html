@@ -388,7 +388,7 @@
   }
   .assignment-banner{max-width:720px;margin:12px auto 0;padding:12px 14px;border:1px solid #bce7d1;border-radius:14px;background:#ecfdf3;color:#166534;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;font-weight:600}
   .assignment-banner strong,.assignment-banner span{display:block}.assignment-banner span{margin-top:2px;color:#277a52;font-size:12px}.assignment-banner .assignment-check{margin:0;border-radius:999px;background:#d1fae5;padding:6px 9px;white-space:nowrap;font-size:11px}.assignment-banner.muted{border-color:#dbe3e0;background:#f8faf9;color:#53635b}.assignment-banner.muted span{color:#718077}
-  .assignment-sale-method{margin:13px 0;padding:13px;border:1px solid #bce7d1;border-radius:14px;background:#f0fdf4}.assignment-sale-method strong{display:block;color:#166534;font-size:14px}.assignment-sale-method span{display:block;margin-top:3px;color:#438162;font-size:12px}.assignment-sale-method .method-row{margin-top:10px}.assigned-item{border-color:#c9e8d7;background:#fbfffc}.assigned-sell{min-width:88px;height:44px;border:0;border-radius:12px;background:#168653;color:#fff;font-size:15px;font-weight:800;cursor:pointer}.assigned-sell:disabled{background:#cbd5d1;color:#6b7280;cursor:not-allowed}.assignment-mode .pay-box{display:none}
+  .assignment-sale-method{margin:13px 0;padding:13px;border:1px solid #bce7d1;border-radius:14px;background:#f0fdf4}.assignment-sale-method strong{display:block;color:#166534;font-size:14px}.assignment-sale-method span{display:block;margin-top:3px;color:#438162;font-size:12px}.assignment-sale-method .method-row{margin-top:10px}.assigned-item{border-color:#c9e8d7;background:#fbfffc}.assigned-sale-controls{display:flex;align-items:center;gap:9px}.assigned-left-count{display:grid;min-width:58px;height:54px;place-items:center;border-radius:12px;background:#e8f8ee;color:#166534;font-size:25px;font-weight:900;line-height:1}.assigned-left-count small{display:block;margin-top:-4px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.assigned-sell{min-width:66px;height:54px;border:0;border-radius:12px;background:#168653;color:#fff;font-size:21px;font-weight:900;cursor:pointer}.assigned-sell:disabled{background:#cbd5d1;color:#6b7280;cursor:not-allowed}.assignment-mode .pay-box{display:none}
   @media(max-width:600px){.assignment-banner{margin-left:10px;margin-right:10px;align-items:flex-start;flex-direction:column}.assignment-banner .assignment-check{margin-top:3px}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -1548,8 +1548,12 @@ async function render(){
           const sold = (stop.items[name] && stop.items[name].sold) || 0;
           const remaining = activeAssignment ? remainingAssigned(name) : null;
           const controls = activeAssignment
-            ? '<button class="assigned-sell" data-assigned-sale="'+escapeAttr(name)+'" '+(remaining<=0?'disabled':'')+'>Sold 1</button>'
+            ? '<div class="assigned-sale-controls"><span class="assigned-left-count">'+remaining+'<small>left</small></span><button class="assigned-sell" data-assigned-sale="'+escapeAttr(name)+'" '+(remaining<=0?'disabled':'')+'>-1</button></div>'
             : null;
+          if(controls){
+            html += '<div class="item assigned-item"><div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+'</div></div>'+controls+'</div>';
+            return;
+          }
           if(controls){
             html += '<div class="item assigned-item"><div class="item-info"><div class="item-name">'+name+'</div><div class="item-price">'+fmtMoney(price)+' · '+remaining+' left</div></div>'+controls+'</div>';
             return;
