@@ -886,3 +886,18 @@ Owner found the full-height slider payment-split panel intrusive and hard to dis
   must be mirrored to `main` before finishing. The field test is: record a sale, tap one payment
   method for a normal full payment; then record another sale, add two partial payments through
   Split payment, and confirm the remaining amount reaches zero.
+
+### 2026-08-02 — Codex payment reminder and per-item sale undo
+
+Owner reported that the payment controls could be hard to find after closing the optional split
+section, and that a mistaken assigned-item sale could only be corrected by clearing the whole stop.
+
+- The compact bottom payment bar remains present whenever the current stop has money still due.
+  The order summary now also has a clear **Pay $...** reminder which points the driver back to the
+  bottom payment buttons; it does not create or hide a separate payment state.
+- Every assigned food item now has an **Undo** button beside **-1**. It puts back exactly one
+  mistakenly logged item. To protect totals, Undo is blocked after any payment was recorded at
+  that stop; the driver first removes the relevant payment, then undoes the item.
+- Driver JavaScript syntax and whitespace checks passed. Feature commit `c12528e` is on
+  `owner-dashboard-v2` and must be mirrored to `main` before finishing. Field test: log one item,
+  undo it, log it again, then use the Pay reminder and collect it through the bottom bar.
