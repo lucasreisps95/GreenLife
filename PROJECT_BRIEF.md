@@ -870,3 +870,19 @@ payment bar and made orders split across Square, Zelle, and Cash impossible.
 - The original single-method quick-pay buttons remain on non-assigned days. Driver JavaScript
   syntax check passed. Feature commit `46cc816` is on `owner-dashboard-v2` and needs mirroring to
   `main`.
+
+### 2026-08-02 — Codex compact optional payment splits
+
+Owner found the full-height slider payment-split panel intrusive and hard to dismiss.
+
+- Restored the compact bottom payment bar for assigned-list routes as well as normal routes.
+  Tapping Cash, Square, Zelle, or another method immediately records the full unpaid balance,
+  exactly as the original quick-payment flow did.
+- Added a small optional **Split payment** section beneath the buttons. It stays hidden unless
+  opened, can be closed at once, and records one partial amount at a time. The driver can reopen
+  it and add a second or third payment method without any large overlay or sliders. Existing
+  Square-fee calculation remains intact.
+- Driver JavaScript syntax check passed. Feature commit `d881c3b` is on `owner-dashboard-v2` and
+  must be mirrored to `main` before finishing. The field test is: record a sale, tap one payment
+  method for a normal full payment; then record another sale, add two partial payments through
+  Split payment, and confirm the remaining amount reaches zero.
