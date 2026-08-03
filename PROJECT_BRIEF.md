@@ -937,3 +937,17 @@ record an order paid with several payment methods.
   checks passed. Feature commit `6a12fcf` is on `owner-dashboard-v2` and must be mirrored to
   `main` before finishing. Field test: minimize/reopen with the handle; split one order across two
   methods, adjust both sliders, and confirm recorded payments equal the order total.
+
+### 2026-08-02 — Codex emergency driver-page syntax repair
+
+The draggable payment-sheet update introduced a missing closing parenthesis in the generated
+payment-bar markup. In browsers this caused `Unexpected token ';'`, which stopped the entire
+driver application from loading.
+
+- Corrected the malformed expression in `index.html` and immediately pushed the repair to both
+  deployment branches. The feature is otherwise unchanged.
+- Verified using a real browser against the live Netlify driver URL: the app now renders normal
+  content and reports no page script errors. Repair commit `9f73245` is on
+  `owner-dashboard-v2` and its mirrored commit `3be1187` is on `main`.
+- Important regression check for future edits: run a browser load test, not only `node --check`,
+  whenever modifying the large HTML-string rendering blocks in `index.html`.
