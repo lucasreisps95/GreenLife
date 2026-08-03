@@ -1764,7 +1764,7 @@ async function render(){
     if(qpCount > 0){
       const hasPaymentDue = qpRemaining > 0.005;
       const qpStatus = hasPaymentDue ? fmtMoney(qpRemaining) : (qpRemaining < -0.005 ? fmtMoney(Math.abs(qpRemaining))+' over' : 'Paid');
-      html += '<div class="qp-spacer'+(state.paymentSheetMinimized?' minimized-spacer':(activeAssignment && state.splitOpen?' split-spacer':'')+'"></div>'
+      html += '<div class="qp-spacer'+(state.paymentSheetMinimized?' minimized-spacer':(activeAssignment && state.splitOpen?' split-spacer':''))+'"></div>'
         + '<div class="quickpay'+(state.paymentSheetMinimized?' minimized':'')+'">'
         + '<button class="sheet-handle" id="paymentSheetHandle" aria-label="Open or close payment panel"><span class="sheet-notch"></span><span>'+ (state.paymentSheetMinimized ? 'Swipe up or tap to open payments' : 'Swipe down or tap to minimize') +'</span></button>'
         + '<div class="quickpay-content">'
@@ -1772,8 +1772,7 @@ async function render(){
         +   '<div class="qp-left"><span class="qp-count">'+qpCount+'</span>'
         +     '<span class="qp-lbl">'+T('qp_items')+'</span></div>'
         +   '<div class="qp-amt">'+qpStatus+'</div>'
-        + '</div>'
-        ;
+        + '</div>';
       if(hasPaymentDue){
         html += '<div class="qp-methods">';
         PAYMENT_METHODS.forEach(m=>{
