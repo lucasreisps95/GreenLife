@@ -12,6 +12,12 @@ const menuForStorage = value => Object.fromEntries(Object.entries(value || {}).m
 const money = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value || 0)
 const slug = name => name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+const paperLayout = {
+  Monday: {
+    categories:['Salads','Sushi','Sandwiches','Wraps','Hot Plates','Protein Plates','Breakfast','Drinks','Treats'],
+    items:['Chicken Taco Salad','Mexican Caesar Salad','California Roll','Smoked Turkey and Swiss','Chicken Salad Sandwich','Caesar Salad Wrap','Chicken Spring Rolls','Chipotle Shrimp/Chicken Pasta','Chicken Kabob','Salmon w/ Cilantro Rice','Hummus and Chicken Protein Plate','Chicken Salad Protein Plate','Tuna Avocado','Tuna Protein Plate','Breakfast Bacon Burrito','Breakfast Chorizo Burrito','Steak Burrito','Steak Breakfast Bowl','Green Juice','Berry Juice','Orange Juice','Fruit Parfait','Cookies','Brownies','Fruit Salad','Mango','Watermelon','Ham and Cheese Croissants (2pcs)','Pasta Salad']
+  }
+}
 const commissionRate = .30
 const copy = {
   en: { owner:'Owner center', overview:'Overview', drivers:'Drivers', assignments:'Daily lists', settings:'Settings', overviewSub:'Your business at a glance.', driversSub:'Route results for each driver.', assignmentsSub:'Prepare each driver\'s food list for the day.', settingsSub:'Prices, products, and driver list.', today:'Today', week:'This week', month:'This month', all:'All time', sales:'Total sales', square:'Square received', commission:'Driver commission', returned:'Returned food', potentialSales:'possible sales value', activity:'Sales activity', activitySub:'Sales trend from every driver', food:'Top selling food', foodSub:'Most items sold', stops:'Top earning stops', stopsSub:'Revenue earned at each business', noSales:'No sales yet.', driverPerformance:'Driver performance', taken:'Taken', sold:'Sold', returns:'Returned', revenue:'Sales', menu:'Menu and prices', menuSub:'Every edit applies only to the weekday selected above.', saveMenu:'Save menu', addProduct:'Add product', driverList:'Driver list', driverListSub:'Names shown on the dashboard.', addDriver:'Add driver', newDriver:'Type driver name', saveDrivers:'Save driver list', future:'new driver', refresh:'Refresh', connected:'Connected', dayOnly:'This day only' },
@@ -200,8 +206,15 @@ function DailyAssignmentsPaper({ menu, drivers, manualDrivers, labels, assignmen
       if (!group) { group = { category:line.category, items:[] }; groups.push(group) }
       group.items.push({ key, category:line.category, name:line.name, price:Number(line.price) || 0 })
     })
+    const layout = paperLayout[weekday]
+    if (layout) {
+      const categoryPosition = new Map(layout.categories.map((category,index) => [category,index]))
+      const itemPosition = new Map(layout.items.map((name,index) => [name,index]))
+      groups.sort((a,b) => (categoryPosition.get(a.category) ?? Number.MAX_SAFE_INTEGER) - (categoryPosition.get(b.category) ?? Number.MAX_SAFE_INTEGER))
+      groups.forEach(group => group.items.sort((a,b) => (itemPosition.get(a.name) ?? Number.MAX_SAFE_INTEGER) - (itemPosition.get(b.name) ?? Number.MAX_SAFE_INTEGER)))
+    }
     return groups
-  }, [dayMenu, existingLines, catalogByKey])
+  }, [dayMenu, existingLines, catalogByKey, weekday])
   const rows = Object.entries(quantities).filter(([,count]) => Number(count) > 0).map(([key,assigned]) => {
     const item = catalogByKey[key] || existingLines[key]
     return item ? { ...item, assigned:Number(assigned) } : null
