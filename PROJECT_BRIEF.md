@@ -1090,3 +1090,25 @@ so editing one file could silently leave the other view outdated.
   published there as `d97e2eb` plus this log update; Lucas's current menu commits through
   `b95c551` were preserved. Lucas can use Claude on his phone for feature work, but its project
   instructions now prevent this menu-copy mistake.
+
+### 2026-08-03 â€” Codex read-only regression check
+
+Ran a non-destructive regression check against the current live driver app, live owner dashboard,
+and the retired legacy dashboard. No sales, assignments, menu records, or driver identities were
+created or changed.
+
+- Latest `main` driver and legacy-dashboard scripts parsed successfully. Owner dashboard production
+  build passed.
+- The live owner dashboard loaded Overview, Drivers, Daily Lists, and Settings at phone width with
+  no runtime page errors or horizontal overflow. The English/Thai switch also worked.
+- **Open issue:** the shared Firestore document `settings/menu` does not currently exist. The
+  driver app therefore falls back to its built-in emergency menu, and `admin.html` correctly shows
+  that the shared menu is not ready instead of using stale copied prices. To activate shared menu
+  sync, open the owner dashboard **Settings** tab and press **Save menu** once after confirming
+  the displayed items/prices are correct. Do not seed or overwrite that menu from code without
+  owner approval.
+- A write-free browser session cannot fully exercise the real Lucas/Gabriel daily-assignment and
+  payment-recording paths because using their names on a fresh browser would claim a driver
+  identity. After the shared menu is saved, field-check on each driver phone: refresh the page,
+  confirm the assigned list and current menu appear, record one sale, verify it reaches owner
+  Overview/Drivers, then remove/correct it only if needed.
