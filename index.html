@@ -1079,13 +1079,13 @@ function priceForItem(name, weekday){
   return found ? found[1] : null;
 }
 function priceForSale(name, weekday){
-  const extra = state.day.extraStock && state.day.extraStock[name];
-  if(extra && Number.isFinite(Number(extra.price))) return Number(extra.price);
   const assignment = assignmentForCurrentDay();
   if(assignment){
     const line = assignment.lines.find(item=>item.name === name);
     if(line && Number.isFinite(Number(line.price))) return Number(line.price);
   }
+  const extra = state.day.extraStock && state.day.extraStock[name];
+  if(extra && Number.isFinite(Number(extra.price))) return Number(extra.price);
   return priceForItem(name, weekday);
 }
 function assignmentLinesWithExtras(){
