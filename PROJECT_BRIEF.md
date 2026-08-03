@@ -1189,3 +1189,21 @@ active development.
   only.
 - Owner production build and driver JavaScript syntax checks passed. Feature commit `b82992b` is
   on `owner-dashboard-v2`; mirror it to `main` with this standalone log update.
+
+### 2026-08-03 — Codex live health check and extra-stock price safeguard
+
+Performed a read-only regression check of the live owner dashboard and driver app. No sales,
+assignments, helper entries, menus, or driver identities were created or changed during testing.
+
+- Owner dashboard production build and driver-app JavaScript syntax checks passed. The live owner
+  Overview and Daily Lists loaded at phone size without runtime errors or horizontal overflow.
+  One initial Netlify 500 response was transient: three immediate independent reloads all loaded
+  the dashboard normally with no failed resources.
+- The driver app loaded normally in an isolated browser session. It correctly showed Local only —
+  not synced because no driver name was entered; this avoids claiming a real driver identity during
+  a safe read-only test.
+- Found and fixed a price-safety edge case in the new extra-stock feature. For an item already on
+  the owner's original daily assignment, that assignment's saved price now always takes priority
+  over a later extra-stock entry. This preserves the required snapshot rule even if a menu price
+  changes later. Extra-only items still retain the price captured when added.
+- Fix commit `e35be47` is on `owner-dashboard-v2`; mirror it to `main` with this log update.
