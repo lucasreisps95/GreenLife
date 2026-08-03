@@ -1112,3 +1112,10 @@ created or changed.
   identity. After the shared menu is saved, field-check on each driver phone: refresh the page,
   confirm the assigned list and current menu appear, record one sale, verify it reaches owner
   Overview/Drivers, then remove/correct it only if needed.
+- **Additional blocker found during comparison:** the owner dashboard's local starting menu is
+  older than Lucas's latest `main` driver menu (132 versus 141 items; it lacks recent Tuna
+  Avocado/Tuna Protein Plate additions and several updated Wednesday/Friday items and prices).
+  Therefore do **not** press owner Settings **Save menu** yet: doing so would create
+  `settings/menu` using the older owner fallback and replace Lucas's newer live-menu baseline for
+  drivers. A follow-up change must first make the owner dashboard start from the current main
+  menu, then the owner can review and save that single shared record.
