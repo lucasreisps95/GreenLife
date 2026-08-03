@@ -1060,3 +1060,14 @@ press **Save today's list**.
   individual sale-price snapshots. Existing historical assignment records were not deleted.
 - Owner production build passed. Feature commit `88a41b0` is on `owner-dashboard-v2`; mirror it
   to `main`, then confirm a saved driver list carries into the next matching weekday.
+
+### 2026-08-02 â€” Codex Thai owner dashboard
+
+The owner is Thai, not Vietnamese. Replaced the dashboard's English/Vietnamese chooser with an
+English/Thai chooser, including the navigation, overview, settings, daily-list screen, and legacy
+daily-list components. The visible language button now says **ไทย**.
+
+- A browser that had previously selected Vietnamese is automatically switched to Thai the next
+  time it opens the dashboard, so it cannot get stuck using a removed language option.
+- Owner production build passed. Feature commit `f3b28e9` is on `owner-dashboard-v2`; mirror it
+  to `main` and check the ไทย toggle on the live owner dashboard.
