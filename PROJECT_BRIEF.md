@@ -1086,5 +1086,7 @@ so editing one file could silently leave the other view outdated.
   editing `index.html` or `admin.html`. The driver app's static menu remains emergency offline
   fallback only.
 - Admin JavaScript parsing and whitespace checks passed. Feature commit `66e56fc` is on
-  `owner-dashboard-v2`; mirror it to `main`. Lucas can use Claude on his phone for feature work,
-  but its project instructions now prevent this menu-copy mistake.
+  `owner-dashboard-v2`. The safeguard was rebased safely onto Lucas's newer `main` menu work and
+  published there as `d97e2eb` plus this log update; Lucas's current menu commits through
+  `b95c551` were preserved. Lucas can use Claude on his phone for feature work, but its project
+  instructions now prevent this menu-copy mistake.
