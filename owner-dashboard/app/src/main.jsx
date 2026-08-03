@@ -94,7 +94,7 @@ function App() {
     </aside>
     <main className="min-w-0 flex-1 px-4 py-6 sm:px-7 lg:px-10">
       <header className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-center"><div><p className="label mb-1">GreenLife {t.owner}</p><h1 className="text-3xl font-bold tracking-tight text-slate-950">{title}</h1><p className="mt-1 text-sm text-slate-500">{subtitle}</p></div>{tab !== 'settings' && <div className="flex flex-wrap items-center gap-2"><span className="mr-1 hidden items-center gap-2 text-xs font-medium text-emerald-700 sm:flex"><i className="h-2 w-2 rounded-full bg-emerald-500" /> {t.connected}</span><select value={range} onChange={e => setRange(e.target.value)} className="h-10 rounded-lg border bg-white px-3 text-sm font-semibold"><option value="today">{t.today}</option><option value="week">{t.week}</option><option value="month">{t.month}</option><option value="all">{t.all}</option></select><button onClick={refresh} className="icon-button" title={t.refresh}><RefreshCw size={17} className={loading ? 'animate-spin' : ''} /></button></div>}</header>
-      {error ? <Error message={error} /> : loading && !menu ? <Loading /> : tab === 'overview' ? <OverviewPlus2 stats={stats} t={t} /> : tab === 'drivers' ? <DriversCombined drivers={visibleDrivers} t={t} /> : tab === 'assignments' ? <DailyAssignmentsFriendly menu={menu} drivers={drivers.filter(driver => driver.source !== 'historical')} manualDrivers={manualDrivers} labels={labels} assignments={assignments} templates={assignmentTemplates} onSaved={refresh} language={language} /> : <SettingsPanel4 menu={menu} labels={labels} actualDrivers={drivers.filter(driver => driver.source !== 'historical')} manualDrivers={manualDrivers} message={message} changePrice={changePrice} addProduct={addProduct} removeProduct={removeProduct} addDriver={addDriver} removeDriver={removeDriver} setLabels={setLabels} saveMenu={saveMenu} saveDrivers={saveDrivers} t={t} />}
+      {error ? <Error message={error} /> : loading && !menu ? <Loading /> : tab === 'overview' ? <OverviewPlus2 stats={stats} t={t} /> : tab === 'drivers' ? <DriversCombined drivers={visibleDrivers} t={t} /> : tab === 'assignments' ? <DailyAssignmentsPaper menu={menu} drivers={drivers.filter(driver => driver.source !== 'historical')} manualDrivers={manualDrivers} labels={labels} assignments={assignments} templates={assignmentTemplates} onSaved={refresh} language={language} /> : <SettingsPanel4 menu={menu} labels={labels} actualDrivers={drivers.filter(driver => driver.source !== 'historical')} manualDrivers={manualDrivers} message={message} changePrice={changePrice} addProduct={addProduct} removeProduct={removeProduct} addDriver={addDriver} removeDriver={removeDriver} setLabels={setLabels} saveMenu={saveMenu} saveDrivers={saveDrivers} t={t} />}
     </main>
   </div>
 }
@@ -160,6 +160,70 @@ function DailyAssignmentsFriendly({ menu, drivers, manualDrivers, labels, assign
       <section className="card p-5"><SectionTitle title={words.available} sub="Press Add beside each food." /><div className="mt-3 divide-y">{Object.entries(dayMenu || {}).map(([category, items]) => <div key={category} className="py-3"><h3 className="mb-2 text-sm font-bold text-emerald-800">{category}</h3>{items.map(([name, price]) => { const key = `${category}::${name}`; return <div key={key} className="flex items-center justify-between gap-3 py-2"><div><p className="text-sm font-semibold text-slate-800">{name}</p><p className="text-xs text-slate-400">{money(price)}</p></div><button onClick={() => changeQuantity(key, (quantities[key] || 0) + 1)} className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700">+ {words.add}</button></div> })}</div>)}</div></section>
       <section className="card p-5"><div className="flex items-start justify-between gap-3 border-b pb-4"><SectionTitle title={words.given} sub={rows.length ? `${totalItems} items · ${money(totalValue)}` : words.empty} /><button onClick={() => setQuantities({})} className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-700">{words.clear}</button></div><div className="mt-2 divide-y">{Object.entries(rowsByCategory).map(([category, entries]) => <div key={category} className="py-3"><h3 className="mb-2 text-sm font-bold text-emerald-800">{category}</h3>{entries.map(row => <div key={`${row.category}::${row.name}`} className="grid grid-cols-[1fr_auto] items-center gap-3 py-2"><div><p className="text-sm font-bold text-slate-800">{row.name}</p><p className="text-xs text-slate-400">{money(row.price)} each</p></div><div className="flex items-center gap-2"><button onClick={() => changeQuantity(`${row.category}::${row.name}`, row.assigned - 1)} className="grid h-10 w-10 place-items-center rounded-lg border text-xl font-bold text-slate-600">−</button><span className="grid h-10 min-w-10 place-items-center rounded-lg bg-emerald-50 px-2 text-lg font-bold text-emerald-800">{row.assigned}</span><button onClick={() => changeQuantity(`${row.category}::${row.name}`, row.assigned + 1)} className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-600 text-xl font-bold text-white">+</button></div></div>)}</div>)}{!rows.length && <p className="py-10 text-center text-sm text-slate-400">{words.empty}</p>}</div><button onClick={saveToday} disabled={saving || !driverId || !dayMenu} className="mt-5 h-13 w-full rounded-lg bg-emerald-600 px-4 py-3 text-base font-bold text-white shadow-sm hover:bg-emerald-700 disabled:bg-slate-300">{saving ? 'Saving…' : words.save}</button>{message && <p className={`mt-3 rounded-lg px-3 py-2 text-sm font-bold ${message.startsWith('Could not') ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-800'}`}>{message}</p>}</section>
     </div>
+  </div>
+}
+
+function DailyAssignmentsPaper({ menu, drivers, manualDrivers, labels, assignments, templates, onSaved, language }) {
+  const words = language === 'th'
+    ? { title:'รายการอาหารประจำวัน', help:'เลือกคนขับและวัน แล้วใส่จำนวนอาหารในรายการเดียว', driver:'คนขับ', date:'วันที่', food:'รายการอาหาร', price:'ราคา', given:'จำนวนที่ให้', clear:'ล้างจำนวนทั้งหมด', save:'บันทึกรายการวันนี้', empty:'ยังไม่มีรายการอาหารสำหรับวันนี้', ready:'พร้อมสำหรับแอปคนขับแล้ว', total:'รวมที่ให้', value:'มูลค่ารายการ' }
+    : { title:"Today's food list", help:'Choose the driver and date. Then enter the number given beside each food.', driver:'Driver', date:'Date', food:'Food description', price:'Price', given:'Given', clear:'Clear all numbers', save:"Save today's list", empty:'No food is listed for this day.', ready:'Ready for the driver app', total:'Total given', value:'List value' }
+  const [assignmentDate, setAssignmentDate] = useState(dateKey(new Date()))
+  const [driverId, setDriverId] = useState('')
+  const [quantities, setQuantities] = useState({})
+  const [message, setMessage] = useState('')
+  const [saving, setSaving] = useState(false)
+  const people = useMemo(() => {
+    const known = drivers.map(driver => ({ id:driver.id, name:labels[driver.id] || driver.name || driver.id }))
+    const additions = manualDrivers.filter(driver => !known.some(person => person.id === driver.id)).map(driver => ({ id:driver.id, name:labels[driver.id] || driver.name || driver.id }))
+    return [...known, ...additions].sort((a,b) => a.name.localeCompare(b.name))
+  }, [drivers, manualDrivers, labels])
+  useEffect(() => { if (!driverId && people[0]) setDriverId(people[0].id) }, [driverId, people])
+  const weekday = new Date(`${assignmentDate}T12:00:00`).toLocaleDateString('en-US', { weekday:'long' })
+  const dayMenu = menu?.[weekday] || null
+  const assignmentKey = driverId && assignmentDate ? `${driverId}__${assignmentDate}` : ''
+  const existing = assignments.find(assignment => assignment.id === assignmentKey || (assignment.driverId === driverId && assignment.date === assignmentDate))
+  const regular = templates?.[driverId]?.[weekday] || null
+  const regularSignature = JSON.stringify(regular?.lines || [])
+  const toQuantities = lines => Object.fromEntries((lines || []).map(line => [`${line.category}::${line.name}`, Math.max(0, Number(line.assigned) || 0)]))
+  useEffect(() => { setQuantities(toQuantities(existing?.lines || regular?.lines)); setMessage('') }, [assignmentKey, existing?.id, regularSignature])
+  const catalog = useMemo(() => Object.entries(dayMenu || {}).flatMap(([category,items]) => items.map(([name,price]) => ({ key:`${category}::${name}`, category, name, price:Number(price) || 0 }))), [dayMenu])
+  const catalogByKey = useMemo(() => Object.fromEntries(catalog.map(item => [item.key,item])), [catalog])
+  const existingLines = Object.fromEntries((existing?.lines || []).map(line => [`${line.category}::${line.name}`, line]))
+  const grouped = useMemo(() => {
+    const groups = Object.entries(dayMenu || {}).map(([category,items]) => ({ category, items:items.map(([name,price]) => ({ key:`${category}::${name}`, category, name, price:Number(price) || 0 })) }))
+    Object.values(existingLines).forEach(line => {
+      const key = `${line.category}::${line.name}`
+      if (catalogByKey[key]) return
+      let group = groups.find(item => item.category === line.category)
+      if (!group) { group = { category:line.category, items:[] }; groups.push(group) }
+      group.items.push({ key, category:line.category, name:line.name, price:Number(line.price) || 0 })
+    })
+    return groups
+  }, [dayMenu, existingLines, catalogByKey])
+  const rows = Object.entries(quantities).filter(([,count]) => Number(count) > 0).map(([key,assigned]) => {
+    const item = catalogByKey[key] || existingLines[key]
+    return item ? { ...item, assigned:Number(assigned) } : null
+  }).filter(Boolean)
+  const totalItems = rows.reduce((sum,row) => sum + row.assigned, 0)
+  const totalValue = rows.reduce((sum,row) => sum + row.assigned * row.price, 0)
+  const currentPerson = people.find(person => person.id === driverId)
+  const changeQuantity = (key,next) => setQuantities(current => ({ ...current, [key]:Math.max(0, Math.floor(Number(next) || 0)) }))
+  const saveToday = async () => {
+    if (!driverId || !dayMenu) return
+    setSaving(true); setMessage('')
+    try {
+      const lines = rows.map(({ category,name,price,assigned }) => ({ category,name,price,assigned }))
+      const payload = { driverId, driverName:currentPerson?.name || driverId, date:assignmentDate, weekday, status:'ready', lines, totalItems, totalValue, updatedAt:serverTimestamp() }
+      if (!existing?.createdAt) payload.createdAt = serverTimestamp()
+      await setDoc(doc(db,'settings',`assignments-${assignmentDate.slice(0,7)}`), { entries:{ [assignmentKey]:payload }, updatedAt:serverTimestamp() }, { merge:true })
+      const template = { driverId, driverName:currentPerson?.name || driverId, weekday, lines:lines.map(({ category,name,assigned }) => ({ category,name,assigned })), updatedAt:serverTimestamp() }
+      await setDoc(doc(db,'settings','assignmentTemplates'), { templates:{ [driverId]:{ [weekday]:template } }, updatedAt:serverTimestamp() }, { merge:true })
+      setMessage(words.ready); await onSaved()
+    } catch (error) { setMessage(`Could not save: ${error.message}`) } finally { setSaving(false) }
+  }
+  return <div className="mx-auto max-w-5xl space-y-4">
+    <section className="card overflow-hidden p-0"><div className="bg-gradient-to-r from-emerald-700 to-teal-600 p-5 text-white"><div className="flex items-center gap-2 text-lg font-bold"><CalendarDays size={20} /> {words.title}</div><p className="mt-1 text-sm text-emerald-50">{words.help}</p></div><div className="grid gap-3 p-5 sm:grid-cols-2"><label className="text-sm font-bold text-slate-700">1. {words.driver}<select value={driverId} onChange={event => setDriverId(event.target.value)} className="mt-2 h-12 w-full rounded-lg border bg-white px-3 text-base font-semibold"><option value="">Choose driver</option>{people.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><label className="text-sm font-bold text-slate-700">2. {words.date}<input type="date" value={assignmentDate} onChange={event => setAssignmentDate(event.target.value)} className="mt-2 h-12 w-full rounded-lg border bg-white px-3 text-base font-semibold" /></label></div></section>
+    <section className="card overflow-hidden p-0"><div className="flex flex-col gap-3 border-b bg-slate-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-bold tracking-tight">{words.food}</h2><p className="mt-1 text-xs text-slate-500">{weekday} · {currentPerson?.name || words.driver}</p></div><button onClick={() => setQuantities({})} className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">{words.clear}</button></div>{!dayMenu ? <p className="px-5 py-8 text-center text-sm font-semibold text-amber-800">{words.empty}</p> : <><div className="overflow-x-auto"><div className="min-w-[480px]"><div className="grid grid-cols-[1fr_80px_156px] border-b bg-white px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-400"><span>{words.food}</span><span>{words.price}</span><span className="text-center">{words.given}</span></div>{grouped.map(group => <div key={group.category}><div className="border-b border-t bg-emerald-50 px-5 py-2 text-xs font-extrabold uppercase tracking-wider text-emerald-800">{group.category}</div>{group.items.map(item => { const count = quantities[item.key] || 0; return <div key={item.key} className="grid grid-cols-[1fr_80px_156px] items-center border-b px-5 py-3"><div><p className="font-semibold text-slate-800">{item.name}</p><p className="mt-0.5 text-xs text-slate-400 sm:hidden">{money(item.price)}</p></div><span className="text-sm font-semibold text-slate-500">{money(item.price)}</span><div className="flex justify-center gap-2"><button onClick={() => changeQuantity(item.key,count-1)} disabled={!count} className="grid h-10 w-10 place-items-center rounded-lg border text-xl font-bold text-slate-600 disabled:border-slate-100 disabled:text-slate-300">−</button><span className="grid h-10 w-11 place-items-center rounded-lg bg-emerald-50 text-lg font-bold text-emerald-800">{count}</span><button onClick={() => changeQuantity(item.key,count+1)} className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-600 text-xl font-bold text-white">+</button></div></div>})}</div>)}</div></div><div className="grid gap-3 border-t bg-slate-50 p-5 sm:grid-cols-[1fr_1fr_auto]"><div><p className="text-xs font-bold uppercase tracking-wider text-slate-400">{words.total}</p><p className="mt-1 text-2xl font-bold text-slate-900">{totalItems}</p></div><div><p className="text-xs font-bold uppercase tracking-wider text-slate-400">{words.value}</p><p className="mt-1 text-2xl font-bold text-emerald-700">{money(totalValue)}</p></div><button onClick={saveToday} disabled={saving || !driverId} className="rounded-lg bg-emerald-600 px-6 py-3 text-base font-bold text-white shadow-sm hover:bg-emerald-700 disabled:bg-slate-300">{saving ? 'Saving…' : words.save}</button></div></>}{message && <p className={`mx-5 mb-5 rounded-lg px-3 py-2 text-sm font-bold ${message.startsWith('Could not') ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-800'}`}>{message}</p>}</section>
   </div>
 }
 
