@@ -43,6 +43,7 @@ function App() {
   const [manualDrivers, setManualDrivers] = useState([])
   const [hiddenDrivers, setHiddenDrivers] = useState([])
   const [assignments, setAssignments] = useState([])
+  const [assignmentTemplates, setAssignmentTemplates] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
@@ -50,7 +51,7 @@ function App() {
   const refresh = async () => {
     setLoading(true); setError('')
     try {
-      const [driverSnap, menuSnap, directorySnap, historySnap] = await Promise.all([getDocs(collection(db, 'drivers')), getDoc(doc(db, 'settings', 'menu')), getDoc(doc(db, 'settings', 'driverDirectory')), getDoc(doc(db, 'settings', 'historicalData'))])
+      const [driverSnap, menuSnap, directorySnap, historySnap, templateSnap] = await Promise.all([getDocs(collection(db, 'drivers')), getDoc(doc(db, 'settings', 'menu')), getDoc(doc(db, 'settings', 'driverDirectory')), getDoc(doc(db, 'settings', 'historicalData')), getDoc(doc(db, 'settings', 'assignmentTemplates'))])
       const assignmentSnap = await getDocs(collection(db, 'settings')).catch(() => ({ docs: [] }))
       const directory = directorySnap.exists() ? directorySnap.data() : {}
       const history = historySnap.exists() ? historySnap.data() : {}
@@ -60,7 +61,7 @@ function App() {
         return { id: driver.id, mergeKey: driver.id, source: 'live', name: (directory.labels || {})[driver.id] || driver.data().name || driver.id, days: daySnap.docs.map(row => row.data()) }
       }))
       const savedAssignments = assignmentSnap.docs.filter(row => row.id.startsWith('assignments-')).flatMap(row => Object.entries(row.data().entries || {}).map(([id, assignment]) => ({ id, ...assignment })))
-      setDrivers([...live, ...(history.drivers || [])]); setLabels(directory.labels || {}); setManualDrivers(directory.manualDrivers || []); setHiddenDrivers(directory.hiddenDriverIds || []); setAssignments(savedAssignments); setMenu(menuSnap.exists() && menuSnap.data().weeklyMenu ? clone(menuSnap.data().weeklyMenu) : clone(GREENLIFE_DEFAULT_MENU))
+      setDrivers([...live, ...(history.drivers || [])]); setLabels(directory.labels || {}); setManualDrivers(directory.manualDrivers || []); setHiddenDrivers(directory.hiddenDriverIds || []); setAssignments(savedAssignments); setAssignmentTemplates(templateSnap.exists() ? templateSnap.data().templates || {} : {}); setMenu(menuSnap.exists() && menuSnap.data().weeklyMenu ? clone(menuSnap.data().weeklyMenu) : clone(GREENLIFE_DEFAULT_MENU))
     } catch (e) { setError(e.message || 'Could not load GreenLife data.') } finally { setLoading(false) }
   }
   useEffect(() => { refresh(); const id = window.setInterval(refresh, 5 * 60 * 1000); return () => window.clearInterval(id) }, [])
@@ -93,7 +94,7 @@ function App() {
     </aside>
     <main className="min-w-0 flex-1 px-4 py-6 sm:px-7 lg:px-10">
       <header className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-center"><div><p className="label mb-1">GreenLife {t.owner}</p><h1 className="text-3xl font-bold tracking-tight text-slate-950">{title}</h1><p className="mt-1 text-sm text-slate-500">{subtitle}</p></div>{tab !== 'settings' && <div className="flex flex-wrap items-center gap-2"><span className="mr-1 hidden items-center gap-2 text-xs font-medium text-emerald-700 sm:flex"><i className="h-2 w-2 rounded-full bg-emerald-500" /> {t.connected}</span><select value={range} onChange={e => setRange(e.target.value)} className="h-10 rounded-lg border bg-white px-3 text-sm font-semibold"><option value="today">{t.today}</option><option value="week">{t.week}</option><option value="month">{t.month}</option><option value="all">{t.all}</option></select><button onClick={refresh} className="icon-button" title={t.refresh}><RefreshCw size={17} className={loading ? 'animate-spin' : ''} /></button></div>}</header>
-      {error ? <Error message={error} /> : loading && !menu ? <Loading /> : tab === 'overview' ? <OverviewPlus2 stats={stats} t={t} /> : tab === 'drivers' ? <DriversCombined drivers={visibleDrivers} t={t} /> : tab === 'assignments' ? <DailyAssignmentsList menu={menu} drivers={drivers.filter(driver => driver.source !== 'historical')} manualDrivers={manualDrivers} labels={labels} assignments={assignments} onSaved={refresh} language={language} /> : <SettingsPanel4 menu={menu} labels={labels} actualDrivers={drivers.filter(driver => driver.source !== 'historical')} manualDrivers={manualDrivers} message={message} changePrice={changePrice} addProduct={addProduct} removeProduct={removeProduct} addDriver={addDriver} removeDriver={removeDriver} setLabels={setLabels} saveMenu={saveMenu} saveDrivers={saveDrivers} t={t} />}
+      {error ? <Error message={error} /> : loading && !menu ? <Loading /> : tab === 'overview' ? <OverviewPlus2 stats={stats} t={t} /> : tab === 'drivers' ? <DriversCombined drivers={visibleDrivers} t={t} /> : tab === 'assignments' ? <DailyAssignmentsFriendly menu={menu} drivers={drivers.filter(driver => driver.source !== 'historical')} manualDrivers={manualDrivers} labels={labels} assignments={assignments} templates={assignmentTemplates} onSaved={refresh} language={language} /> : <SettingsPanel4 menu={menu} labels={labels} actualDrivers={drivers.filter(driver => driver.source !== 'historical')} manualDrivers={manualDrivers} message={message} changePrice={changePrice} addProduct={addProduct} removeProduct={removeProduct} addDriver={addDriver} removeDriver={removeDriver} setLabels={setLabels} saveMenu={saveMenu} saveDrivers={saveDrivers} t={t} />}
     </main>
   </div>
 }
@@ -101,6 +102,82 @@ function App() {
 function Nav({ icon: Icon, text, active, onClick }) { return <button onClick={onClick} className={`nav-item whitespace-nowrap ${active ? 'active' : ''}`}><Icon size={18} /><span>{text}</span><ChevronRight size={15} className="ml-auto hidden lg:block" /></button> }
 function Loading() { return <div className="card grid min-h-64 place-items-center"><LoaderCircle className="animate-spin text-emerald-600" size={28} /></div> }
 function Error({ message }) { return <div className="card p-7"><h2 className="font-bold text-rose-700">Could not load dashboard</h2><p className="mt-2 text-sm text-slate-500">{message}</p><p className="mt-4 text-sm text-slate-500">Check that the public Firestore rules were published.</p></div> }
+
+function DailyAssignmentsFriendly({ menu, drivers, manualDrivers, labels, assignments, templates, onSaved, language }) {
+  const words = language === 'vi'
+    ? { title:'Danh sách hôm nay', choose:'Chọn tài xế và ngày. Danh sách thường dùng sẽ tự điền.', driver:'Tài xế', date:'Ngày', usual:'Danh sách thường dùng', useUsual:'Dùng danh sách thường dùng', saveUsual:'Lưu làm danh sách thường dùng', available:'Thức ăn có sẵn', given:'Đồ ăn giao hôm nay', add:'Thêm', save:'Lưu danh sách hôm nay', clear:'Xóa danh sách', past:'Danh sách trước đây', open:'Mở', useAgain:'Dùng lại', older:'Xem danh sách cũ hơn', empty:'Chưa có món nào.', saved:'Đã sẵn sàng cho ứng dụng tài xế' }
+    : { title:"Today's driver list", choose:'Choose the driver and date. The usual list fills in automatically.', driver:'Driver', date:'Date', usual:'Usual list', useUsual:'Use usual list', saveUsual:'Make this the usual list', available:'Food available', given:'Food given today', add:'Add', save:"Save today's list", clear:'Clear list', past:'Past lists', open:'Open', useAgain:'Use again', older:'Show older lists', empty:'No food added yet.', saved:'Ready for the driver app' }
+  const [assignmentDate, setAssignmentDate] = useState(dateKey(new Date()))
+  const [driverId, setDriverId] = useState('')
+  const [quantities, setQuantities] = useState({})
+  const [message, setMessage] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [showOlder, setShowOlder] = useState(false)
+  const people = useMemo(() => {
+    const known = drivers.map(driver => ({ id: driver.id, name: labels[driver.id] || driver.name || driver.id }))
+    const additions = manualDrivers.filter(driver => !known.some(person => person.id === driver.id)).map(driver => ({ id: driver.id, name: labels[driver.id] || driver.name || driver.id }))
+    return [...known, ...additions].sort((a, b) => a.name.localeCompare(b.name))
+  }, [drivers, manualDrivers, labels])
+  useEffect(() => { if (!driverId && people[0]) setDriverId(people[0].id) }, [driverId, people])
+  const weekday = new Date(`${assignmentDate}T12:00:00`).toLocaleDateString('en-US', { weekday: 'long' })
+  const dayMenu = menu?.[weekday] || null
+  const assignmentKey = driverId && assignmentDate ? `${driverId}__${assignmentDate}` : ''
+  const existing = assignments.find(assignment => assignment.id === assignmentKey || (assignment.driverId === driverId && assignment.date === assignmentDate))
+  const usual = templates?.[driverId]?.[weekday] || null
+  const usualSignature = JSON.stringify(usual?.lines || [])
+  const toQuantities = lines => Object.fromEntries((lines || []).map(line => [`${line.category}::${line.name}`, Math.max(0, Number(line.assigned) || 0)]))
+  useEffect(() => { setQuantities(toQuantities(existing?.lines || usual?.lines)); setMessage('') }, [assignmentKey, existing?.id, usualSignature])
+  const catalog = useMemo(() => Object.entries(dayMenu || {}).flatMap(([category, items]) => items.map(([name, price]) => ({ key:`${category}::${name}`, category, name, price:Number(price) || 0 }))), [dayMenu])
+  const existingLines = Object.fromEntries((existing?.lines || []).map(line => [`${line.category}::${line.name}`, line]))
+  const rows = Object.entries(quantities).filter(([, count]) => Number(count) > 0).map(([key, assigned]) => {
+    const item = catalog.find(entry => entry.key === key) || existingLines[key]
+    return item ? { ...item, assigned:Number(assigned) } : null
+  }).filter(Boolean)
+  const rowsByCategory = rows.reduce((result, row) => { (result[row.category] ||= []).push(row); return result }, {})
+  const totalItems = rows.reduce((sum, row) => sum + row.assigned, 0)
+  const totalValue = rows.reduce((sum, row) => sum + row.assigned * row.price, 0)
+  const currentPerson = people.find(person => person.id === driverId)
+  const history = assignments.filter(item => item.driverId === driverId).sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+  const visibleHistory = showOlder ? history : history.slice(0, 5)
+  const changeQuantity = (key, next) => setQuantities(current => ({ ...current, [key]:Math.max(0, Math.floor(Number(next) || 0)) }))
+  const copyLines = lines => { setQuantities(toQuantities(lines)); setMessage('List copied. Press Save today’s list when you are ready.') }
+  const saveToday = async () => {
+    if (!driverId || !dayMenu) return
+    setSaving(true); setMessage('')
+    try {
+      const lines = rows.map(({ category, name, price, assigned }) => ({ category, name, price, assigned }))
+      const payload = { driverId, driverName:currentPerson?.name || driverId, date:assignmentDate, weekday, status:'ready', lines, totalItems, totalValue, updatedAt:serverTimestamp() }
+      if (!existing?.createdAt) payload.createdAt = serverTimestamp()
+      await setDoc(doc(db, 'settings', `assignments-${assignmentDate.slice(0, 7)}`), { entries:{ [assignmentKey]:payload }, updatedAt:serverTimestamp() }, { merge:true })
+      setMessage(words.saved); await onSaved()
+    } catch (error) { setMessage(`Could not save: ${error.message}`) } finally { setSaving(false) }
+  }
+  const saveUsual = async () => {
+    if (!driverId || !dayMenu) return
+    setSaving(true); setMessage('')
+    try {
+      const lines = rows.map(({ category, name, assigned }) => ({ category, name, assigned }))
+      const template = { driverId, driverName:currentPerson?.name || driverId, weekday, lines, updatedAt:serverTimestamp() }
+      await setDoc(doc(db, 'settings', 'assignmentTemplates'), { templates:{ [driverId]:{ [weekday]:template } }, updatedAt:serverTimestamp() }, { merge:true })
+      setMessage(`This is now ${currentPerson?.name || 'this driver'}'s usual ${weekday} list.`); await onSaved()
+    } catch (error) { setMessage(`Could not save: ${error.message}`) } finally { setSaving(false) }
+  }
+  const openHistory = item => { setAssignmentDate(item.date); setDriverId(item.driverId); setMessage(`Opened ${item.date}.`) }
+  return <div className="mx-auto max-w-6xl space-y-4">
+    <section className="card overflow-hidden p-0">
+      <div className="bg-gradient-to-r from-emerald-700 to-teal-600 p-5 text-white"><div className="flex items-center gap-2 text-lg font-bold"><CalendarDays size={20} /> {words.title}</div><p className="mt-1 text-sm text-emerald-50">{words.choose}</p></div>
+      <div className="grid gap-3 p-5 sm:grid-cols-2"><label className="text-sm font-bold text-slate-700">1. {words.driver}<select value={driverId} onChange={event => setDriverId(event.target.value)} className="mt-2 h-12 w-full rounded-lg border bg-white px-3 text-base font-semibold"><option value="">Choose driver</option>{people.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><label className="text-sm font-bold text-slate-700">2. {words.date}<input type="date" value={assignmentDate} onChange={event => setAssignmentDate(event.target.value)} className="mt-2 h-12 w-full rounded-lg border bg-white px-3 text-base font-semibold" /></label></div>
+      {driverId && dayMenu && <div className="flex flex-col gap-2 border-t bg-emerald-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-bold text-emerald-900">{words.usual} {weekday}</p><p className="text-sm text-emerald-800">{usual?.lines?.length ? `${usual.lines.reduce((sum, line) => sum + (Number(line.assigned) || 0), 0)} items ready to use` : 'No usual list saved yet.'}</p></div><button onClick={() => copyLines(usual?.lines || [])} disabled={!usual?.lines?.length} className="h-11 rounded-lg border border-emerald-300 bg-white px-4 text-sm font-bold text-emerald-800 disabled:border-slate-200 disabled:text-slate-400">{words.useUsual}</button></div>}
+      {!dayMenu && <p className="border-t bg-amber-50 px-5 py-3 text-sm font-semibold text-amber-800">Choose a Monday–Friday date to prepare a list.</p>}
+    </section>
+    <div className="grid gap-4 lg:grid-cols-2">
+      <section className="card p-5"><SectionTitle title={words.available} sub="Press Add beside each food." /><div className="mt-3 divide-y">{Object.entries(dayMenu || {}).map(([category, items]) => <div key={category} className="py-3"><h3 className="mb-2 text-sm font-bold text-emerald-800">{category}</h3>{items.map(([name, price]) => { const key = `${category}::${name}`; return <div key={key} className="flex items-center justify-between gap-3 py-2"><div><p className="text-sm font-semibold text-slate-800">{name}</p><p className="text-xs text-slate-400">{money(price)}</p></div><button onClick={() => changeQuantity(key, (quantities[key] || 0) + 1)} className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700">+ {words.add}</button></div> })}</div>)}</div></section>
+      <section className="card p-5"><div className="flex items-start justify-between gap-3 border-b pb-4"><SectionTitle title={words.given} sub={rows.length ? `${totalItems} items · ${money(totalValue)}` : words.empty} /><button onClick={() => setQuantities({})} className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-700">{words.clear}</button></div><div className="mt-2 divide-y">{Object.entries(rowsByCategory).map(([category, entries]) => <div key={category} className="py-3"><h3 className="mb-2 text-sm font-bold text-emerald-800">{category}</h3>{entries.map(row => <div key={`${row.category}::${row.name}`} className="grid grid-cols-[1fr_auto] items-center gap-3 py-2"><div><p className="text-sm font-bold text-slate-800">{row.name}</p><p className="text-xs text-slate-400">{money(row.price)} each</p></div><div className="flex items-center gap-2"><button onClick={() => changeQuantity(`${row.category}::${row.name}`, row.assigned - 1)} className="grid h-10 w-10 place-items-center rounded-lg border text-xl font-bold text-slate-600">−</button><span className="grid h-10 min-w-10 place-items-center rounded-lg bg-emerald-50 px-2 text-lg font-bold text-emerald-800">{row.assigned}</span><button onClick={() => changeQuantity(`${row.category}::${row.name}`, row.assigned + 1)} className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-600 text-xl font-bold text-white">+</button></div></div>)}</div>)}{!rows.length && <p className="py-10 text-center text-sm text-slate-400">{words.empty}</p>}</div><button onClick={saveToday} disabled={saving || !driverId || !dayMenu} className="mt-5 h-13 w-full rounded-lg bg-emerald-600 px-4 py-3 text-base font-bold text-white shadow-sm hover:bg-emerald-700 disabled:bg-slate-300">{saving ? 'Saving…' : words.save}</button><button onClick={saveUsual} disabled={saving || !driverId || !dayMenu || !rows.length} className="mt-3 w-full rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400">{words.saveUsual} {weekday}</button>{message && <p className={`mt-3 rounded-lg px-3 py-2 text-sm font-bold ${message.startsWith('Could not') ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-800'}`}>{message}</p>}</section>
+    </div>
+    {driverId && <section className="card p-5"><SectionTitle title={words.past} sub="Open a past list or use it again for the date above." /><div className="mt-3 divide-y">{visibleHistory.map(item => <div key={item.id} className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-bold text-slate-800">{new Date(`${item.date}T12:00:00`).toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}</p><p className="text-sm text-slate-500">{item.totalItems || 0} items · {money(item.totalValue || 0)}</p></div><div className="flex gap-2"><button onClick={() => openHistory(item)} className="rounded-lg border px-3 py-2 text-sm font-bold text-slate-700">{words.open}</button><button onClick={() => copyLines(item.lines)} className="rounded-lg bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800">{words.useAgain}</button></div></div>)}{!history.length && <p className="py-6 text-center text-sm text-slate-400">No past lists for this driver yet.</p>}</div>{history.length > 5 && !showOlder && <button onClick={() => setShowOlder(true)} className="mt-4 w-full rounded-lg border px-4 py-3 text-sm font-bold text-slate-700">{words.older}</button>}</section>}
+  </div>
+}
+
 function DailyAssignmentsList({ menu, drivers, manualDrivers, labels, assignments, onSaved, language }) {
   const words = language === 'vi' ? { title:'Chuẩn bị danh sách giao hàng', date:'Ngày', driver:'Tài xế', available:'Thức ăn có sẵn', given:'Đã giao cho tài xế', add:'Thêm', save:'Lưu danh sách', clear:'Xóa tất cả', empty:'Chưa có món nào.', saved:'Đã sẵn sàng cho ứng dụng tài xế' } : { title:'Prepare driver list', date:'Date', driver:'Driver', available:'Food available', given:'Items given to driver', add:'Add', save:'Save driver list', clear:'Clear all', empty:'No items yet.', saved:'Ready for the driver app' }
   const [assignmentDate, setAssignmentDate] = useState(dateKey(new Date()))
