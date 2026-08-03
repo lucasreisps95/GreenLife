@@ -1140,3 +1140,16 @@ route sheet.
 - Commits: owner paper/menu baseline `f638ec7`, owner safe storage `c518b4f`, driver/admin
   compatibility `ddfa898` (mirrored to owner as `fab6574`). This live menu is now the one source
   of truth. Future item and price changes must be made in owner Settings, then **Save menu**.
+
+### 2026-08-03 â€” Codex spreadsheet-positioned Daily Lists
+
+Owner clarified that the visual card styling was good, but the food/category placement should
+resemble the paper route sheet more closely.
+
+- Kept the clean digital form and all existing quantity controls. Repositioned category labels
+  into their own narrow column beside the first food item in each category, rather than using wide
+  category bars above groups. The result follows the paper sheet's left-to-right flow:
+  food description, category marker, price, then quantity.
+- No food data, prices, driver assignments, sales, templates, or shared-menu records changed.
+- Owner production build passed. Feature commit `47014b5` is on `owner-dashboard-v2`; mirror it
+  to `main` along with this handoff note.
