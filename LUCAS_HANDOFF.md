@@ -35,8 +35,10 @@ Do not share passwords, one-time codes, or private keys. Use account invitations
   confirming why the existing approach was chosen.
 - The owner dashboard is currently intentionally open without a sign-in page. Treat its Firestore
   access rules carefully and discuss any security change before publishing it.
-- The driver app can use a cloud-managed `settings/menu` document when present; otherwise it uses
-  its built-in menu. Keep both defaults aligned when changing menu items.
+- **Menu rule — do not edit food names or prices in `index.html` or `admin.html`.** The live menu
+  is only `settings/menu` in Firestore, edited through the owner dashboard's **Settings** page.
+  The driver app and the retired `admin.html` dashboard read that shared record. The driver's
+  built-in list is an offline emergency fallback only, not a second menu to maintain.
 
 ## First Cloud Code task
 
