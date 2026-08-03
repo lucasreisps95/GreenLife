@@ -997,3 +997,17 @@ Owner approved a simpler fixed layout and a responsiveness improvement.
   Feature commit `7ad0c49` is on `owner-dashboard-v2` and must be mirrored to `main` before
   finishing. Field test: open the app on a phone, verify Payment stays open above Cash Pouch,
   confirm Starting Change Set fits, and verify normal sales still sync.
+
+### 2026-08-02 â€” Codex restored floating payment panel
+
+Owner preferred the blue payment controls attached to the bottom of the phone screen rather than
+the inline always-open version.
+
+- Restored the fixed bottom payment panel and its notch. Tap the notch to minimize or reopen; on
+  a phone, swipe down to minimize and up to reopen. The order's **Pay** reminder reopens it.
+- Preserved the prior Cash Pouch improvements: it remains at the bottom of the Log content, its
+  Starting Change confirmation control fits narrow screens, and the removed Give/Add controls
+  remain removed. The faster first-screen startup change also remains.
+- JavaScript syntax, whitespace, mobile-width overflow, and real-browser load checks passed.
+  Feature commit `c05588b` is on `owner-dashboard-v2` and must be mirrored to `main` before
+  finishing.
