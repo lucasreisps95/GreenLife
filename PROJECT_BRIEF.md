@@ -919,3 +919,21 @@ reliably reachable even after a payment has been recorded.
   `owner-dashboard-v2` and must be mirrored to `main` before finishing. Field test: log a sale,
   undo it before and after a payment, then remove the payment from the bottom bar if correction
   is needed.
+
+### 2026-08-02 — Codex draggable payment sheet and slider payment splits
+
+Owner asked for payment controls that do not depend on page scrolling, plus a slider-based way to
+record an order paid with several payment methods.
+
+- The blue payment area is now a true bottom sheet with a visible notch/handle. Tap the handle to
+  minimize or reopen it; on a phone, swipe the handle down to minimize and up to reopen. It never
+  self-minimizes in app logic. The order's **Pay** reminder also reopens it.
+- In assigned-list mode, **Use more than one payment method** opens a compact split flow. The
+  driver taps every method used, sees a slider under each selected method, adjusts the split, and
+  records all selected payments together. Selecting methods starts with an even split of the
+  remaining balance; sliders provide the final adjustment. Square continues to add its existing
+  fee logic.
+- The old manual dollar-entry split form was removed. Driver JavaScript syntax and whitespace
+  checks passed. Feature commit `6a12fcf` is on `owner-dashboard-v2` and must be mirrored to
+  `main` before finishing. Field test: minimize/reopen with the handle; split one order across two
+  methods, adjust both sliders, and confirm recorded payments equal the order total.
