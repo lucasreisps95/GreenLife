@@ -1153,3 +1153,18 @@ resemble the paper route sheet more closely.
 - No food data, prices, driver assignments, sales, templates, or shared-menu records changed.
 - Owner production build passed. Feature commit `47014b5` is on `owner-dashboard-v2`; mirror it
   to `main` along with this handoff note.
+
+### 2026-08-03 — Codex exact Monday paper-sheet sequence
+
+Owner reported that the digital Monday list still began with the wrong food even though its table
+layout resembled the paper form.
+
+- Reordered the Monday Daily Lists display only to match the paper sheet from top to bottom:
+  Chicken Taco Salad, Mexican Caesar Salad, California Roll, the sandwich rows, then wraps, hot
+  plates, protein plates, breakfast, drinks, treats, fruit, and extra. The displayed food order
+  now starts exactly like the paper sheet rather than beginning at California Roll.
+- This is a visual sorting change only. It did not modify the shared menu, prices, saved daily
+  quantities, driver records, or historic sale-price snapshots.
+- Live owner-dashboard check passed with no page errors or horizontal overflow; its first rows
+  are now Chicken Taco Salad, Mexican Caesar Salad, and California Roll. Feature commit `3a08b19`
+  is on `owner-dashboard-v2`; mirror it to `main` with this separate handoff update.
