@@ -1044,3 +1044,19 @@ plus a compact history inside the existing Daily Lists screen.
   on `owner-dashboard-v2` and must be mirrored to `main` before finishing. Field test: save a
   usual Monday list for Lucas, open a future Monday, confirm it fills automatically, make a
   today-only change, save, and verify a past Monday remains unchanged.
+
+### 2026-08-02 â€” Codex streamlined Daily Lists
+
+Owner found the visible usual-list and past-list controls redundant. The Daily Lists screen is
+now only the simple current-day workflow: choose driver and date, add or subtract food, then
+press **Save today's list**.
+
+- Removed the visible Usual List banner, its restore button, its separate save button, and the
+  Past Lists/history section.
+- Kept the useful behavior behind the scenes: saving a driver's dated list automatically updates
+  that driver's future list for the same weekday. Opening a new matching weekday starts from that
+  remembered list without asking the owner to manage templates.
+- The dated assignment still retains its own current prices, and completed sales still use their
+  individual sale-price snapshots. Existing historical assignment records were not deleted.
+- Owner production build passed. Feature commit `88a41b0` is on `owner-dashboard-v2`; mirror it
+  to `main`, then confirm a saved driver list carries into the next matching weekday.
