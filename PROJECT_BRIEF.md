@@ -951,3 +951,15 @@ driver application from loading.
   `owner-dashboard-v2` and its mirrored commit `3be1187` is on `main`.
 - Important regression check for future edits: run a browser load test, not only `node --check`,
   whenever modifying the large HTML-string rendering blocks in `index.html`.
+
+### 2026-08-02 — Codex exact amount fields for split payments
+
+Owner found range sliders impractical for entering precise payment amounts.
+
+- Kept the multi-method selection workflow, but replaced every selected method's slider with a
+  dollar amount field. The driver can now type the exact amount paid by Square, Zelle, Venmo,
+  Credit Card, Cash, Owed, or any selected combination. The running selected-total and amount-left
+  indicators remain, and **Record selected payments** uses those exact entered values.
+- Confirmed no range-slider controls remain. JavaScript syntax, whitespace, and real-browser
+  local load tests passed. Feature commit `e9703e3` is on `owner-dashboard-v2` and must be
+  mirrored to `main` before finishing.
