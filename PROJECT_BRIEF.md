@@ -1168,3 +1168,24 @@ layout resembled the paper form.
 - Live owner-dashboard check passed with no page errors or horizontal overflow; its first rows
   are now Chicken Taco Salad, Mexican Caesar Salad, and California Roll. Feature commit `3a08b19`
   is on `owner-dashboard-v2`; mirror it to `main` with this separate handoff update.
+
+### 2026-08-03 — Codex daily-list helper foundation and driver extra stock
+
+Owner approved two workflow improvements while explicitly keeping the owner dashboard open during
+active development.
+
+- Driver app: when a driver has a daily assignment, they can now use **Extra food received** to
+  choose a food from that weekday's shared menu and add the quantity delivered after the original
+  route list. It increases that driver's available stock immediately, records a category and
+  price snapshot in that day's cloud-synced record, is included in the end-of-day return check,
+  and is visible as an **Extra food** count on the owner Drivers screen. It does not alter the
+  owner's original assignment or historic sales prices.
+- Owner Daily Lists: added a compact **Daily-list helper** panel. The owner can save or remove a
+  trusted employee's name and email, creating the future access roster in
+  `settings/dailyListHelpers`. While the dashboard intentionally remains public, this is a
+  planning/administration list rather than a security boundary; the helper can use the existing
+  Daily Lists link today. When the owner decides to turn on login, this same roster is the source
+  for restricting helpers to Daily Lists only while keeping financial screens and Settings owner
+  only.
+- Owner production build and driver JavaScript syntax checks passed. Feature commit `b82992b` is
+  on `owner-dashboard-v2`; mirror it to `main` with this standalone log update.
