@@ -157,11 +157,26 @@ function isManagedMenu(value){
     && ['Monday','Tuesday','Wednesday','Thursday','Friday'].every(day=>value[day] && typeof value[day] === 'object');
 }
 
+function normalizeManagedMenu(value){
+  if(!isManagedMenu(value)) return null;
+  const normalized = {};
+  for(const day of ['Monday','Tuesday','Wednesday','Thursday','Friday']){
+    normalized[day] = {};
+    Object.entries(value[day]).forEach(([category, items])=>{
+      normalized[day][category] = Array.isArray(items) ? items.map(item=>{
+        if(Array.isArray(item)) return [item[0], Number(item[1])||0];
+        return [item && item.name, Number(item && item.price)||0];
+      }).filter(([name])=>name) : [];
+    });
+  }
+  return normalized;
+}
+
 async function loadSharedMenu(){
   MENU = {};
   const menuSnap = await fbDb.collection('settings').doc('menu').get();
-  const managed = menuSnap.exists && menuSnap.data().weeklyMenu;
-  if(!isManagedMenu(managed)) throw new Error('The shared menu is not ready yet. Open the owner dashboard Settings page and save the menu once.');
+  const managed = normalizeManagedMenu(menuSnap.exists && menuSnap.data().weeklyMenu);
+  if(!managed) throw new Error('The shared menu is not ready yet. Open the owner dashboard Settings page and save the menu once.');
   MENU = managed;
 }
 
