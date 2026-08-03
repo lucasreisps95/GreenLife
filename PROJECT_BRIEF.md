@@ -1119,3 +1119,24 @@ created or changed.
   `settings/menu` using the older owner fallback and replace Lucas's newer live-menu baseline for
   drivers. A follow-up change must first make the owner dashboard start from the current main
   menu, then the owner can review and save that single shared record.
+
+### 2026-08-03 â€” Codex shared-menu activation and paper Daily Lists
+
+Owner approved the shared-menu fix and requested that Daily Lists resemble the physical paper
+route sheet.
+
+- Updated the owner dashboard starting catalog to match Lucas's current driver menu exactly:
+  141 items on each side, with no item or price differences. The paper-style Daily Lists screen
+  now shows one organized form with category bands, food description, price, and large - / quantity
+  / + controls in every row. It no longer splits the menu across two separate confusing panels.
+- The first attempt to save `settings/menu` exposed the real Firebase issue: Firestore does not
+  allow arrays nested inside arrays. Fixed the owner dashboard to save menu items as safe objects
+  (`{name, price}`), while converting them back to the app's normal `[name, price]` format in the
+  interface.
+- Successfully created the live shared menu from the verified 141-item catalog. Updated both the
+  driver app and `admin.html` to read this Firebase-safe format, and live browser checks confirmed
+  the driver app and legacy dashboard load the shared menu (including Tuna Protein Plate) without
+  errors or mobile-width overflow.
+- Commits: owner paper/menu baseline `f638ec7`, owner safe storage `c518b4f`, driver/admin
+  compatibility `ddfa898` (mirrored to owner as `fab6574`). This live menu is now the one source
+  of truth. Future item and price changes must be made in owner Settings, then **Save menu**.
