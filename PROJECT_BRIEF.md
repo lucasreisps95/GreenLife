@@ -1011,3 +1011,13 @@ the inline always-open version.
 - JavaScript syntax, whitespace, mobile-width overflow, and real-browser load checks passed.
   Feature commit `c05588b` is on `owner-dashboard-v2` and must be mirrored to `main` before
   finishing.
+
+### 2026-08-02 â€” Codex automatically open payment panel after sale
+
+Owner requested a small convenience improvement for the assigned-food `-1` sale action.
+
+- Whenever the driver taps **-1** to log an assigned item sale, the bottom payment panel now
+  automatically expands if it was minimized. The driver can immediately choose payment without
+  tapping the notch first. Manual minimize/expand behavior is otherwise unchanged.
+- JavaScript syntax, whitespace, and real-browser load tests passed. Feature commit `afd81a4` is
+  on `owner-dashboard-v2` and must be mirrored to `main` before finishing.
