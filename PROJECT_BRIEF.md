@@ -1021,3 +1021,26 @@ Owner requested a small convenience improvement for the assigned-food `-1` sale 
   tapping the notch first. Manual minimize/expand behavior is otherwise unchanged.
 - JavaScript syntax, whitespace, and real-browser load tests passed. Feature commit `afd81a4` is
   on `owner-dashboard-v2` and must be mirrored to `main` before finishing.
+
+### 2026-08-02 â€” Codex simple usual lists and past-list history
+
+Owner approved a simpler Daily Lists workflow for a nontechnical owner: reusable weekday lists
+plus a compact history inside the existing Daily Lists screen.
+
+- Replaced the active Daily Lists view with a paper-form-like screen: choose driver, choose date,
+  add food with large buttons, review **Food given today**, then press one large **Save today's
+  list** button.
+- Added a driver-specific **Usual list** for each weekday. When a driver/date without a saved
+  dated list is opened, its usual weekday quantities fill in automatically. **Use usual list**
+  restores it at any time. **Make this the usual list** changes only that driver’s future same-
+  weekday starting list.
+- Usual lists save only food/category/quantity under `settings/assignmentTemplates`; every dated
+  list still stores current item prices in its own dated record, preserving the sales-price
+  snapshot rule and leaving past lists/sales unchanged.
+- Added a compact **Past lists** section under the same form. It shows the selected driver's recent
+  lists with date, item count, value, Open, Use again, and Show older lists. Use again copies
+  quantities into the selected date; the owner must still press Save today's list.
+- Owner production build and local/live real-browser checks passed. Feature commit `17d3de5` is
+  on `owner-dashboard-v2` and must be mirrored to `main` before finishing. Field test: save a
+  usual Monday list for Lucas, open a future Monday, confirm it fills automatically, make a
+  today-only change, save, and verify a past Monday remains unchanged.
