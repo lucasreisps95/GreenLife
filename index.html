@@ -1089,6 +1089,8 @@ function sellAssignedItem(itemName){
   const item = stop.items[itemName];
   if(item.price == null) item.price = priceForSale(itemName, effectiveWeekday(state.day)) || 0;
   item.sold += 1;
+  // A new sale means the driver is ready to choose a payment, so reopen the bottom panel.
+  state.paymentSheetMinimized = false;
   persistDay();
   toast('Sale logged');
 }
