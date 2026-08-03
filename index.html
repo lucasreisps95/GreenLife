@@ -327,7 +327,7 @@
   .cal-close{flex:1;padding:13px;border-radius:13px;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);color:var(--ink-soft);font-weight:700;font-size:15px;cursor:pointer;}
 
   /* ---------- Toast ---------- */
-  .qp-spacer{height:135px;}
+  .qp-spacer{height:190px;}.qp-spacer.minimized-spacer{height:58px;}
   /* ---------- Quick pay bar ---------- */
   .quickpay{
     position:fixed;left:0;right:0;bottom:0;z-index:90;
@@ -350,12 +350,10 @@
     font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
   }
   .qp-btn:active{background:var(--lime);color:var(--primary-dark);border-color:var(--lime);}
-  .split-spacer{height:230px;}
+  .sheet-handle{width:100%;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 0 8px;border:0;background:transparent;color:rgba(255,255,255,.85);font:800 11px 'Inter',sans-serif;letter-spacing:.04em;cursor:grab;touch-action:none}.sheet-handle:active{cursor:grabbing}.sheet-notch{width:48px;height:5px;border-radius:99px;background:rgba(255,255,255,.72)}.quickpay.minimized{padding-top:9px;padding-bottom:calc(9px + env(safe-area-inset-bottom, 0px));border-radius:20px 20px 0 0}.quickpay.minimized .quickpay-content{display:none}
+  .split-spacer{height:405px;}
   .split-toggle{display:block;width:100%;margin-top:8px;padding:9px;border:1px solid rgba(255,255,255,.32);border-radius:11px;background:transparent;color:#fff;font:700 13px 'Inter',sans-serif;cursor:pointer;}
-  .split-form{display:grid;grid-template-columns:1fr 88px auto;gap:7px;margin-top:8px;align-items:center;}
-  .split-form select,.split-form input{min-width:0;border:1px solid rgba(255,255,255,.32);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;padding:10px 7px;font:600 13px 'Inter',sans-serif;}
-  .split-form select option{color:var(--ink);background:#fff;}
-  .split-add,.split-close{border:0;border-radius:9px;padding:10px 9px;background:var(--lime);color:var(--primary-dark);font:800 13px 'Inter',sans-serif;cursor:pointer;}
+  .split-help{margin:9px 0 7px;color:rgba(234,243,236,.8);font-size:12px;line-height:1.35}.split-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.split-method{padding:9px 4px;border:1px solid rgba(255,255,255,.28);border-radius:10px;background:rgba(255,255,255,.1);color:#fff;font:700 12px 'Inter',sans-serif;cursor:pointer}.split-method.selected{background:var(--lime);border-color:var(--lime);color:var(--primary-dark)}.split-sliders{display:grid;gap:7px;margin-top:9px}.split-slider{display:grid;grid-template-columns:72px 1fr 62px;align-items:center;gap:7px;color:#fff;font-size:12px;font-weight:800}.split-slider input{accent-color:var(--lime);min-width:0}.split-slider b{text-align:right;color:var(--lime)}.split-summary{display:flex;justify-content:space-between;gap:10px;margin-top:9px;color:rgba(234,243,236,.82);font-size:12px}.split-summary b{color:var(--lime)}.split-save{width:100%;margin-top:9px;border:0;border-radius:10px;padding:11px;background:var(--lime);color:var(--primary-dark);font:900 14px 'Inter',sans-serif;cursor:pointer}
   .split-close{margin-top:7px;width:100%;background:transparent;color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.25);}
   .split-added{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}.split-chip{padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.14);color:rgba(255,255,255,.9);font-size:11px;font-weight:700;}
   .qp-settled{margin-top:2px;color:rgba(234,243,236,.82);font-size:13px;font-weight:700}.qp-payment-history{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.qp-payment-history button{border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(255,255,255,.12);color:#fff;padding:6px 9px;font:700 12px 'Inter',sans-serif;cursor:pointer}
@@ -693,6 +691,9 @@ let state = {
   allDays: {},
   activeMethod: 'Cash',
   splitOpen: false,
+  splitMethods: [],
+  splitValues: {},
+  paymentSheetMinimized: false,
   timingOpen: false,
   calOpen: false,
   calMode: 'nav',
@@ -1270,6 +1271,37 @@ function addSplitPayment(method, amountStr){
   state.splitOpen = true;
   addPayment(amount.toFixed(2));
 }
+function resetSplitValues(total){
+  const methods = state.splitMethods;
+  if(!methods.length) return;
+  const share = r2(total / methods.length);
+  let assigned = 0;
+  state.splitValues = {};
+  methods.forEach((method, index)=>{
+    const value = index === methods.length-1 ? r2(total-assigned) : share;
+    state.splitValues[method] = value;
+    assigned = r2(assigned+value);
+  });
+}
+function recordSliderSplit(){
+  const stop = state.day.stops[state.stopIndex];
+  const due = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+  const entries = state.splitMethods.map(method=>({method,amount:r2(Number(state.splitValues[method])||0)})).filter(entry=>entry.amount>0);
+  const total = r2(entries.reduce((sum, entry)=>sum+entry.amount,0));
+  if(!entries.length){ toast('Choose at least one payment method.'); return; }
+  if(total > due + 0.005){ toast('Payment is more than the amount due.'); return; }
+  entries.forEach(entry=>{
+    const fee = entry.method === 'Square' ? SQUARE_FEE : 0;
+    const payment = { method:entry.method, amount:r2(entry.amount+fee) };
+    if(fee) payment.fee = fee;
+    stop.payments.push(payment);
+  });
+  state.splitOpen = false;
+  state.splitMethods = [];
+  state.splitValues = {};
+  persistDay();
+  toast('Payments recorded.');
+}
 function removePayment(idx){
   const stop = state.day.stops[state.stopIndex];
   stop.payments.splice(idx,1);
@@ -1732,8 +1764,10 @@ async function render(){
     if(qpCount > 0){
       const hasPaymentDue = qpRemaining > 0.005;
       const qpStatus = hasPaymentDue ? fmtMoney(qpRemaining) : (qpRemaining < -0.005 ? fmtMoney(Math.abs(qpRemaining))+' over' : 'Paid');
-      html += '<div class="qp-spacer'+(activeAssignment && state.splitOpen?' split-spacer':'')+'"></div>'
-        + '<div class="quickpay">'
+      html += '<div class="qp-spacer'+(state.paymentSheetMinimized?' minimized-spacer':(activeAssignment && state.splitOpen?' split-spacer':'')+'"></div>'
+        + '<div class="quickpay'+(state.paymentSheetMinimized?' minimized':'')+'">'
+        + '<button class="sheet-handle" id="paymentSheetHandle" aria-label="Open or close payment panel"><span class="sheet-notch"></span><span>'+ (state.paymentSheetMinimized ? 'Swipe up or tap to open payments' : 'Swipe down or tap to minimize') +'</span></button>'
+        + '<div class="quickpay-content">'
         + '<div class="qp-head">'
         +   '<div class="qp-left"><span class="qp-count">'+qpCount+'</span>'
         +     '<span class="qp-lbl">'+T('qp_items')+'</span></div>'
@@ -1750,10 +1784,22 @@ async function render(){
         html += '<div class="qp-settled">'+(qpRemaining < -0.005 ? 'Payment is more than this order. Remove or correct it below.' : 'Payment complete. You can correct a payment below if needed.')+'</div>';
       }
       if(activeAssignment && hasPaymentDue){
-        html += '<button class="split-toggle" id="splitToggle">'+(state.splitOpen?'Hide split payment':'Split payment')+'</button>';
+        html += '<button class="split-toggle" id="splitToggle">'+(state.splitOpen?'Hide payment split':'Use more than one payment method')+'</button>';
         if(state.splitOpen){
-          html += '<div class="split-form"><select id="splitMethod">'+PAYMENT_METHODS.map(m=>'<option value="'+escapeAttr(m)+'">'+TP(m)+'</option>').join('')+'</select><input id="splitAmount" type="number" min="0.01" max="'+qpRemaining.toFixed(2)+'" step="0.01" inputmode="decimal" placeholder="$ amount"><button class="split-add" id="splitAdd">Add</button></div>'
-            + '<button class="split-close" id="splitClose">Close split payment</button>';
+          const splitTotal = r2(state.splitMethods.reduce((sum,method)=>sum+(Number(state.splitValues[method])||0),0));
+          html += '<div class="split-help">Tap every payment method being used. Then move each slider to split '+fmtMoney(qpRemaining)+'.</div><div class="split-methods">';
+          PAYMENT_METHODS.forEach(m=>{
+            html += '<button class="split-method '+(state.splitMethods.includes(m)?'selected':'')+'" data-split-method="'+escapeAttr(m)+'">'+TP(m)+'</button>';
+          });
+          html += '</div>';
+          if(state.splitMethods.length){
+            html += '<div class="split-sliders">';
+            state.splitMethods.forEach(m=>{
+              const value = r2(Number(state.splitValues[m])||0);
+              html += '<label class="split-slider"><span>'+TP(m)+'</span><input type="range" min="0" max="'+qpRemaining.toFixed(2)+'" step="0.01" value="'+value.toFixed(2)+'" data-split-slider="'+escapeAttr(m)+'"><b data-split-value="'+escapeAttr(m)+'">'+fmtMoney(value)+'</b></label>';
+            });
+            html += '</div><div class="split-summary"><span>Selected: <b id="splitTotal">'+fmtMoney(splitTotal)+'</b></span><span id="splitLeft">'+fmtMoney(r2(qpRemaining-splitTotal))+' left</span></div><button class="split-save" id="splitSave">Record selected payments</button>';
+          }
         }
       }
       if((stop.payments||[]).length){
@@ -1763,7 +1809,7 @@ async function render(){
         });
         html += '</div>';
       }
-      html += '</div>';
+      html += '</div></div>';
     }
 
     html += '</div>';
@@ -2419,11 +2465,9 @@ function attachHandlers(){
   });
   const showPayment = document.getElementById('showPayment');
   if(showPayment) showPayment.addEventListener('click', ()=>{
-    const bar = document.querySelector('.quickpay');
-    if(bar){
-      bar.animate([{transform:'translateY(0)'},{transform:'translateY(-7px)'},{transform:'translateY(0)'}],{duration:340,easing:'ease-out'});
-      toast('Choose a payment method below.');
-    }
+    state.paymentSheetMinimized = false;
+    render();
+    toast('Choose a payment method below.');
   });
   document.querySelectorAll('[data-ritem]').forEach(b=>{
     b.addEventListener('click', ()=>{ bumpReturn(b.dataset.ritem, parseInt(b.dataset.rdelta,10)); });
@@ -2453,21 +2497,60 @@ function attachHandlers(){
     });
   });
 
+  const paymentSheetHandle = document.getElementById('paymentSheetHandle');
+  if(paymentSheetHandle){
+    let touchStartY = null;
+    paymentSheetHandle.addEventListener('click', ()=>{
+      state.paymentSheetMinimized = !state.paymentSheetMinimized;
+      render();
+    });
+    paymentSheetHandle.addEventListener('touchstart', e=>{ touchStartY = e.changedTouches[0].clientY; }, {passive:true});
+    paymentSheetHandle.addEventListener('touchend', e=>{
+      if(touchStartY === null) return;
+      const difference = e.changedTouches[0].clientY - touchStartY;
+      if(Math.abs(difference) > 28){
+        e.preventDefault();
+        state.paymentSheetMinimized = difference > 0;
+        render();
+      }
+      touchStartY = null;
+    }, {passive:false});
+  }
+
   const splitToggle = document.getElementById('splitToggle');
   if(splitToggle) splitToggle.addEventListener('click', ()=>{
     state.splitOpen = !state.splitOpen;
+    if(!state.splitOpen){ state.splitMethods = []; state.splitValues = {}; }
     render();
   });
-  const splitClose = document.getElementById('splitClose');
-  if(splitClose) splitClose.addEventListener('click', ()=>{
-    state.splitOpen = false;
-    render();
+  document.querySelectorAll('[data-split-method]').forEach(button=>{
+    button.addEventListener('click', ()=>{
+      const method = button.dataset.splitMethod;
+      const index = state.splitMethods.indexOf(method);
+      if(index >= 0) state.splitMethods.splice(index,1); else state.splitMethods.push(method);
+      const stop = state.day.stops[state.stopIndex];
+      resetSplitValues(r2(stopRevenue(stop) - stopCollectedTotal(stop)));
+      render();
+    });
   });
-  const splitAdd = document.getElementById('splitAdd');
-  if(splitAdd) splitAdd.addEventListener('click', ()=>{
-    const method = document.getElementById('splitMethod');
-    const amount = document.getElementById('splitAmount');
-    if(method && amount) addSplitPayment(method.value, amount.value);
+  document.querySelectorAll('[data-split-slider]').forEach(slider=>{
+    slider.addEventListener('input', ()=>{
+      const method = slider.dataset.splitSlider;
+      state.splitValues[method] = r2(Number(slider.value));
+      const total = r2(state.splitMethods.reduce((sum,key)=>sum+(Number(state.splitValues[key])||0),0));
+      const stop = state.day.stops[state.stopIndex];
+      const due = r2(stopRevenue(stop) - stopCollectedTotal(stop));
+      const valueEl = document.querySelector('[data-split-value="'+method+'"]');
+      const totalEl = document.getElementById('splitTotal');
+      const leftEl = document.getElementById('splitLeft');
+      if(valueEl) valueEl.textContent = fmtMoney(state.splitValues[method]);
+      if(totalEl) totalEl.textContent = fmtMoney(total);
+      if(leftEl) leftEl.textContent = fmtMoney(r2(due-total))+' left';
+    });
+  });
+  const splitSave = document.getElementById('splitSave');
+  if(splitSave) splitSave.addEventListener('click', ()=>{
+    recordSliderSplit();
   });
 
   const payFill = document.getElementById('payFill');
