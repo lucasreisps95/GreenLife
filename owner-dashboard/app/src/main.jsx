@@ -7,6 +7,8 @@ import { GREENLIFE_DEFAULT_MENU } from '../../menu-default.js'
 import './index.css'
 
 const clone = value => JSON.parse(JSON.stringify(value))
+const menuFromStorage = value => Object.fromEntries(Object.entries(value || {}).map(([day, categories]) => [day, Object.fromEntries(Object.entries(categories || {}).map(([category, items]) => [category, (items || []).map(item => Array.isArray(item) ? [item[0], Number(item[1]) || 0] : [item?.name || '', Number(item?.price) || 0]).filter(([name]) => name)]))]))
+const menuForStorage = value => Object.fromEntries(Object.entries(value || {}).map(([day, categories]) => [day, Object.fromEntries(Object.entries(categories || {}).map(([category, items]) => [category, (items || []).map(([name, price]) => ({ name, price:Number(price) || 0 }))]))]))
 const money = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value || 0)
 const slug = name => name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
@@ -61,7 +63,7 @@ function App() {
         return { id: driver.id, mergeKey: driver.id, source: 'live', name: (directory.labels || {})[driver.id] || driver.data().name || driver.id, days: daySnap.docs.map(row => row.data()) }
       }))
       const savedAssignments = assignmentSnap.docs.filter(row => row.id.startsWith('assignments-')).flatMap(row => Object.entries(row.data().entries || {}).map(([id, assignment]) => ({ id, ...assignment })))
-      setDrivers([...live, ...(history.drivers || [])]); setLabels(directory.labels || {}); setManualDrivers(directory.manualDrivers || []); setHiddenDrivers(directory.hiddenDriverIds || []); setAssignments(savedAssignments); setAssignmentTemplates(templateSnap.exists() ? templateSnap.data().templates || {} : {}); setMenu(menuSnap.exists() && menuSnap.data().weeklyMenu ? clone(menuSnap.data().weeklyMenu) : clone(GREENLIFE_DEFAULT_MENU))
+      setDrivers([...live, ...(history.drivers || [])]); setLabels(directory.labels || {}); setManualDrivers(directory.manualDrivers || []); setHiddenDrivers(directory.hiddenDriverIds || []); setAssignments(savedAssignments); setAssignmentTemplates(templateSnap.exists() ? templateSnap.data().templates || {} : {}); setMenu(menuSnap.exists() && menuSnap.data().weeklyMenu ? menuFromStorage(menuSnap.data().weeklyMenu) : clone(GREENLIFE_DEFAULT_MENU))
     } catch (e) { setError(e.message || 'Could not load GreenLife data.') } finally { setLoading(false) }
   }
   useEffect(() => { refresh(); const id = window.setInterval(refresh, 5 * 60 * 1000); return () => window.clearInterval(id) }, [])
@@ -73,7 +75,7 @@ function App() {
     visibleDrivers.forEach(driver => driver.days.forEach(day => { const sales = dayRevenue(day); result.sales += sales; result.sold += soldCount(day); result.returned += returnedCount(day); result.returnedValue += returnedPotentialSales(day, menu); result.square += squareTotal(day); result.daily[day.date] = (result.daily[day.date] || 0) + sales; Object.values(day.stops || {}).forEach(stop => Object.entries(stop.items || {}).forEach(([name, item]) => { result.best[name] = (result.best[name] || 0) + (item.sold || 0) })); (day.stopNames || []).forEach((name, index) => { if(name) result.stops[name] = (result.stops[name] || 0) + stopRevenue(day.stops?.[index]) }) }))
     return result
   }, [visibleDrivers, menu])
-  const saveMenu = async () => { try { await setDoc(doc(db, 'settings', 'menu'), { weeklyMenu: menu, updatedAt: serverTimestamp() }); setMessage(t.savedMenu) } catch (e) { setMessage(`Could not save: ${e.message}`) } }
+  const saveMenu = async () => { try { await setDoc(doc(db, 'settings', 'menu'), { weeklyMenu: menuForStorage(menu), updatedAt: serverTimestamp() }); setMessage(t.savedMenu) } catch (e) { setMessage(`Could not save: ${e.message}`) } }
   const saveDrivers = async () => { try { await setDoc(doc(db, 'settings', 'driverDirectory'), { labels, manualDrivers, hiddenDriverIds: hiddenDrivers, updatedAt: serverTimestamp() }); setMessage(t.savedDrivers) } catch (e) { setMessage(`Could not save: ${e.message}`) } }
   const changePrice = (day, category, index, value) => setMenu(current => { const next = clone(current); next[day][category][index][1] = Math.max(0, Number(value) || 0); return next })
   const addProduct = (day, category) => { const name = prompt(`New product for ${day} only — ${category}`)?.trim(); if (!name) return; const price = Number(prompt(`Price for ${name} on ${day} only (for example: 15)`)); if (!Number.isFinite(price) || price < 0) return; setMenu(current => { const next = clone(current); const items = next?.[day]?.[category]; if (!items) return current; if (items.some(([existing]) => existing.trim().toLowerCase() === name.toLowerCase())) { setMessage(`${name} is already on the ${day} menu.`); return current } items.push([name, price]); return next }) }
