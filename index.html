@@ -356,7 +356,7 @@
   .split-help{margin:9px 0 7px;color:rgba(234,243,236,.8);font-size:12px;line-height:1.35}.split-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.split-method{padding:9px 4px;border:1px solid rgba(255,255,255,.28);border-radius:10px;background:rgba(255,255,255,.1);color:#fff;font:700 12px 'Inter',sans-serif;cursor:pointer}.split-method.selected{background:var(--lime);border-color:var(--lime);color:var(--primary-dark)}.split-amounts{display:grid;gap:7px;margin-top:9px}.split-amount{display:grid;grid-template-columns:1fr 112px;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:800}.split-amount input{width:100%;border:1px solid rgba(255,255,255,.32);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;padding:10px 8px;text-align:right;font:700 15px 'Inter',sans-serif}.split-amount input::placeholder{color:rgba(255,255,255,.55)}.split-summary{display:flex;justify-content:space-between;gap:10px;margin-top:9px;color:rgba(234,243,236,.82);font-size:12px}.split-summary b{color:var(--lime)}.split-save{width:100%;margin-top:9px;border:0;border-radius:10px;padding:11px;background:var(--lime);color:var(--primary-dark);font:900 14px 'Inter',sans-serif;cursor:pointer}
   .split-close{margin-top:7px;width:100%;background:transparent;color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.25);}
   .split-added{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}.split-chip{padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.14);color:rgba(255,255,255,.9);font-size:11px;font-weight:700;}
-  .qp-settled{margin-top:2px;color:rgba(234,243,236,.82);font-size:13px;font-weight:700}.qp-payment-history{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.qp-payment-history button{border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(255,255,255,.12);color:#fff;padding:6px 9px;font:700 12px 'Inter',sans-serif;cursor:pointer}
+  .qp-settled{margin-top:2px;color:rgba(234,243,236,.82);font-size:13px;font-weight:700}.qp-payment-history{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.qp-payment-history button{border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(255,255,255,.12);color:#fff;padding:6px 9px;font:700 12px 'Inter',sans-serif;cursor:pointer}.clear-payments{width:100%;margin-top:8px;border:1px solid rgba(255,255,255,.42);border-radius:10px;background:rgba(191,71,38,.34);color:#fff;padding:9px;font:800 12px 'Inter',sans-serif;cursor:pointer}
 
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
     background:rgba(18,38,53,0.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
@@ -1307,6 +1307,14 @@ function removePayment(idx){
   stop.payments.splice(idx,1);
   persistDay();
 }
+function clearStopPayments(){
+  const stop = state.day.stops[state.stopIndex];
+  if(!(stop.payments||[]).length) return;
+  if(!confirm('Remove all payment entries at this stop? The food sale will stay.')) return;
+  stop.payments = [];
+  persistDay();
+  toast('All payments at this stop were removed.');
+}
 function bumpReturn(itemName, delta){
   if(!state.day.returns[itemName]) state.day.returns[itemName]=0;
   state.day.returns[itemName] = Math.max(0, state.day.returns[itemName]+delta);
@@ -1806,7 +1814,7 @@ async function render(){
         stop.payments.forEach((p,i)=>{
           html += '<button class="payRemove" data-pidx="'+i+'">Remove '+TP(p.method)+' '+fmtMoney(r2(p.amount-(p.fee||0)))+'</button>';
         });
-        html += '</div>';
+        html += '</div><button class="clear-payments" id="clearStopPayments">Clear all payments for this stop</button>';
       }
       html += '</div></div>';
     }
@@ -2562,6 +2570,7 @@ function attachHandlers(){
     if(state.confirmClearStop){
       state.confirmClearStop = false;
       state.day.stops[state.stopIndex].items = {};
+      state.day.stops[state.stopIndex].payments = [];
       persistDay();
       toast(T('toast_stop_cleared'));
     } else {
@@ -2582,6 +2591,8 @@ function attachHandlers(){
   document.querySelectorAll('.payRemove').forEach(b=>{
     b.addEventListener('click', ()=>removePayment(parseInt(b.dataset.pidx,10)));
   });
+  const clearStopPaymentsButton = document.getElementById('clearStopPayments');
+  if(clearStopPaymentsButton) clearStopPaymentsButton.addEventListener('click', clearStopPayments);
 
   const floatSet = document.getElementById('floatSet');
   if(floatSet) floatSet.addEventListener('click', ()=>{
