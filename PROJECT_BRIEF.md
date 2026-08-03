@@ -1071,3 +1071,20 @@ daily-list components. The visible language button now says **ไทย**.
   time it opens the dashboard, so it cannot get stuck using a removed language option.
 - Owner production build passed. Feature commit `f3b28e9` is on `owner-dashboard-v2`; mirror it
   to `main` and check the ไทย toggle on the live owner dashboard.
+
+### 2026-08-03 â€” Codex one shared menu and Claude guidance
+
+Lucas found an old, separate hardcoded menu in `admin.html`. It had drifted from the driver app,
+so editing one file could silently leave the other view outdated.
+
+- Removed the old `admin.html` food-and-price copy. That retired dashboard now loads only the
+  shared `settings/menu` Firestore record, the same record saved by the owner dashboard Settings
+  page and read by the driver app. If that shared record is unavailable, the retired dashboard
+  shows an error rather than quietly using stale prices.
+- Added root `CLAUDE.md`, which Claude Code automatically reads, and updated `LUCAS_HANDOFF.md`.
+  Both state that menu changes must happen through owner Settings / `settings/menu`, never by
+  editing `index.html` or `admin.html`. The driver app's static menu remains emergency offline
+  fallback only.
+- Admin JavaScript parsing and whitespace checks passed. Feature commit `66e56fc` is on
+  `owner-dashboard-v2`; mirror it to `main`. Lucas can use Claude on his phone for feature work,
+  but its project instructions now prevent this menu-copy mistake.
