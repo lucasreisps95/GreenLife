@@ -939,12 +939,26 @@ function isManagedMenu(value){
   return value && typeof value === 'object'
     && ['Monday','Tuesday','Wednesday','Thursday','Friday'].every(day=>value[day] && typeof value[day] === 'object');
 }
+function normalizeManagedMenu(value){
+  if(!isManagedMenu(value)) return null;
+  const normalized = {};
+  for(const day of ['Monday','Tuesday','Wednesday','Thursday','Friday']){
+    normalized[day] = {};
+    Object.entries(value[day]).forEach(([category, items])=>{
+      normalized[day][category] = Array.isArray(items) ? items.map(item=>{
+        if(Array.isArray(item)) return [item[0], Number(item[1])||0];
+        return [item && item.name, Number(item && item.price)||0];
+      }).filter(([name])=>name) : [];
+    });
+  }
+  return normalized;
+}
 async function loadManagedMenu(){
   if(!fbDb) return;
   try{
     const snap = await fbDb.collection('settings').doc('menu').get();
-    const managed = snap.exists && snap.data().weeklyMenu;
-    if(isManagedMenu(managed)) MENU = managed;
+    const managed = normalizeManagedMenu(snap.exists && snap.data().weeklyMenu);
+    if(managed) MENU = managed;
   }catch(e){ /* Use the built-in menu if settings cannot be reached. */ }
 }
 function assignmentForCurrentDay(){
