@@ -978,3 +978,22 @@ stop while the food entries were removed, so the new sale was compared against s
 - JavaScript syntax, whitespace, and real-browser load tests passed. Feature commit `ac2e108` is
   on `owner-dashboard-v2` and must be mirrored to `main` before finishing. Field test: record an
   item and payment, clear the order, then confirm no stale payment appears on the next order.
+
+### 2026-08-02 — Codex stable payments, simplified Cash Pouch, faster first screen
+
+Owner approved a simpler fixed layout and a responsiveness improvement.
+
+- Replaced the minimizable/dragging payment sheet with a normal, always-open payment section in
+  the Log screen. It appears above the Cash Pouch and keeps the same payment methods, exact
+  multi-method amount fields, payment correction controls, and Square fee behavior.
+- Moved Cash Pouch to the bottom of the Log screen. Kept the Starting Change setup and fixed the
+  flex sizing so its confirmation button fits on narrow phones. Removed the manual Give/Add amount
+  controls and the $1/$5/$10/$20 quick-change buttons beneath Cash Pouch as requested. Existing
+  saved cash adjustments remain visible for historical context.
+- Startup now renders today's route before it scans older local route history and begins cloud
+  sync. This makes the first screen available sooner while preserving the same offline cache and
+  Firestore sync behavior.
+- JavaScript syntax, whitespace, mobile-width overflow, and real-browser load checks passed.
+  Feature commit `7ad0c49` is on `owner-dashboard-v2` and must be mirrored to `main` before
+  finishing. Field test: open the app on a phone, verify Payment stays open above Cash Pouch,
+  confirm Starting Change Set fits, and verify normal sales still sync.
