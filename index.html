@@ -327,16 +327,16 @@
   .cal-close{flex:1;padding:13px;border-radius:13px;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);color:var(--ink-soft);font-weight:700;font-size:15px;cursor:pointer;}
 
   /* ---------- Toast ---------- */
-  .qp-spacer{display:none;}
+  .qp-spacer{height:150px;}.qp-spacer.minimized-spacer{height:58px;}
   /* ---------- Quick pay bar ---------- */
   .quickpay{
-    position:relative;z-index:1;
-    max-width:520px;margin:14px 0 10px;
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    max-width:520px;margin:0 auto;
     background:linear-gradient(142deg,#1A759F 0%,#184E77 100%);
     border-top:1px solid rgba(255,255,255,0.18);
     border-radius:24px 24px 0 0;
-    box-shadow:var(--shadow-lift);
-    padding:13px 14px;
+    box-shadow:0 -8px 30px rgba(18,52,80,0.28);
+    padding:13px 14px calc(13px + env(safe-area-inset-bottom, 0px));
   }
   .qp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
   .qp-left{display:flex;align-items:baseline;gap:7px;}
@@ -350,7 +350,8 @@
     font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
   }
   .qp-btn:active{background:var(--lime);color:var(--primary-dark);border-color:var(--lime);}
-  .split-spacer{display:none;}
+  .sheet-handle{width:100%;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 0 8px;border:0;background:transparent;color:rgba(255,255,255,.85);font:800 11px 'Inter',sans-serif;letter-spacing:.04em;cursor:grab;touch-action:none}.sheet-handle:active{cursor:grabbing}.sheet-notch{width:48px;height:5px;border-radius:99px;background:rgba(255,255,255,.72)}.quickpay.minimized{padding-top:9px;padding-bottom:calc(9px + env(safe-area-inset-bottom, 0px));border-radius:20px 20px 0 0}.quickpay.minimized .quickpay-content{display:none}
+  .split-spacer{height:405px;}
   .split-toggle{display:block;width:100%;margin-top:8px;padding:9px;border:1px solid rgba(255,255,255,.32);border-radius:11px;background:transparent;color:#fff;font:700 13px 'Inter',sans-serif;cursor:pointer;}
   .split-help{margin:9px 0 7px;color:rgba(234,243,236,.8);font-size:12px;line-height:1.35}.split-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.split-method{padding:9px 4px;border:1px solid rgba(255,255,255,.28);border-radius:10px;background:rgba(255,255,255,.1);color:#fff;font:700 12px 'Inter',sans-serif;cursor:pointer}.split-method.selected{background:var(--lime);border-color:var(--lime);color:var(--primary-dark)}.split-amounts{display:grid;gap:7px;margin-top:9px}.split-amount{display:grid;grid-template-columns:1fr 112px;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:800}.split-amount input{width:100%;border:1px solid rgba(255,255,255,.32);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;padding:10px 8px;text-align:right;font:700 15px 'Inter',sans-serif}.split-amount input::placeholder{color:rgba(255,255,255,.55)}.split-summary{display:flex;justify-content:space-between;gap:10px;margin-top:9px;color:rgba(234,243,236,.82);font-size:12px}.split-summary b{color:var(--lime)}.split-save{width:100%;margin-top:9px;border:0;border-radius:10px;padding:11px;background:var(--lime);color:var(--primary-dark);font:900 14px 'Inter',sans-serif;cursor:pointer}
   .split-close{margin-top:7px;width:100%;background:transparent;color:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.25);}
@@ -693,6 +694,7 @@ let state = {
   splitOpen: false,
   splitMethods: [],
   splitValues: {},
+  paymentSheetMinimized: false,
   timingOpen: false,
   calOpen: false,
   calMode: 'nav',
@@ -1761,7 +1763,10 @@ async function render(){
     if(qpCount > 0){
       const hasPaymentDue = qpRemaining > 0.005;
       const qpStatus = hasPaymentDue ? fmtMoney(qpRemaining) : (qpRemaining < -0.005 ? fmtMoney(Math.abs(qpRemaining))+' over' : 'Paid');
-      html += '<div class="quickpay">'
+      html += '<div class="qp-spacer'+(state.paymentSheetMinimized?' minimized-spacer':(activeAssignment && state.splitOpen?' split-spacer':''))+'"></div>'
+        + '<div class="quickpay'+(state.paymentSheetMinimized?' minimized':'')+'">'
+        + '<button class="sheet-handle" id="paymentSheetHandle" aria-label="Open or close payment panel"><span class="sheet-notch"></span><span>'+(state.paymentSheetMinimized?'Swipe up or tap to open payments':'Swipe down or tap to minimize')+'</span></button>'
+        + '<div class="quickpay-content">'
         + '<div class="qp-head">'
         +   '<div class="qp-left"><span class="qp-count">'+qpCount+'</span>'
         +     '<span class="qp-lbl">'+T('qp_items')+'</span></div>'
@@ -1802,7 +1807,7 @@ async function render(){
         });
         html += '</div><button class="clear-payments" id="clearStopPayments">Clear all payments for this stop</button>';
       }
-      html += '</div>';
+      html += '</div></div>';
     }
     html += cashHtml;
 
@@ -2459,7 +2464,8 @@ function attachHandlers(){
   });
   const showPayment = document.getElementById('showPayment');
   if(showPayment) showPayment.addEventListener('click', ()=>{
-    document.querySelector('.quickpay')?.scrollIntoView({behavior:'smooth',block:'center'});
+    state.paymentSheetMinimized = false;
+    render();
   });
   document.querySelectorAll('[data-ritem]').forEach(b=>{
     b.addEventListener('click', ()=>{ bumpReturn(b.dataset.ritem, parseInt(b.dataset.rdelta,10)); });
@@ -2488,6 +2494,26 @@ function attachHandlers(){
       }
     });
   });
+
+  const paymentSheetHandle = document.getElementById('paymentSheetHandle');
+  if(paymentSheetHandle){
+    let touchStartY = null;
+    paymentSheetHandle.addEventListener('click', ()=>{
+      state.paymentSheetMinimized = !state.paymentSheetMinimized;
+      render();
+    });
+    paymentSheetHandle.addEventListener('touchstart', e=>{ touchStartY = e.changedTouches[0].clientY; }, {passive:true});
+    paymentSheetHandle.addEventListener('touchend', e=>{
+      if(touchStartY === null) return;
+      const difference = e.changedTouches[0].clientY - touchStartY;
+      if(Math.abs(difference) > 28){
+        e.preventDefault();
+        state.paymentSheetMinimized = difference > 0;
+        render();
+      }
+      touchStartY = null;
+    }, {passive:false});
+  }
 
   const splitToggle = document.getElementById('splitToggle');
   if(splitToggle) splitToggle.addEventListener('click', ()=>{
