@@ -963,3 +963,18 @@ Owner found range sliders impractical for entering precise payment amounts.
 - Confirmed no range-slider controls remain. JavaScript syntax, whitespace, and real-browser
   local load tests passed. Feature commit `e9703e3` is on `owner-dashboard-v2` and must be
   mirrored to `main` before finishing.
+
+### 2026-08-02 — Codex stale payment-record repair
+
+Lucas reported a payment panel showing one $12 food sale but many prior Cash entries and a large
+overpayment. The screenshot showed payments from earlier cleared orders were retained on the same
+stop while the food entries were removed, so the new sale was compared against stale payments.
+
+- Added **Clear all payments for this stop** to the blue payment sheet. It asks for confirmation,
+  removes every payment entry for that stop, and deliberately keeps the current food sale. This is
+  the one-step repair Lucas needs for the existing affected stop.
+- The existing two-tap **clear** action now clears both items and payments, preventing cleared
+  orders from leaving behind payment records in future. Cash-pouch adjustments are unchanged.
+- JavaScript syntax, whitespace, and real-browser load tests passed. Feature commit `ac2e108` is
+  on `owner-dashboard-v2` and must be mirrored to `main` before finishing. Field test: record an
+  item and payment, clear the order, then confirm no stale payment appears on the next order.
