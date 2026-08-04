@@ -977,6 +977,29 @@ function assignmentMenu(assignment){
   });
   return out;
 }
+function sortLikeCanonical(merged, weekday){
+  const canonical = MENU[weekday] || {};
+  const catOrder = Object.keys(canonical);
+  const sortedCats = Object.keys(merged).sort((a,b)=>{
+    const ia = catOrder.indexOf(a), ib = catOrder.indexOf(b);
+    if(ia===-1 && ib===-1) return 0;
+    if(ia===-1) return 1;
+    if(ib===-1) return -1;
+    return ia-ib;
+  });
+  const out = {};
+  sortedCats.forEach(cat=>{
+    const itemOrder = (canonical[cat]||[]).map(x=>x[0]);
+    out[cat] = merged[cat].slice().sort((a,b)=>{
+      const ia = itemOrder.indexOf(a[0]), ib = itemOrder.indexOf(b[0]);
+      if(ia===-1 && ib===-1) return 0;
+      if(ia===-1) return 1;
+      if(ib===-1) return -1;
+      return ia-ib;
+    });
+  });
+  return out;
+}
 function displayMenuForDay(weekday){
   const assignedMenu = assignmentMenu(assignmentForCurrentDay());
   if(!assignedMenu) return MENU[weekday];
@@ -987,7 +1010,7 @@ function displayMenuForDay(weekday){
     if(!merged[extra.category]) merged[extra.category] = [];
     if(!merged[extra.category].some(item=>item[0]===name)) merged[extra.category].push([name,Number(extra.price)||0]);
   });
-  return merged;
+  return sortLikeCanonical(merged, weekday);
 }
 function assignedQuantity(itemName){
   const assignment = assignmentForCurrentDay();
