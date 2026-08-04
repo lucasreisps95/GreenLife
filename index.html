@@ -1666,14 +1666,6 @@ async function render(){
         html += '</div></div>';
       }
 
-      if(activeAssignment){
-        const extras = Object.values(state.day.extraStock || {}).reduce((sum,item)=>sum+(Number(item.added)||0),0);
-        const allFood = Object.entries(MENU[weekday] || {}).flatMap(([category,items])=>items.map(([name,price])=>({category,name,price})));
-        html += '<div class="extra-stock-box"><div class="extra-stock-title">Extra food received</div><div class="extra-stock-copy">Got more food after leaving? Add it here. It will appear in your stock and on the owner dashboard.'+(extras ? ' '+extras+' extra item'+(extras===1?'':'s')+' added today.' : '')+'</div><div class="extra-stock-row"><select id="extraStockItem"><option value="">Choose food</option>';
-        allFood.forEach(item=>{ html += '<option value="'+escapeAttr(item.name)+'">'+item.name+' — '+fmtMoney(item.price)+'</option>'; });
-        html += '</select><input id="extraStockAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="#"><button id="extraStockAdd">Add to stock</button></div></div>';
-      }
-
       const topResult = computeTopSellers(weekday, 4, stopName);
       const topSellers = activeAssignment ? [] : topResult.items;
       if(topSellers.length){
