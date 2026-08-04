@@ -2125,7 +2125,7 @@ function computeSummaryStats(dayList){
     cashInHand, oweOwner };
 }
 
-function renderStatsCards(stats, headerText, scopeLabel){
+function renderStatsCards(stats, headerText, scopeLabel, showCheckout){
   let html = '';
   html += '<div class="card"><h3>'+headerText+'</h3>'
     + '<div class="kpi-row">'
@@ -2137,7 +2137,7 @@ function renderStatsCards(stats, headerText, scopeLabel){
     +   '<div class="kpi"><div class="v">'+fmtMoney(stats.totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
     + '</div></div>';
 
-  if(stats.cashInHand > 0.005 || stats.totalCommission > 0.005){
+  if(showCheckout && (stats.cashInHand > 0.005 || stats.totalCommission > 0.005)){
     const owe = stats.oweOwner;
     html += '<div class="card"><h3>'+T('checkout_title')+'</h3>'
       + '<div class="pay-ledger">'
@@ -2220,10 +2220,10 @@ function renderSummary(){
   let html = '<div class="panel">';
 
   const todayStats = computeSummaryStats(state.day ? [state.day] : []);
-  html += renderStatsCards(todayStats, T('today_stats'), T('scope_today'));
+  html += renderStatsCards(todayStats, T('today_stats'), T('scope_today'), true);
 
   const allStats = computeSummaryStats(days);
-  html += renderStatsCards(allStats, T('across_days',{n:days.length,s:days.length>1?'s':''}), T('scope_all_days'));
+  html += renderStatsCards(allStats, T('across_days',{n:days.length,s:days.length>1?'s':''}), T('scope_all_days'), false);
 
   html += renderMonthlyCard(days);
 
