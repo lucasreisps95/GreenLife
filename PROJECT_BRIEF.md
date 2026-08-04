@@ -1207,3 +1207,22 @@ assignments, helper entries, menus, or driver identities were created or changed
   over a later extra-stock entry. This preserves the required snapshot rule even if a menu price
   changes later. Extra-only items still retain the price captured when added.
 - Fix commit `e35be47` is on `owner-dashboard-v2`; mirror it to `main` with this log update.
+
+### 2026-08-04 — Codex restore owner-assigned driver stock flow
+
+Owner reported that the driver app appeared to have returned to the old manual food-counter
+workflow rather than showing the food assigned from Daily Lists.
+
+- Read the live public assignment record without changing any data. Confirmed that today has saved
+  lists for Lucas (`lucas__2026-08-04`, 26 food lines / 56 items) and Gabriel, so the owner-side
+  assignment data itself was intact.
+- Found the client-side weakness: the driver app only loaded an assignment after its anonymous
+  phone-identity claim succeeded. A temporary sync-identity problem could therefore make a driver
+  see the old manual menu despite a valid owner list.
+- The app now loads the owner-assigned list independently of that background sync check. Once a
+  driver name is entered, it shows only their assigned stock; if a list cannot be found, it shows
+  a clear waiting message instead of reverting to manual item counting. Added a **Refresh list**
+  button so a driver can pull a newly saved list immediately. No sales, assignments, or price
+  snapshots were changed. Driver JavaScript syntax check passed.
+- Feature commit `e7c3d5f` is on `owner-dashboard-v2`; mirror it to `main` with this standalone
+  handoff update.
