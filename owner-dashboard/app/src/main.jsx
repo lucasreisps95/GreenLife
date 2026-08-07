@@ -20,8 +20,8 @@ const paperLayout = {
 }
 const commissionRate = .30
 const copy = {
-  en: { owner:'Owner center', overview:'Dashboard', drivers:'Drivers', assignments:'Daily lists', settings:'Settings', overviewSub:'Revenue, drivers, and locations at a glance.', driversSub:'Route results for each driver.', assignmentsSub:'Prepare each driver\'s food list for the day.', settingsSub:'Prices, products, and driver list.', today:'Today', week:'This week', month:'This month', last12weeks:'Last 12 weeks', all:'All time', sales:'Total sales', square:'Square received', commission:'Commission (30%)', returned:'Returned food', potentialSales:'possible sales value', activity:'Sales activity', activitySub:'Sales trend from every driver', food:'Top selling food', foodSub:'Most items sold', stops:'Location performance', stopsSub:'Revenue and profit by delivery location', noSales:'No sales yet.', driverPerformance:'Driver performance', taken:'Taken', sold:'Sold', returns:'Returned', revenue:'Revenue', menu:'Menu and prices', menuSub:'Every edit applies only to the weekday selected above.', saveMenu:'Save menu', addProduct:'Add product', driverList:'Driver list', driverListSub:'Names shown on the dashboard.', addDriver:'Add driver', newDriver:'Type driver name', saveDrivers:'Save driver list', future:'new driver', refresh:'Refresh', connected:'Connected', dayOnly:'This day only', totalRevenue:'Total Revenue', netProfit:'Net Profit After Commission', netProfitNote:'Revenue minus 30% driver commission', commissionPaidOut:'Commission Paid Out', paymentMethods:'Payment Methods', showBreakdown:'Show breakdown', hideBreakdown:'Hide breakdown', weeklyTrend:'Weekly revenue trend', weeklyTrendSub:'Most recent weeks, for planning ahead', routeCol:'Route / Locations', netProfitCol:'Net Profit', locationCol:'Location', sortHint:'Click a column to sort' },
-  th: { owner:'ศูนย์เจ้าของ', overview:'แดชบอร์ด', drivers:'คนขับ', assignments:'รายการประจำวัน', settings:'ตั้งค่า', overviewSub:'ภาพรวมรายรับ คนขับ และจุดขาย', driversSub:'ผลการขายของคนขับแต่ละคน', assignmentsSub:'เตรียมรายการอาหารของคนขับสำหรับวันนี้', settingsSub:'ราคา รายการอาหาร และรายชื่อคนขับ', today:'วันนี้', week:'สัปดาห์นี้', month:'เดือนนี้', last12weeks:'12 สัปดาห์ล่าสุด', all:'ทั้งหมด', sales:'ยอดขายรวม', square:'เงินจาก Square', commission:'ค่าคอมมิชชั่น (30%)', returned:'อาหารที่คืน', potentialSales:'มูลค่าการขายที่อาจเสียไป', activity:'กิจกรรมการขาย', activitySub:'แนวโน้มการขายของคนขับทุกคน', food:'อาหารขายดี', foodSub:'รายการที่ขายได้มากที่สุด', stops:'ผลงานตามจุดขาย', stopsSub:'รายรับและกำไรตามจุดขาย', noSales:'ยังไม่มียอดขาย', driverPerformance:'ผลงานคนขับ', taken:'รับไป', sold:'ขายแล้ว', returns:'คืนแล้ว', revenue:'รายรับ', menu:'เมนูและราคา', menuSub:'การแก้ไขใช้เฉพาะวันในสัปดาห์ที่เลือกด้านบน', saveMenu:'บันทึกเมนู', addProduct:'เพิ่มสินค้า', driverList:'รายชื่อคนขับ', driverListSub:'ชื่อที่แสดงบนแดชบอร์ด', addDriver:'เพิ่มคนขับ', newDriver:'พิมพ์ชื่อคนขับ', saveDrivers:'บันทึกรายชื่อคนขับ', future:'คนขับใหม่', refresh:'รีเฟรช', connected:'เชื่อมต่อแล้ว', dayOnly:'เฉพาะวันนี้', totalRevenue:'รายรับรวม', netProfit:'กำไรสุทธิหลังหักค่าคอมมิชชั่น', netProfitNote:'รายรับหักค่าคอมมิชชั่นคนขับ 30%', commissionPaidOut:'ค่าคอมมิชชั่นที่จ่ายไป', paymentMethods:'วิธีการชำระเงิน', showBreakdown:'ดูรายละเอียด', hideBreakdown:'ซ่อนรายละเอียด', weeklyTrend:'แนวโน้มรายรับรายสัปดาห์', weeklyTrendSub:'สัปดาห์ล่าสุด สำหรับวางแผนล่วงหน้า', routeCol:'เส้นทาง / จุดขาย', netProfitCol:'กำไรสุทธิ', locationCol:'จุดขาย', sortHint:'กดที่หัวตารางเพื่อเรียงลำดับ' }
+  en: { owner:'Owner center', overview:'Dashboard', drivers:'Drivers', assignments:'Daily lists', settings:'Settings', overviewSub:'Revenue, drivers, and locations at a glance.', driversSub:'Route results for each driver.', assignmentsSub:'Prepare each driver\'s food list for the day.', settingsSub:'Prices, products, and driver list.', today:'Today', week:'This week', month:'This month', last12weeks:'Last 12 weeks', all:'All time', sales:'Total sales', square:'Square received', commission:'Commission (30%)', returned:'Returned food', potentialSales:'possible sales value', activity:'Sales activity', activitySub:'Sales trend from every driver', food:'Top selling food', foodSub:'Most items sold', stops:'Location performance', stopsSub:'Revenue and profit by delivery location', noSales:'No sales yet.', driverPerformance:'Driver performance', taken:'Taken', sold:'Sold', returns:'Returned', revenue:'Revenue', menu:'Menu and prices', menuSub:'Every edit applies only to the weekday selected above.', saveMenu:'Save menu', addProduct:'Add product', driverList:'Driver list', driverListSub:'Names shown on the dashboard.', addDriver:'Add driver', newDriver:'Type driver name', saveDrivers:'Save driver list', future:'new driver', refresh:'Refresh', connected:'Connected', dayOnly:'This day only', totalRevenue:'Total Revenue', netProfit:'Net Profit After Commission', netProfitNote:'Revenue minus 30% driver commission', commissionPaidOut:'Commission Paid Out', paymentMethods:'Payment Methods', showBreakdown:'Show breakdown', hideBreakdown:'Hide breakdown', weeklyTrend:'Weekly revenue trend', weeklyTrendSub:'Most recent weeks, for planning ahead', routeCol:'Route / Locations', netProfitCol:'Net Profit', locationCol:'Location', sortHint:'Click a column to sort', showAllLocations:'Show all locations', showFewerLocations:'Show fewer' },
+  th: { owner:'ศูนย์เจ้าของ', overview:'แดชบอร์ด', drivers:'คนขับ', assignments:'รายการประจำวัน', settings:'ตั้งค่า', overviewSub:'ภาพรวมรายรับ คนขับ และจุดขาย', driversSub:'ผลการขายของคนขับแต่ละคน', assignmentsSub:'เตรียมรายการอาหารของคนขับสำหรับวันนี้', settingsSub:'ราคา รายการอาหาร และรายชื่อคนขับ', today:'วันนี้', week:'สัปดาห์นี้', month:'เดือนนี้', last12weeks:'12 สัปดาห์ล่าสุด', all:'ทั้งหมด', sales:'ยอดขายรวม', square:'เงินจาก Square', commission:'ค่าคอมมิชชั่น (30%)', returned:'อาหารที่คืน', potentialSales:'มูลค่าการขายที่อาจเสียไป', activity:'กิจกรรมการขาย', activitySub:'แนวโน้มการขายของคนขับทุกคน', food:'อาหารขายดี', foodSub:'รายการที่ขายได้มากที่สุด', stops:'ผลงานตามจุดขาย', stopsSub:'รายรับและกำไรตามจุดขาย', noSales:'ยังไม่มียอดขาย', driverPerformance:'ผลงานคนขับ', taken:'รับไป', sold:'ขายแล้ว', returns:'คืนแล้ว', revenue:'รายรับ', menu:'เมนูและราคา', menuSub:'การแก้ไขใช้เฉพาะวันในสัปดาห์ที่เลือกด้านบน', saveMenu:'บันทึกเมนู', addProduct:'เพิ่มสินค้า', driverList:'รายชื่อคนขับ', driverListSub:'ชื่อที่แสดงบนแดชบอร์ด', addDriver:'เพิ่มคนขับ', newDriver:'พิมพ์ชื่อคนขับ', saveDrivers:'บันทึกรายชื่อคนขับ', future:'คนขับใหม่', refresh:'รีเฟรช', connected:'เชื่อมต่อแล้ว', dayOnly:'เฉพาะวันนี้', totalRevenue:'รายรับรวม', netProfit:'กำไรสุทธิหลังหักค่าคอมมิชชั่น', netProfitNote:'รายรับหักค่าคอมมิชชั่นคนขับ 30%', commissionPaidOut:'ค่าคอมมิชชั่นที่จ่ายไป', paymentMethods:'วิธีการชำระเงิน', showBreakdown:'ดูรายละเอียด', hideBreakdown:'ซ่อนรายละเอียด', weeklyTrend:'แนวโน้มรายรับรายสัปดาห์', weeklyTrendSub:'สัปดาห์ล่าสุด สำหรับวางแผนล่วงหน้า', routeCol:'เส้นทาง / จุดขาย', netProfitCol:'กำไรสุทธิ', locationCol:'จุดขาย', sortHint:'กดที่หัวตารางเพื่อเรียงลำดับ', showAllLocations:'แสดงจุดขายทั้งหมด', showFewerLocations:'แสดงน้อยลง' }
 }
 const ui = {
   en: { brandSub:'Owner center', operations:'GreenLife daily operations', updates:'Updates every 5 minutes', squareNote:'Square payments received', commissionNote:'30% to pay drivers', noSales:'No sales yet.', driverNote:'Sorted by revenue. Click a column to change sorting.', driver:'Driver', noDrivers:'No driver information for this period.', futureOnly:'New drivers appear after their first app sync.', remove:'Remove', removeProduct:'Remove product', removeDriver:'Remove driver', menuFuture:'Changes apply to future sales only.', savedMenu:'Prices and products saved. Drivers use them after refresh.', savedDrivers:'Driver list saved.', productAdded:'Product added.', removeItemPrompt:'Remove this product from the selected day only?', removeDriverPrompt:'Remove this driver from the list? Sales history stays safe.', addDriverPrompt:'Add a driver', selectDay:'Select day', refresh:'Refresh', connected:'Connected', loading:'Loading dashboard…' },
@@ -245,7 +245,24 @@ function DailyAssignmentsPaper({ menu, drivers, manualDrivers, labels, assignmen
   return <div className="mx-auto max-w-5xl space-y-4">
     <DailyListHelperAccess helpers={helpers} onSaved={onSaved} />
     <section className="card overflow-hidden p-0"><div className="bg-gradient-to-r from-emerald-700 to-teal-600 p-5 text-white"><div className="flex items-center gap-2 text-lg font-bold"><CalendarDays size={20} /> {words.title}</div><p className="mt-1 text-sm text-emerald-50">{words.help}</p></div><div className="grid gap-3 p-5 sm:grid-cols-2"><label className="text-sm font-bold text-slate-700">1. {words.driver}<select value={driverId} onChange={event => setDriverId(event.target.value)} className="mt-2 h-12 w-full rounded-lg border bg-white px-3 text-base font-semibold"><option value="">Choose driver</option>{people.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><label className="text-sm font-bold text-slate-700">2. {words.date}<input type="date" value={assignmentDate} onChange={event => setAssignmentDate(event.target.value)} className="mt-2 h-12 w-full rounded-lg border bg-white px-3 text-base font-semibold" /></label></div></section>
-    <section className="card overflow-hidden p-0"><div className="flex flex-col gap-3 border-b bg-slate-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-bold tracking-tight">{words.food}</h2><p className="mt-1 text-xs text-slate-500">{weekday} · {currentPerson?.name || words.driver}</p></div><button onClick={() => setQuantities({})} className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">{words.clear}</button></div>{!dayMenu ? <p className="px-5 py-8 text-center text-sm font-semibold text-amber-800">{words.empty}</p> : <><div className="overflow-x-auto"><div className="min-w-[590px]"><div className="grid grid-cols-[1fr_126px_80px_156px] border-b bg-white px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-400"><span>{words.food}</span><span>{words.category}</span><span>{words.price}</span><span className="text-center">{words.given}</span></div>{grouped.map(group => group.items.map((item,index) => { const count = quantities[item.key] || 0; return <div key={item.key} className="grid grid-cols-[1fr_126px_80px_156px] items-center border-b px-5 py-3"><div><p className="font-semibold text-slate-800">{item.name}</p><p className="mt-0.5 text-xs text-slate-400 sm:hidden">{money(item.price)}</p></div><span className="text-xs font-extrabold uppercase tracking-wider text-emerald-800">{index === 0 ? group.category : ''}</span><span className="text-sm font-semibold text-slate-500">{money(item.price)}</span><div className="flex justify-center gap-2"><button onClick={() => changeQuantity(item.key,count-1)} disabled={!count} className="grid h-10 w-10 place-items-center rounded-lg border text-xl font-bold text-slate-600 disabled:border-slate-100 disabled:text-slate-300">−</button><span className="grid h-10 w-11 place-items-center rounded-lg bg-emerald-50 text-lg font-bold text-emerald-800">{count}</span><button onClick={() => changeQuantity(item.key,count+1)} className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-600 text-xl font-bold text-white">+</button></div></div>}))}</div></div><div className="grid gap-3 border-t bg-slate-50 p-5 sm:grid-cols-[1fr_1fr_auto]"><div><p className="text-xs font-bold uppercase tracking-wider text-slate-400">{words.total}</p><p className="mt-1 text-2xl font-bold text-slate-900">{totalItems}</p></div><div><p className="text-xs font-bold uppercase tracking-wider text-slate-400">{words.value}</p><p className="mt-1 text-2xl font-bold text-emerald-700">{money(totalValue)}</p></div><button onClick={saveToday} disabled={saving || !driverId} className="rounded-lg bg-emerald-600 px-6 py-3 text-base font-bold text-white shadow-sm hover:bg-emerald-700 disabled:bg-slate-300">{saving ? 'Saving…' : words.save}</button></div></>}{message && <p className={`mx-5 mb-5 rounded-lg px-3 py-2 text-sm font-bold ${message.startsWith('Could not') ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-800'}`}>{message}</p>}</section>
+    <section className="card overflow-hidden p-0">
+      <div className="flex flex-col gap-3 border-b bg-slate-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-bold tracking-tight">{words.food}</h2><p className="mt-1 text-xs text-slate-500">{weekday} · {currentPerson?.name || words.driver}</p></div><button onClick={() => setQuantities({})} className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">{words.clear}</button></div>
+      {!dayMenu ? <p className="px-5 py-8 text-center text-sm font-semibold text-amber-800">{words.empty}</p> : <>
+        <div className="divide-y">{grouped.map(group => <div key={group.category} className="px-5 py-4">
+          <h3 className="mb-3 text-xs font-extrabold uppercase tracking-wider text-emerald-800">{group.category}</h3>
+          <div className="space-y-2">{group.items.map(item => { const count = quantities[item.key] || 0; return <div key={item.key} className="flex items-center justify-between gap-3 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+            <div className="min-w-0"><p className="truncate font-semibold text-slate-800">{item.name}</p><p className="text-xs text-slate-400">{money(item.price)}</p></div>
+            <div className="flex shrink-0 items-center gap-2">
+              <button onClick={() => changeQuantity(item.key, count - 1)} disabled={!count} className="grid h-10 w-10 place-items-center rounded-lg border text-xl font-bold text-slate-600 disabled:border-slate-100 disabled:text-slate-300">−</button>
+              <input type="number" min="0" inputMode="numeric" value={count} onFocus={event => event.target.select()} onChange={event => changeQuantity(item.key, event.target.value)} className="h-10 w-14 rounded-lg border border-emerald-200 bg-white text-center text-lg font-bold text-emerald-800" />
+              <button onClick={() => changeQuantity(item.key, count + 1)} className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-600 text-xl font-bold text-white">+</button>
+            </div>
+          </div> })}</div>
+        </div>)}</div>
+        <div className="grid gap-3 border-t bg-slate-50 p-5 sm:grid-cols-[1fr_1fr_auto]"><div><p className="text-xs font-bold uppercase tracking-wider text-slate-400">{words.total}</p><p className="mt-1 text-2xl font-bold text-slate-900">{totalItems}</p></div><div><p className="text-xs font-bold uppercase tracking-wider text-slate-400">{words.value}</p><p className="mt-1 text-2xl font-bold text-emerald-700">{money(totalValue)}</p></div><button onClick={saveToday} disabled={saving || !driverId} className="rounded-lg bg-emerald-600 px-6 py-3 text-base font-bold text-white shadow-sm hover:bg-emerald-700 disabled:bg-slate-300">{saving ? 'Saving…' : words.save}</button></div>
+      </>}
+      {message && <p className={`mx-5 mb-5 rounded-lg px-3 py-2 text-sm font-bold ${message.startsWith('Could not') ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-800'}`}>{message}</p>}
+    </section>
   </div>
 }
 
@@ -421,18 +438,32 @@ function RangeToggle({ range, setRange, t }) {
   return <div className="inline-flex overflow-x-auto rounded-lg border bg-white p-1">{options.map(([value, label]) => <button key={value} onClick={() => setRange(value)} className={`whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-bold transition ${range === value ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:bg-slate-100'}`}>{label}</button>)}</div>
 }
 
-function locationsForDriver(driver) {
+function normalizeLocationKey(name) { return name.trim().toLowerCase().replace(/\s+/g, ' ') }
+
+function stopBreakdownForDriver(driver) {
   const totals = {}
-  driver.days.forEach(day => (day.stopNames || []).forEach((name, index) => { if (!name) return; const rev = stopRevenue(day.stops?.[index]); if (rev > 0) totals[name] = (totals[name] || 0) + rev }))
-  return Object.keys(totals).sort((a, b) => totals[b] - totals[a])
+  driver.days.forEach(day => (day.stopNames || []).forEach((name, index) => {
+    if (!name) return
+    const stop = day.stops?.[index]
+    const revenue = stopRevenue(stop)
+    if (!revenue) return
+    const sold = Object.values(stop?.items || {}).reduce((sum, item) => sum + (item.sold || 0), 0)
+    const key = normalizeLocationKey(name)
+    if (!totals[key]) totals[key] = { revenue: 0, sold: 0, names: {} }
+    totals[key].revenue += revenue
+    totals[key].sold += sold
+    totals[key].names[name] = (totals[key].names[name] || 0) + 1
+  }))
+  return Object.values(totals).map(entry => { const name = Object.entries(entry.names).sort((a, b) => b[1] - a[1])[0][0]; return { name, sold: entry.sold, revenue: entry.revenue, profit: entry.revenue * (1 - commissionRate) } }).sort((a, b) => b.profit - a.profit)
 }
 
 function DriverPerformanceTable({ drivers, t }) {
   const [sortKey, setSortKey] = useState('revenue')
+  const [expanded, setExpanded] = useState(null)
   const rows = useMemo(() => {
     const grouped = new Map()
     drivers.forEach(driver => { const key = driver.mergeKey || driver.id; const current = grouped.get(key) || { id: key, name: driver.name, days: [] }; current.days.push(...driver.days); grouped.set(key, current) })
-    return [...grouped.values()].map(driver => { const revenue = driver.days.reduce((sum, day) => sum + dayRevenue(day), 0); const commission = revenue * commissionRate; return { id: driver.id, name: driver.name, locations: locationsForDriver(driver), revenue, commission, profit: revenue - commission } })
+    return [...grouped.values()].map(driver => { const revenue = driver.days.reduce((sum, day) => sum + dayRevenue(day), 0); const commission = revenue * commissionRate; const stops = stopBreakdownForDriver(driver); return { id: driver.id, name: driver.name, locations: stops.map(stop => stop.name), stops, revenue, commission, profit: revenue - commission } })
       .sort((a, b) => sortKey === 'profit' ? b.profit - a.profit : b.revenue - a.revenue)
   }, [drivers, sortKey])
   const sortButton = (key, label) => <button onClick={() => setSortKey(key)} className={`inline-flex items-center gap-1 ${sortKey === key ? 'text-emerald-700' : ''}`}>{label}{sortKey === key ? ' ▾' : ''}</button>
@@ -448,13 +479,22 @@ function DriverPerformanceTable({ drivers, t }) {
       </tr></thead>
       <tbody>{rows.map(driver => {
         const locationText = driver.locations.length ? (driver.locations.length > 2 ? `${driver.locations.slice(0, 2).join(', ')} +${driver.locations.length - 2}` : driver.locations.join(', ')) : '—'
-        return <tr key={driver.id} className="border-t">
-          <td className="px-5 py-4"><div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold text-white">{driver.name.slice(0, 2).toUpperCase()}</span><span className="font-semibold">{driver.name}</span></div></td>
-          <td className="max-w-[220px] truncate px-4 py-4 text-slate-500" title={driver.locations.join(', ')}>{locationText}</td>
-          <td className="number px-4 py-4 text-right">{money(driver.revenue)}</td>
-          <td className="number px-4 py-4 text-right">{money(driver.commission)}</td>
-          <td className="number px-5 py-4 text-right text-emerald-700">{money(driver.profit)}</td>
-        </tr>
+        const isOpen = expanded === driver.id
+        return <React.Fragment key={driver.id}>
+          <tr className="cursor-pointer border-t hover:bg-slate-50" onClick={() => setExpanded(isOpen ? null : driver.id)}>
+            <td className="px-5 py-4"><div className="flex items-center gap-3"><ChevronRight size={16} className={`shrink-0 text-slate-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} /><span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold text-white">{driver.name.slice(0, 2).toUpperCase()}</span><span className="font-semibold">{driver.name}</span></div></td>
+            <td className="max-w-[220px] truncate px-4 py-4 text-slate-500" title={driver.locations.join(', ')}>{locationText}</td>
+            <td className="number px-4 py-4 text-right">{money(driver.revenue)}</td>
+            <td className="number px-4 py-4 text-right">{money(driver.commission)}</td>
+            <td className="number px-5 py-4 text-right text-emerald-700">{money(driver.profit)}</td>
+          </tr>
+          {isOpen && <tr className="border-t bg-slate-50"><td colSpan="5" className="px-5 py-4">
+            {driver.stops.length ? <div className="overflow-hidden rounded-lg border bg-white"><table className="w-full text-sm">
+              <thead className="bg-slate-50 text-left text-[11px] uppercase tracking-wider text-slate-400"><tr><th className="px-4 py-2">{t.locationCol}</th><th className="px-4 py-2 text-right">{t.sold}</th><th className="px-4 py-2 text-right">{t.revenue}</th><th className="px-4 py-2 text-right">{t.netProfitCol}</th></tr></thead>
+              <tbody>{driver.stops.map(stop => <tr key={stop.name} className="border-t"><td className="px-4 py-2 font-medium">{stop.name}</td><td className="number px-4 py-2 text-right">{stop.sold}</td><td className="number px-4 py-2 text-right">{money(stop.revenue)}</td><td className="number px-4 py-2 text-right text-emerald-700">{money(stop.profit)}</td></tr>)}</tbody>
+            </table></div> : <p className="text-sm text-slate-400">{t.noSales}</p>}
+          </td></tr>}
+        </React.Fragment>
       })}{!rows.length && <tr><td colSpan="5" className="px-5 py-12 text-center text-slate-400">{t.noDrivers}</td></tr>}</tbody>
     </table></div>
   </section>
@@ -462,26 +502,44 @@ function DriverPerformanceTable({ drivers, t }) {
 
 function LocationPerformanceTable({ drivers, t }) {
   const [sortKey, setSortKey] = useState('revenue')
+  const [showAll, setShowAll] = useState(false)
   const rows = useMemo(() => {
     const totals = {}
-    drivers.forEach(driver => driver.days.forEach(day => (day.stopNames || []).forEach((name, index) => { if (!name) return; const rev = stopRevenue(day.stops?.[index]); if (!rev) return; totals[name] = (totals[name] || 0) + rev })))
-    return Object.entries(totals).map(([name, revenue]) => ({ name, revenue, profit: revenue * (1 - commissionRate) })).sort((a, b) => sortKey === 'profit' ? b.profit - a.profit : b.revenue - a.revenue)
+    drivers.forEach(driver => driver.days.forEach(day => (day.stopNames || []).forEach((name, index) => {
+      if (!name) return
+      const stop = day.stops?.[index]
+      const revenue = stopRevenue(stop)
+      if (!revenue) return
+      const sold = Object.values(stop?.items || {}).reduce((sum, item) => sum + (item.sold || 0), 0)
+      const key = normalizeLocationKey(name)
+      if (!totals[key]) totals[key] = { revenue: 0, sold: 0, names: {} }
+      totals[key].revenue += revenue
+      totals[key].sold += sold
+      totals[key].names[name] = (totals[key].names[name] || 0) + 1
+    })))
+    return Object.values(totals).map(entry => { const name = Object.entries(entry.names).sort((a, b) => b[1] - a[1])[0][0]; return { name, sold: entry.sold, revenue: entry.revenue, profit: entry.revenue * (1 - commissionRate) } })
+      .sort((a, b) => sortKey === 'profit' ? b.profit - a.profit : b.revenue - a.revenue)
   }, [drivers, sortKey])
+  useEffect(() => { setShowAll(false) }, [drivers])
+  const visibleRows = showAll ? rows : rows.slice(0, 8)
   const sortButton = (key, label) => <button onClick={() => setSortKey(key)} className={`inline-flex items-center gap-1 ${sortKey === key ? 'text-emerald-700' : ''}`}>{label}{sortKey === key ? ' ▾' : ''}</button>
   return <section className="card overflow-hidden">
     <div className="border-b p-5"><SectionTitle title={t.stops} sub={t.stopsSub} /></div>
-    <div className="overflow-x-auto"><table className="w-full min-w-[520px] text-sm">
+    <div className="overflow-x-auto"><table className="w-full min-w-[560px] text-sm">
       <thead className="bg-slate-50 text-left text-[11px] uppercase tracking-wider text-slate-400"><tr>
         <th className="px-5 py-3">{t.locationCol}</th>
+        <th className="px-4 py-3 text-right">{t.sold}</th>
         <th className="px-4 py-3 text-right">{sortButton('revenue', t.revenue)}</th>
         <th className="px-5 py-3 text-right">{sortButton('profit', t.netProfitCol)}</th>
       </tr></thead>
-      <tbody>{rows.map(row => <tr key={row.name} className="border-t">
+      <tbody>{visibleRows.map(row => <tr key={row.name} className="border-t">
         <td className="px-5 py-4 font-semibold">{row.name}</td>
+        <td className="number px-4 py-4 text-right text-slate-500">{row.sold}</td>
         <td className="number px-4 py-4 text-right">{money(row.revenue)}</td>
         <td className="number px-5 py-4 text-right text-emerald-700">{money(row.profit)}</td>
-      </tr>)}{!rows.length && <tr><td colSpan="3" className="px-5 py-12 text-center text-slate-400">{t.noSales}</td></tr>}</tbody>
+      </tr>)}{!rows.length && <tr><td colSpan="4" className="px-5 py-12 text-center text-slate-400">{t.noSales}</td></tr>}</tbody>
     </table></div>
+    {rows.length > 8 && <div className="border-t p-3 text-center"><button onClick={() => setShowAll(current => !current)} className="text-sm font-bold text-emerald-700">{showAll ? t.showFewerLocations : `${t.showAllLocations} (${rows.length})`}</button></div>}
   </section>
 }
 
