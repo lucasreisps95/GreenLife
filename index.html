@@ -165,6 +165,7 @@
   }
   .big-time-btn.arriving{background:linear-gradient(135deg,var(--primary) 0%,#237074 100%);}
   .big-time-btn.leaving{background:linear-gradient(135deg,var(--lime) 0%,#C4DE7A 100%);color:var(--primary-dark);}
+  .big-time-btn.finishing{background:linear-gradient(135deg,var(--primary-dark) 0%,#0d3350 100%);}
   .big-time-btn .btl{font-size:16px;font-weight:700;letter-spacing:-0.1px;}
   .big-time-btn .bts{font-size:13px;font-family:'IBM Plex Mono',monospace;opacity:0.82;}
   .visit-list{margin-top:9px;}
@@ -507,7 +508,7 @@ const TRANSLATIONS = {
     stop_of:"STOP {n} OF {total}", total_stops_row:"Total stops on this route today:", address_ph:"Add address (optional)",
     top_sellers_at:"Top sellers at {stop} — tap fast", top_sellers_generic:"Top sellers — tap fast",
     no_menu:"No menu selected for {wd}. Pick a menu above.",
-    arrive_tap:"Tap when you arrive", leave_tap:"Tap when you leave", here_since:"Here since {t}",
+    arrive_tap:"Tap when you arrive", leave_tap:"Tap when you leave", finish_route_tap:"Tap to finish route", here_since:"Here since {t}",
     here_today:"{d} here today", now_label:"now",
     req_label:"Customer asked for something you didn't have", req_placeholder:"e.g. more Salmon, or Iced Coffee", req_add:"Add",
     pay_label:"Payment collected at this stop", sold_here:"Sold here", collected:"Collected",
@@ -554,7 +555,7 @@ const TRANSLATIONS = {
     stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas en la ruta hoy:", address_ph:"Agregar dirección (opcional)",
     top_sellers_at:"Más vendidos en {stop} — toque rápido", top_sellers_generic:"Más vendidos — toque rápido",
     no_menu:"No hay menú para {wd}. Elige uno arriba.",
-    arrive_tap:"Toca al llegar", leave_tap:"Toca al salir", here_since:"Aquí desde las {t}",
+    arrive_tap:"Toca al llegar", leave_tap:"Toca al salir", finish_route_tap:"Toca para terminar la ruta", here_since:"Aquí desde las {t}",
     here_today:"{d} aquí hoy", now_label:"ahora",
     req_label:"El cliente pidió algo que no tenías", req_placeholder:"ej. más Salmón, o Café helado", req_add:"Agregar",
     pay_label:"Pago recibido en esta parada", sold_here:"Vendido aquí", collected:"Cobrado",
@@ -601,7 +602,7 @@ const TRANSLATIONS = {
     stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas na rota hoje:", address_ph:"Adicionar endereço (opcional)",
     top_sellers_at:"Mais vendidos em {stop} — toque rápido", top_sellers_generic:"Mais vendidos — toque rápido",
     no_menu:"Nenhum cardápio para {wd}. Escolha um acima.",
-    arrive_tap:"Toque ao chegar", leave_tap:"Toque ao sair", here_since:"Aqui desde as {t}",
+    arrive_tap:"Toque ao chegar", leave_tap:"Toque ao sair", finish_route_tap:"Toque para terminar a rota", here_since:"Aqui desde as {t}",
     here_today:"{d} aqui hoje", now_label:"agora",
     req_label:"O cliente pediu algo que você não tinha", req_placeholder:"ex. mais Salmão, ou Café gelado", req_add:"Adicionar",
     pay_label:"Pagamento recebido nesta parada", sold_here:"Vendido aqui", collected:"Recebido",
@@ -1624,8 +1625,13 @@ async function render(){
     const open = openVisit(stop);
     const stopMins = (stop.visits||[]).reduce((s,v)=>{ const m=visitMinutes(v); return s+(m||0); },0);
 
+    const isLastStop = state.stopIndex === state.day.stopNames.length - 1;
     html += '<div class="timing">';
-    if(open){
+    if(open && isLastStop){
+      html += '<button class="big-time-btn finishing" id="timeToggle">'
+        + '<span class="btl">'+T('finish_route_tap')+'</span>'
+        + '<span class="bts">'+T('here_since',{t:open.arrive})+'</span></button>';
+    } else if(open){
       html += '<button class="big-time-btn leaving" id="timeToggle">'
         + '<span class="btl">'+T('leave_tap')+'</span>'
         + '<span class="bts">'+T('here_since',{t:open.arrive})+'</span></button>';
