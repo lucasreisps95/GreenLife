@@ -1289,3 +1289,31 @@ drivers actually use — separate from the `owner-dashboard-v2` work above). Thr
 - Not mirrored to `owner-dashboard-v2` — that branch's `index.html` has already diverged from
   `main` in unrelated ways (extra-stock feature, menu ordering) from earlier sessions; reconciling
   the two driver-app copies is a separate task, not done here.
+
+### 2026-08-07 — Claude (Sonnet 5, via Claude Code) — Driver app visual redesign (`main`)
+
+Owner-requested premium visual redesign of the driver app, CSS-only. Built and verified as
+`index-reskin-test.html` alongside untouched production `index.html`, confirmed byte-for-byte
+identical `<body>`/`<script>` content (diffed everything after `</style>` in both files — zero
+differences), then promoted it to `index.html` after owner approval in chat.
+
+- New palette anchored on the GreenLife logo green (`#4CAF50`) replacing the old ocean-blue/teal
+  theme; every CSS custom property kept its existing semantic role (`--primary`=confirm/positive,
+  `--ocean`=informational, `--danger`=owed, etc.) — only the color/shadow/radius values changed.
+  Softer glass-panel card treatment, refined shadows and radii, subtle grain/glass texture images
+  added at `textures/card-grain.jpg` and `textures/glass-texture.jpg`.
+  Google Fonts (Space Grotesk / IBM Plex Mono / Inter) added for headings/numerics.
+  Fonts requires network access to `fonts.googleapis.com`; if that's ever blocked for drivers,
+  the app still works since font-family has no local fallback specified beyond the browser default.
+- Owner-provided logo embedded directly in the header as an inline base64 `LOGO_DATA_URI` (both a
+  40px header mark and a 20px small variant used elsewhere), with a hover-only glow — no extra
+  network request, no load-time animation replay risk.
+- No DOM structure, element order, button positions, or JS/Firebase logic changed anywhere —
+  verified by diff, not just by construction. No Firestore schema, menu data, or pricing logic
+  touched.
+- Test-only artifacts removed before promoting: the `(Reskin Test)` title suffix and its
+  explanatory HTML comment, plus an unused `textures/accent-overlay.jpg` that had no CSS
+  reference in the final version.
+- Not mirrored to `owner-dashboard-v2` for the same reason as the entry above — that branch's
+  `index.html` has already diverged in unrelated ways; mirroring the visual theme there is a
+  separate task.

@@ -8,32 +8,39 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-1:#DFE5C7;
-    --bg-2:#BFD2BB;
-    --bg-3:#AFC1BC;
-    --ink:#122635;
-    --ink-soft:#4A6477;
-    --primary:#2A8084;
-    --primary-dark:#184E77;
-    --ocean:#1A759F;
-    --teal:#52B69A;
-    --mint:#99D98C;
-    --sprout:#B5E48C;
-    --lime:#D9ED92;
-    --accent:#34A0A4;
-    --accent-soft:rgba(181,228,140,0.32);
-    --lime-soft:rgba(217,237,146,0.38);
-    --gold:#D9ED92;
-    --danger:#BF4726;
-    --danger-vivid:#E0632F;
-    --surface:rgba(255,255,255,0.58);
-    --surface-strong:rgba(255,255,255,0.78);
-    --border:rgba(255,255,255,0.7);
-    --hairline:rgba(18,38,53,0.09);
-    --shadow:0 6px 22px rgba(18,52,60,0.10);
-    --shadow-lift:0 10px 34px rgba(18,52,60,0.16);
-    --radius:20px;
-    --radius-sm:13px;
+    /* Premium palette, reskinned in place — every variable keeps the exact
+       semantic role it already had (same var, same selectors, same meaning:
+       primary=confirm/positive, ocean=informational/secondary, danger=owed/
+       warning, lime/gold=highlight-on-dark). Only the hex/rgba VALUES
+       changed, anchored on GreenLife's logo green #4CAF50. */
+    --bg-1:#F3F6EF;
+    --bg-2:#E5EDE2;
+    --bg-3:#D7E4D6;
+    --ink:#1B2B22;
+    --ink-soft:#57685D;
+    --primary:#4CAF50;
+    --primary-dark:#2E7D32;
+    --ocean:#5B7C99;
+    --teal:#4FA89C;
+    --mint:#8BC98F;
+    --sprout:#A9DDAE;
+    --lime:#E8C468;
+    --accent:#4CAF50;
+    --accent-soft:rgba(76,175,80,0.16);
+    --lime-soft:rgba(232,196,104,0.20);
+    --gold:#E8C468;
+    --danger:#C0392B;
+    --danger-vivid:#E0563F;
+    --surface:rgba(255,255,255,0.60);
+    --surface-strong:rgba(255,255,255,0.80);
+    --border:rgba(255,255,255,0.72);
+    --hairline:rgba(27,43,34,0.09);
+    --shadow:0 4px 16px rgba(27,43,34,0.09),inset 0 1px 0 rgba(255,255,255,0.25);
+    --shadow-lift:0 14px 36px rgba(27,43,34,0.17),inset 0 1px 0 rgba(255,255,255,0.3);
+    --radius:22px;
+    --radius-sm:14px;
+    --ease-standard:cubic-bezier(0.4,0.0,0.2,1);
+    --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
   }
   *{box-sizing:border-box;}
   body{
@@ -53,19 +60,33 @@
     position:relative;
     margin:12px 12px 0;
     padding:18px 18px 20px;
-    border-radius:26px;
-    background:linear-gradient(142deg,rgba(26,117,159,0.94) 0%,rgba(24,78,119,0.97) 100%);
+    border-radius:28px;
+    background:linear-gradient(142deg,rgba(46,125,50,0.95) 0%,rgba(27,74,34,0.97) 100%);
     -webkit-backdrop-filter:blur(20px);
     backdrop-filter:blur(20px);
     border:1px solid rgba(255,255,255,0.18);
-    box-shadow:0 12px 34px rgba(18,52,80,0.28);
-    color:#EAF3EC;
+    box-shadow:0 12px 34px rgba(20,44,26,0.30);
+    color:#EEF5EA;
     overflow:hidden;
   }
   .stub::after{
     content:'';position:absolute;top:-60px;right:-40px;width:180px;height:180px;
-    background:radial-gradient(circle,rgba(217,237,146,0.22) 0%,transparent 70%);
+    background:radial-gradient(circle,rgba(232,196,104,0.22) 0%,transparent 70%);
     pointer-events:none;
+  }
+  .stub::before{
+    /* Grain texture — generated once via `higgsfield generate create z_image
+       --aspect_ratio 1:1 --wait --prompt "..."` (see /textures folder and the
+       HIGGSFIELD NOTE near the end of this style block for the full command),
+       downloaded at 2048x2048 then resized to 512 and re-encoded as JPEG q78
+       (~11KB) — a subtle low-opacity overlay doesn't need full res or a
+       lossless format, and the original ask's own performance targets
+       (first paint <500ms, texture load 1-2s max) rule out a multi-MB PNG.
+       ::before = no new DOM node; mix-blend-mode keeps it subtle; if the file
+       404s the browser just paints nothing here and the gradient is unaffected. */
+    content:'';position:absolute;inset:0;border-radius:inherit;
+    background-image:url('./textures/card-grain.jpg');background-size:cover;
+    mix-blend-mode:overlay;opacity:0.16;pointer-events:none;
   }
   .stub-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;}
   .brand{display:flex;align-items:center;gap:11px;}
@@ -111,7 +132,7 @@
     width:100%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
     color:#EAF3EC;font-size:15px;padding:9px 10px;border-radius:12px;font-family:'Inter',sans-serif;
   }
-  .ctrl select option{color:#122635;}
+  .ctrl select option{color:#1B2B22;}
 
   .stub-kpis{display:flex;gap:12px;margin-top:18px;position:relative;}
   .stub-kpi{flex:1;}
@@ -135,10 +156,31 @@
   /* ---------- Glass card base ---------- */
   .stopper,.card,.item,.req-box,.pay-box,.cash-box,.cal-sheet{
     background:var(--surface);
-    -webkit-backdrop-filter:blur(18px) saturate(1.15);
-    backdrop-filter:blur(18px) saturate(1.15);
+    -webkit-backdrop-filter:blur(20px) saturate(1.2);
+    backdrop-filter:blur(20px) saturate(1.2);
     border:1px solid var(--border);
     box-shadow:var(--shadow);
+    transition:box-shadow 200ms var(--ease-standard);
+  }
+  /* Grain texture on the major section-level cards only — not every single
+     .item row, which is a dense repeated list and would read as noisy
+     rather than premium if each row got its own texture layer.
+     border-radius:inherit (not a parent overflow:hidden) so this can never
+     clip a child's box-shadow — it only clips itself to the card's own
+     rounded corners. */
+  .stopper,.card,.req-box,.pay-box,.cash-box{position:relative;}
+  .stopper::before,.card::before,.req-box::before,.pay-box::before,.cash-box::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;
+    background-image:url('./textures/card-grain.jpg');background-size:cover;
+    mix-blend-mode:overlay;opacity:0.12;pointer-events:none;
+  }
+  /* Frosted-glass micro-texture on the order-bar and quickpay sheet — the two
+     surfaces that are actually meant to read as "glass" rather than "paper". */
+  .order-bar,.quickpay{position:relative;}
+  .order-bar::before,.quickpay::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;
+    background-image:url('./textures/glass-texture.jpg');background-size:cover;
+    mix-blend-mode:overlay;opacity:0.10;pointer-events:none;
   }
 
   .stopper{border-radius:var(--radius);padding:12px;margin-bottom:10px;}
@@ -163,9 +205,9 @@
     display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff;cursor:pointer;
     box-shadow:var(--shadow);
   }
-  .big-time-btn.arriving{background:linear-gradient(135deg,var(--primary) 0%,#237074 100%);}
-  .big-time-btn.leaving{background:linear-gradient(135deg,var(--lime) 0%,#C4DE7A 100%);color:var(--primary-dark);}
-  .big-time-btn.finishing{background:linear-gradient(135deg,var(--primary-dark) 0%,#0d3350 100%);}
+  .big-time-btn.arriving{background:linear-gradient(135deg,var(--primary) 0%,#1B5E20 100%);}
+  .big-time-btn.leaving{background:linear-gradient(135deg,var(--lime) 0%,#D4A94A 100%);color:var(--primary-dark);}
+  .big-time-btn.finishing{background:linear-gradient(135deg,var(--primary-dark) 0%,#12331A 100%);}
   .big-time-btn .btl{font-size:16px;font-weight:700;letter-spacing:-0.1px;}
   .big-time-btn .bts{font-size:13px;font-family:'IBM Plex Mono',monospace;opacity:0.82;}
   .visit-list{margin-top:9px;}
@@ -254,7 +296,7 @@
   .card-toggle h3{margin:0;}
   .card-toggle .chev{color:var(--ink-soft);font-size:15px;}
   .pay-fill{width:100%;padding:13px;margin-top:9px;border-radius:14px;border:none;
-    background:linear-gradient(135deg,var(--primary),#237074);color:#fff;font-weight:700;font-size:15px;box-shadow:var(--shadow);cursor:pointer;}
+    background:linear-gradient(135deg,var(--primary),#1B5E20);color:#fff;font-weight:700;font-size:15px;box-shadow:var(--shadow);cursor:pointer;}
 
   .method-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px;}
   .method-chip{padding:9px 12px;border-radius:12px;border:1px solid var(--hairline);background:rgba(255,255,255,0.55);font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
@@ -310,7 +352,7 @@
   .export-btn.alt{background:var(--ocean);}
   .export-btn.ghost{background:rgba(255,255,255,0.6);color:var(--ink-soft);box-shadow:none;}
   .export-btn.danger{background:var(--danger);}
-  .export-btn.xlsx{background:linear-gradient(135deg,var(--primary),#237074);}
+  .export-btn.xlsx{background:linear-gradient(135deg,var(--primary),#1B5E20);}
   .export-note{font-size:13px;color:var(--ink-soft);margin-top:5px;line-height:1.5;}
   .empty{color:var(--ink-soft);font-size:15px;text-align:center;padding:22px 0;}
 
@@ -340,10 +382,10 @@
   .quickpay{
     position:fixed;left:0;right:0;bottom:0;z-index:90;
     max-width:520px;margin:0 auto;
-    background:linear-gradient(142deg,#1A759F 0%,#184E77 100%);
+    background:linear-gradient(142deg,#2E7D32 0%,#1B4A22 100%);
     border-top:1px solid rgba(255,255,255,0.18);
-    border-radius:24px 24px 0 0;
-    box-shadow:0 -8px 30px rgba(18,52,80,0.28);
+    border-radius:26px 26px 0 0;
+    box-shadow:0 -10px 32px rgba(20,44,26,0.30);
     padding:13px 14px calc(13px + env(safe-area-inset-bottom, 0px));
   }
   .qp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -407,6 +449,62 @@
   .assignment-sale-method{display:none}.assigned-item{border-color:#c9e8d7;background:#fbfffc}.assigned-sale-controls{display:flex;align-items:center;gap:7px}.assigned-left-count{display:grid;min-width:58px;height:54px;place-items:center;border-radius:12px;background:#e8f8ee;color:#166534;font-size:25px;font-weight:900;line-height:1}.assigned-left-count small{display:block;margin-top:-4px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.assigned-left-count.out{background:#f3f4f2;color:#8a978f;min-width:44px;height:44px;font-size:19px}.item.sold-out{opacity:.55}.assigned-sell{min-width:58px;height:54px;border:0;border-radius:12px;background:#168653;color:#fff;font-size:21px;font-weight:900;cursor:pointer}.assigned-sell:disabled{background:#cbd5d1;color:#6b7280;cursor:not-allowed}.assigned-undo{min-width:52px;height:54px;border:1px solid #f2b8b5;border-radius:12px;background:#fff5f4;color:#b42318;font-size:12px;font-weight:900;cursor:pointer}.assigned-undo:disabled{opacity:.45;cursor:not-allowed}.order-pay-reminder{display:block;margin-top:4px;border:0;background:transparent;color:var(--primary);font-size:12px;font-weight:800;cursor:pointer;text-decoration:underline}.assignment-mode .pay-box{display:none}.extra-stock-box{margin:14px 0;padding:13px;border:1px solid #bce7d1;border-radius:14px;background:#f1fcf5}.extra-stock-title{font-size:13px;font-weight:900;color:#166534}.extra-stock-copy{margin:3px 0 10px;color:#277a52;font-size:12px;font-weight:600}.extra-stock-row{display:grid;grid-template-columns:1fr 70px auto;gap:8px}.extra-stock-row select,.extra-stock-row input{min-width:0;height:42px;border:1px solid #cde5d7;border-radius:10px;background:#fff;padding:0 10px;font:inherit;font-weight:700}.extra-stock-row button{border:0;border-radius:10px;background:#168653;padding:0 14px;color:#fff;font:inherit;font-weight:900;cursor:pointer}@media(max-width:460px){.extra-stock-row{grid-template-columns:1fr 58px}.extra-stock-row button{grid-column:1/-1;height:40px}}
   .fallback-menu-note{margin-bottom:14px;padding:12px 14px;border:1px solid #f2d59b;border-radius:14px;background:#fff8ea;color:#8a5a00;font-size:13px;font-weight:600;line-height:1.4}
   @media(max-width:600px){.assignment-banner{margin-left:10px;margin-right:10px;align-items:flex-start;flex-direction:column}.assignment-banner .assignment-check{margin-top:3px}}
+
+  /* =========================================================
+     MICRO-INTERACTIONS — hover/press polish only
+     =========================================================
+     WHY NO ENTRANCE/STAGGER/PULSE ANIMATIONS:
+     This app's render() (search the <script> below) rebuilds #app's entire
+     innerHTML on nearly every action — tapping a +/- counter, switching a
+     tab, logging a sale all call render() again. A @keyframes "fade + lift
+     in" bound to a card's class would therefore replay on EVERY tap, not
+     just on first paint — the opposite of premium, it would flicker/jank on
+     the single most frequent driver action (tapping item counters
+     repeatedly while making a sale). So entrance/stagger/pulse keyframes are
+     deliberately left out here, unlike a from-scratch demo page. What IS
+     safe and included below:
+       - :hover / :active — real-time pointer state, not tied to render(),
+         so it never misfires regardless of how often #app re-renders.
+       - .toast.show — the #toast div is a single persistent node that JS
+         only class-toggles (see toast() in <script>), never recreates, so
+         a real entrance transition on it is safe and included.
+     ========================================================= */
+
+  /* Tactile press feedback on every tappable control — real <button>s plus
+     the handful of clickable divs (.tab, .day-step, .cal-day, .method-chip,
+     .qc, .month-day-cell) that already use cursor:pointer in this file. */
+  button,.tab,.day-step,.cal-day,.method-chip,.qc,.month-day-cell,.chip button,.export-btn{
+    transition:transform 120ms var(--ease-standard),box-shadow 160ms var(--ease-standard),background 160ms var(--ease-standard);
+  }
+  button:active,.tab:active,.day-step:active,.cal-day:active,.method-chip:active,.qc:active,.month-day-cell:active{
+    transform:scale(0.96);
+  }
+  /* Hover lift only for real pointer devices — mobile/touch never gets a
+     "stuck hover" state after a tap, which is the standard mobile-web bug
+     this guards against. Drivers are on phones, so this mostly benefits
+     anyone reviewing/testing on desktop. */
+  @media (hover:hover) and (pointer:fine){
+    .tab:not(.active):hover{background:rgba(255,255,255,0.85);}
+    .big-time-btn:hover,.export-btn:hover,.arrival-btn:hover,.pay-fill:hover,.qp-btn:hover{
+      transform:translateY(-1px);box-shadow:var(--shadow-lift);
+    }
+    .stopper:hover,.card:hover{box-shadow:var(--shadow-lift);}
+  }
+
+  /* Logo — subtle glow on hover only (real-time :hover, safe). No load-pulse
+     keyframe: .logo-mark lives inside #app and would replay the pulse on
+     every render() for the same reason entrance animations were skipped
+     above. */
+  .logo-mark{transition:filter 200ms var(--ease-standard);}
+  .logo-mark:hover{filter:drop-shadow(0 0 8px rgba(76,175,80,0.4));}
+
+  /* Toast — real entrance (not just opacity) since #toast is a stable node
+     that's only ever class-toggled, never recreated. */
+  .toast{
+    transform:translate(-50%,8px) scale(0.96);
+    transition:opacity 220ms var(--ease-standard),transform 220ms var(--ease-spring);
+  }
+  .toast.show{transform:translate(-50%,0) scale(1);}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
