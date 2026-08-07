@@ -1226,3 +1226,66 @@ workflow rather than showing the food assigned from Daily Lists.
   snapshots were changed. Driver JavaScript syntax check passed.
 - Feature commit `e7c3d5f` is on `owner-dashboard-v2`; mirror it to `main` with this standalone
   handoff update.
+
+### 2026-08-06/07 — Claude (Sonnet 5, via Claude Code) — Driver app (`main`) redesign
+
+Series of owner-requested changes to the driver app itself (`index.html` on `main`, the file
+drivers actually use — separate from the `owner-dashboard-v2` work above). Three commits:
+`776b767`, `69edaf4`, `a3af6f8`.
+
+- **Per-stop address**: added an optional, muted single-line address field under the stop-name
+  input (`stop.address`, parallel to the existing `stopNames`/`stops[i]` index alignment via
+  `makeStop()`/`normalizeDay()`). Empty by default, no layout impact when unused.
+- **Removed** the "Today's time log (all stops)" arrivals card from the Log tab, and **removed
+  the Unsold tab entirely** (including end-of-day return reconciliation and the plain unsold
+  counter) — explicit owner decision; returns are no longer recorded anywhere in the driver app
+  going forward. Historical `day.returns` data is untouched and still exports correctly.
+- **Summary tab reduced to**: Today KPIs, Checkout, Payment methods (today only — the old
+  duplicate "all days" block is gone), Best Sellers (now collapsed by default, tap to expand),
+  Monthly overview, Export, Reset. Removed the Real Square Fee card and the waste/lost-sales
+  cards.
+- **Checkout redesigned** as headline-first: the amount owed (or owed to the driver) is now the
+  first, large, colored thing shown, with a compact breakdown below. Math is unchanged — this was
+  a presentation-only change confirmed against the owner's own description of the ledger, which
+  already matched `checkout_note`'s existing wording almost verbatim.
+- **Monthly overview redesigned**: replaced the tappable all-months bar list and the multi-day
+  comparison mode (explicit owner decision to drop multi-day compare) with a simple month
+  prev/next navigator, that month's KPI row, and a calendar grid of days — tap a day for its own
+  revenue/commission/waste, tap again to close.
+- **Added `_headers`** at repo root (`Cache-Control: no-cache, must-revalidate`) so any device
+  always loads the actual current deployment, fixing a reported stale-cache mismatch between a
+  laptop browser and the owner's already-logged-in phone.
+- **Assigned-stock selling is now enforced, not just available.** Previously, if `sellerName` was
+  empty, the app silently fell through to the full free-tap menu with no owner-assignment check
+  at all — this is the exact scenario a Claude Code test session hit and the owner then asked to
+  be fixed. Now: no name → blocked with a prompt (no selling); name + assignment found →
+  unchanged assigned-stock controls ("N left" / Sold 1 / Undo); name + no assignment → the free
+  menu still appears, but now as an explicitly labelled "emergency backup menu" rather than being
+  indistinguishable from normal operation. This restores the "offline emergency fallback" this
+  file's `CLAUDE.md` describes, which the previous code didn't actually implement correctly.
+- **Added an Inventory tab** (between Log stop and Summary): read-only, per-category list of
+  today's assigned items with a live "N left" count (assigned minus sold), so a driver can check
+  what's left in the cooler without doing math. Sold-out items stay listed, dimmed. Requires a
+  driver name and an active assignment, same gating/messaging as the Log tab.
+- **Added a distinct "Finish route" button** at the last stop (dark-gradient variant of the
+  arrive/leave toggle) in place of "Tap when you leave" — same `logDeparture()` action, which
+  already special-cased the last stop's toast message but never had a matching button label.
+- Cleaned up now-dead CSS and EN/ES/PT translation strings left over from each removed section as
+  they were found (`.eod-item`, `.return-summary` and family, `.month-row`/`.day-multi-*`,
+  `cal_selected_count`/`cal_clear`/`cal_done`, `real_fee_*`, `waste_title`, `lost_sales`, etc.).
+- No Firestore schema or security rule changes anywhere in this series. Every change was tested
+  in a local static preview against live production Firestore reads before pushing; all writes
+  during testing were either local-only (no seller name set) or correctly rejected by security
+  rules (see safety note below) — nothing was written to production data during development.
+- **Safety note for the next session**: mid-testing, the local preview browser's `localStorage`
+  was found to already contain the real driver name "Lucas" (`routemanifest:seller_name`) from
+  earlier in this same working session, persisted across dev-server restarts on `localhost:5050`.
+  A subsequent `logArrival()` call triggered a real `claimDriver('Lucas')` attempt against
+  production Firestore, which was correctly rejected (`status:'taken'`) because the real Lucas
+  device already owns that driver ID — confirming the security rules work as intended, but this
+  is a reminder to always check/clear `localStorage.getItem('routemanifest:seller_name')` before
+  testing this file locally, and prefer an obviously-fake name, to avoid ever attempting to act as
+  a real driver identity even transiently.
+- Not mirrored to `owner-dashboard-v2` — that branch's `index.html` has already diverged from
+  `main` in unrelated ways (extra-stock feature, menu ordering) from earlier sessions; reconciling
+  the two driver-app copies is a separate task, not done here.
