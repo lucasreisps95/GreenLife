@@ -1317,3 +1317,42 @@ differences), then promoted it to `index.html` after owner approval in chat.
 - Not mirrored to `owner-dashboard-v2` for the same reason as the entry above — that branch's
   `index.html` has already diverged in unrelated ways; mirroring the visual theme there is a
   separate task.
+
+### 2026-08-07 — Claude (Sonnet 5, via Claude Code) — Driver app redesign v2 + payment-sheet fixes (`main`)
+
+Owner asked for a bolder second pass on the visual redesign, plus two functional fixes found
+during review. This work started from a local snapshot taken before the entry above landed on
+`origin/main` — the divergence was only discovered via `git fetch` right before pushing, so
+nothing was overwritten. Re-built the new design on top of current `origin/main` in an isolated
+worktree, preserving the Inventory tab, Finish-route button, stop-address input, and sold-out
+inventory state added since.
+
+- Bolder redesign: solid card surfaces (glassmorphism removed — cheaper to paint, more legible in
+  direct sunlight), the full range of font weights actually requested is now loaded (the CSS asked
+  for 700/800/900-weight text on a font file that only shipped 400–600, so the browser had been
+  faux-bolding it the whole time), Space Grotesk extended to item names/tabs/counters instead of
+  just headings, full-bleed header slab. WCAG AA contrast re-verified with a script across all
+  three tabs after every change (0 real failures at the end, not eyeballed).
+- Fixed two dormant bugs found while testing, not part of the requested visual work:
+  1. **Payment-sheet swipe never worked.** The old `touchend` handler set state and called
+     `render()`; the synthetic `click` every browser fires right after a tap landed immediately
+     after and toggled the state straight back, so a swipe always looked like nothing happened.
+     Rewrote as a module-scope gesture tracker (survives the mid-gesture re-render) with a brief
+     click-swallow window after a confirmed swipe. Swipe up/down and tap-to-toggle both verified
+     in-browser with synthetic touch sequences matching the real event order.
+  2. **"Clear all payments for this stop" did nothing.** Gated behind `window.confirm()`, which
+     mobile browsers and home-screen webviews suppress — instrumented it and confirmed it fires
+     and returns `false` without ever showing a dialog. Replaced with the same two-tap arm/confirm
+     pattern the reset button already uses, plus a disarm-on-stop-change guard (arming on one stop
+     and navigating away before confirming could otherwise clear the wrong stop's payments).
+- Removed the "Pay $X" button next to "Clear" in the sticky order bar (redundant now that the
+  payment sheet is reachable by swipe) — markup, click handler, and the now-dead CSS rule all
+  removed.
+- Verified by diff, not just by construction: everything after `</style>` is identical to current
+  `origin/main` except the edits above. Full click-through regression run in a real browser preview
+  (counters, stop nav incl. the address field, calendar, all three tabs, Inventory sold-out
+  rendering, Finish-route state at the last stop) — not just assumed from the diff.
+- The prior entry's `textures/card-grain.jpg` and `textures/glass-texture.jpg` are no longer
+  referenced (this version uses an inline SVG grain overlay instead, no extra network request) —
+  left both files in the repo rather than deleting someone else's committed assets unilaterally.
+- Not mirrored to `owner-dashboard-v2` for the same reason as prior entries.
