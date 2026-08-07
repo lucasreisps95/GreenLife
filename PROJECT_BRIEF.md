@@ -1226,3 +1226,53 @@ workflow rather than showing the food assigned from Daily Lists.
   snapshots were changed. Driver JavaScript syntax check passed.
 - Feature commit `e7c3d5f` is on `owner-dashboard-v2`; mirror it to `main` with this standalone
   handoff update.
+
+### 2026-08-06 — Claude (Sonnet 5, via Claude Code) — Owner dashboard redesign (single-page metrics)
+
+Redesigned the Dashboard view in `owner-dashboard/app/src/main.jsx` per the owner's brief
+requesting simpler top metrics, driver/location profit breakdowns, a trend chart, and an obvious
+time filter, on `owner-dashboard-v2`.
+
+- **Merged the Overview and Drivers tabs into one Dashboard page.** Settings and the existing
+  Daily Lists tab remain separate (they're tools, not reports). Nav is now Dashboard / Daily
+  lists / Settings.
+- Top metrics: Total Revenue, Net Profit After Commission (revenue minus 30%), Commission Paid
+  Out, and a Payment Methods card whose big number is total sales with a click-to-expand
+  breakdown by whatever methods actually appear in the data (Square, Cash, Zelle, Venmo — not
+  just Square/Cash, per the real `payments[].method` values already in use). Returned food is no
+  longer a top card; it's a small conditional text note (`{count} returned · {value} possible
+  sales value`) shown only when nonzero.
+- Added a weekly revenue trend chart (`weeklyRevenue()` buckets `dayRevenue` by ISO week-start),
+  replacing the old daily "Sales activity" chart. It always uses the full unfiltered driver
+  history capped to the most recent 12 weeks, independent of the time-range toggle — a 1-week
+  trend isn't useful, so this stays meaningful no matter which range is selected.
+- New sortable **Driver Performance** table (`DriverPerformanceTable`): Driver, Route/Locations
+  Served, Revenue, Commission (30%), Net Profit. "Route/Locations Served" is derived
+  automatically from each driver's actual named stops with nonzero revenue
+  (`locationsForDriver()`) — there is still no manual route-assignment field, by design, so this
+  can't go stale.
+- New sortable **Location Performance** table (`LocationPerformanceTable`): every stop name with
+  Revenue and Net Profit (revenue minus a flat 30%, not true profit — there is still no food-cost
+  data, consistent with the existing "stops = revenue, not profit" rule elsewhere in this file).
+- Replaced the buried range `<select>` with an obvious 4-button `RangeToggle`: This Week / This
+  Month / Last 12 Weeks / All-Time. Default range changed from All-Time to This Week.
+- Top Selling Items is unchanged.
+- Added English and Thai copy for every new label; Thai strings are a good-faith translation and
+  should be reviewed by a native speaker when convenient.
+- **Data quality found, not caused by this change:** location names are free-typed per stop by
+  drivers, so near-duplicates like "Roth Capital" vs "Roth capital" or "Fox" vs "Fox Racing" show
+  as separate rows in Location Performance. Not fixed here (no safe automatic fuzzy-merge without
+  risking merging unrelated stops) — flagging for the owner to consider standardizing stop names,
+  or for a future name-normalization pass.
+- **Payment Methods breakdown will not always sum to Total Revenue** — the gap is sales that are
+  still owed/uncollected, which is correct behavior, not a bug.
+- Installed Node.js LTS via winget on the Windows machine used for this session (wasn't present;
+  required for `npm run build`/Vite). Verified `npm install` and `npm run build` both succeed and
+  visually tested the built app against live production Firestore data in a local preview
+  (metrics, both sort toggles, all four range options, payment breakdown expand, and both EN/TH
+  languages all confirmed working), plus spot-checked that Daily Lists and Settings still render
+  correctly after the nav change.
+- Feature commit `0ebf426` is pushed to `owner-dashboard-v2`; not yet mirrored to `main` (this
+  change is Dashboard-only and does not touch shared menu/driver data or the `main`-branch driver
+  app, so mirroring is not required, per the "keep aligned when a change affects shared behavior"
+  rule in `CLAUDE.md`).
