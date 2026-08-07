@@ -1276,3 +1276,30 @@ time filter, on `owner-dashboard-v2`.
   change is Dashboard-only and does not touch shared menu/driver data or the `main`-branch driver
   app, so mirroring is not required, per the "keep aligned when a change affects shared behavior"
   rule in `CLAUDE.md`).
+
+### 2026-08-06 (later same day) — Claude (Sonnet 5, via Claude Code) — Driver drill-down, location dedup, daily-list categorization
+
+Follow-up owner feedback on the redesign above, on `owner-dashboard-v2`.
+
+- **Driver Performance rows now expand.** Clicking a driver toggles a nested breakdown
+  (`stopBreakdownForDriver()`) of that driver's own stops, sorted most-to-least profitable, with
+  items sold, revenue, and net profit per stop. Replaces the old `locationsForDriver()` helper
+  (same underlying data, richer return shape).
+- **Location Performance now normalizes stop names** via `normalizeLocationKey()` (trim +
+  lowercase) before aggregating, so entry variants like "Roth Capital"/"Roth capital" or "Fox
+  racing"/"Fox Racing" merge into one row — this was the data-quality issue flagged in the entry
+  above. The display name for a merged group is whichever raw spelling was used most often. Added
+  an items-sold column, and the table now defaults to the top 8 rows with a "Show all locations"
+  toggle instead of listing every stop at once.
+- **Daily lists ("Today's food list") now renders items grouped into category sections**
+  (Salads, Sushi, Sandwiches, etc.) instead of one flat table with category shown only on the
+  first row of each group. The given-quantity control is now a real `<input type="number">` next
+  to the existing +/− buttons, so the owner or helper can click in and type a number directly
+  instead of tapping the buttons repeatedly. No change to the underlying `quantities` state model
+  or save/template logic.
+- No Firestore schema, security rule, or shared menu/driver logic changed. Verified `npm run
+  build` succeeds and visually re-tested against live production data: expand/collapse works,
+  location dedup merges correctly (confirmed dollar totals match pre-merge sums), show-all toggle
+  works, and typing directly into the quantity input updates the running total/value correctly.
+- Feature commit `2d1995d` is pushed to `owner-dashboard-v2`; not mirrored to `main` for the same
+  reason as above (Dashboard/Daily-Lists-only, no shared-data impact).
