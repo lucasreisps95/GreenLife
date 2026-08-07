@@ -133,7 +133,7 @@
   .panel{padding:14px;}
 
   /* ---------- Glass card base ---------- */
-  .stopper,.card,.item,.req-box,.pay-box,.cash-box,.eod-item,.cal-sheet{
+  .stopper,.card,.item,.req-box,.pay-box,.cash-box,.cal-sheet{
     background:var(--surface);
     -webkit-backdrop-filter:blur(18px) saturate(1.15);
     backdrop-filter:blur(18px) saturate(1.15);
@@ -150,6 +150,8 @@
   .stop-mid{flex:1;text-align:center;padding:0 6px;}
   .stop-idx{font-size:10px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:0.12em;}
   .stop-name-input{width:100%;text-align:center;border:none;background:transparent;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;color:var(--ink);letter-spacing:-0.2px;}
+  .stop-address-input{width:100%;text-align:center;border:none;background:transparent;font-size:12px;color:var(--ink-soft);margin-top:1px;}
+  .stop-address-input::placeholder{color:var(--ink-soft);opacity:0.6;}
   .stopcount-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--hairline);}
   .stopcount-row label{font-size:13px;color:var(--ink-soft);font-weight:600;}
   .stopcount-row input{width:58px;text-align:center;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);border-radius:10px;padding:6px;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);}
@@ -238,6 +240,18 @@
   .pay-ledger .owing{color:var(--danger);}
   .pay-ledger .settled{color:var(--primary);}
   .pay-ledger .over{color:var(--ocean);}
+
+  .checkout-answer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px;border-radius:14px;margin-bottom:12px;}
+  .checkout-answer.owing{background:rgba(214,88,88,0.1);}
+  .checkout-answer.settled{background:rgba(58,150,113,0.12);}
+  .checkout-answer-label{font-size:14px;font-weight:600;color:var(--ink-soft);}
+  .checkout-answer-amount{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:27px;letter-spacing:-0.4px;white-space:nowrap;}
+  .checkout-answer.owing .checkout-answer-amount{color:var(--danger);}
+  .checkout-answer.settled .checkout-answer-amount{color:var(--primary);}
+
+  .card-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:0;margin:0 0 12px;cursor:pointer;font:inherit;color:inherit;text-align:left;}
+  .card-toggle h3{margin:0;}
+  .card-toggle .chev{color:var(--ink-soft);font-size:15px;}
   .pay-fill{width:100%;padding:13px;margin-top:9px;border-radius:14px;border:none;
     background:linear-gradient(135deg,var(--primary),#237074);color:#fff;font-weight:700;font-size:15px;box-shadow:var(--shadow);cursor:pointer;}
 
@@ -268,11 +282,6 @@
   .quick-change{display:flex;gap:6px;margin-top:9px;}
   .qc{flex:1;padding:12px 0;border-radius:12px;border:1px solid var(--hairline);background:rgba(255,255,255,0.55);font-weight:700;font-size:16px;color:var(--ink);cursor:pointer;}
 
-  /* ---------- Unsold ---------- */
-  .eod-item{border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-  .eod-item .item-name{font-size:16px;font-weight:600;}
-  .eod-sold-hint{font-size:13px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-top:1px;}
-
   /* ---------- Summary ---------- */
   .card{border-radius:var(--radius);padding:16px;margin-bottom:12px;}
   .card h3{margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;letter-spacing:-0.2px;}
@@ -283,16 +292,15 @@
   .kpi.gold .v{color:var(--lime);background:var(--primary-dark);border-radius:8px;padding:3px 7px;display:inline-block;}
   .kpi .k{font-size:10px;color:var(--ink-soft);margin-top:5px;letter-spacing:0.06em;text-transform:uppercase;}
   .bar-row{margin-bottom:10px;}
-  .day-multi-row{margin-bottom:16px;}
-  .day-multi-sub{display:flex;gap:14px;margin-top:5px;font-size:13px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
-  button.month-row{
-    display:block;width:100%;background:none;border:none;padding:0;margin-bottom:10px;
-    cursor:pointer;text-align:left;font-family:inherit;
-  }
-  .month-row .bar-track{height:10px;}
-  .month-row.sel .top span:first-child{color:var(--primary);font-weight:700;}
-  .bar-fill.month-sel{background:linear-gradient(90deg,var(--lime),var(--teal));}
   .month-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--hairline);}
+  .month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .month-nav .cal-nav:disabled{opacity:0.35;cursor:default;}
+  .month-day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px;}
+  .month-day-cell{border:1px solid var(--border);background:rgba(255,255,255,0.5);border-radius:10px;padding:7px 2px;text-align:center;cursor:pointer;font-family:inherit;}
+  .month-day-cell .d{display:block;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;}
+  .month-day-cell .r{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);margin-top:2px;}
+  .month-day-cell.sel{background:var(--primary-dark);border-color:var(--primary-dark);}
+  .month-day-cell.sel .d,.month-day-cell.sel .r{color:#fff;}
   .bar-row .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;}
   .bar-track{height:8px;background:rgba(18,38,53,0.08);border-radius:6px;overflow:hidden;}
   .bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--primary));border-radius:6px;}
@@ -322,7 +330,6 @@
   .cal-day.sel{background:var(--primary);color:#fff;}
   .cal-day.sel.has::after{background:var(--lime);}
   .cal-actions{display:flex;gap:8px;margin-top:15px;}
-  .cal-sel-count{text-align:center;font-size:14px;color:var(--ink-soft);margin-top:12px;font-weight:600;}
   .cal-today{flex:1;padding:13px;border-radius:13px;border:none;background:var(--primary);color:#fff;font-weight:700;font-size:15px;cursor:pointer;}
   .cal-close{flex:1;padding:13px;border-radius:13px;border:1px solid var(--hairline);background:rgba(255,255,255,0.6);color:var(--ink-soft);font-weight:700;font-size:15px;cursor:pointer;}
 
@@ -487,20 +494,16 @@ const PAY_PT = { "Credit Card":"Cartão de crédito", "Cash":"Dinheiro", "Owed":
 
 const TRANSLATIONS = {
   en: {
-    tab_log:"Log stop", tab_unsold:"Unsold", tab_summary:"Summary", today_label:"Today", qp_items:"to pay",
-    monthly_title:"Monthly overview", monthly_tap:"Tap a month to see the breakdown", monthly_no_data:"Not enough data yet to show months",
-    pick_day_btn:"Compare specific days", day_breakdown:"{date}",
-    cal_selected_count:"{n} day{s} selected", cal_clear:"Clear", cal_done:"Done",
+    tab_log:"Log stop", tab_summary:"Summary", today_label:"Today", qp_items:"to pay",
+    monthly_title:"Monthly overview", monthly_no_data:"Not enough data yet to show months",
     cal_go_today:"Go to today", cal_close_btn:"Close",
-    selection_title:"{n} selected day{s}", daily_graphic_title:"Daily breakdown", monthly_graphic_title:"By month",
-    commission_short:"Commission", waste_short:"Waste",
     checkout_title:"Checkout", cash_in_hand_label:"Cash in hand", minus_commission_label:"Minus your commission",
     owe_owner_label:"You owe the owner", owner_owes_you_label:"Owner owes you",
     checkout_note:"Square money goes straight to the business — only what you physically collected in Cash, Zelle, or Venmo needs to be handed over, minus your commission.",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
     auto_weekday:"Auto ({wd})",
-    stop_of:"STOP {n} OF {total}", total_stops_row:"Total stops on this route today:",
+    stop_of:"STOP {n} OF {total}", total_stops_row:"Total stops on this route today:", address_ph:"Add address (optional)",
     top_sellers_at:"Top sellers at {stop} — tap fast", top_sellers_generic:"Top sellers — tap fast",
     no_menu:"No menu selected for {wd}. Pick a menu above.",
     arrive_tap:"Tap when you arrive", leave_tap:"Tap when you leave", here_since:"Here since {t}",
@@ -514,17 +517,11 @@ const TRANSLATIONS = {
     float_prompt:"Starting change you loaded today:", float_ph:"e.g. 60.00", set_btn:"Set",
     started_with:"Started with", cash_sales:"+ Cash sales", added_cash:"+ Added", change_given:"− Change given",
     change_edit:"Change starting amount", change_ph:"Amount ($)", give_btn:"− Give", add2_btn:"+ Add",
-    arrivals_log:"Today's time log (all stops)", no_arrivals:"No arrivals logged yet today.",
-    total_time:"Total time on site", drive_to:"Driving to {stop}", total_drive:"Total driving time",
-    unsold_label:"What came back unsold today (all stops)", sold_today:"sold today: {n}",
-    across_days:"Across {n} logged day{s}", today_stats:"Today", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
+    total_drive:"Total driving time",
+    today_stats:"Today", total_revenue:"TOTAL REVENUE", your_commission:"YOUR COMMISSION",
     waste_value:"WASTE VALUE", time_on_site:"TIME ON SITE", square_fees:"SQUARE FEES",
-    real_fee_title:"Real Square Fee", real_fee_title_scoped:"Real Square Fee ({scope})", real_fee_note:"Based on Square's actual rate: 2.6% + $0.10 per transaction",
-    charged_fee:"You charged (flat $0.50/sale)", real_fee:"Square actually took", fee_gap:"Your gap", net_total:"Net total",
-    txn_count:"Square transactions",
-    payment_methods:"Payment methods (all days)", payment_methods_scoped:"Payment methods ({scope})",
-    scope_today:"today", scope_all_days:"all days", best_sellers:"Best sellers",
-    waste_title:"Consistently coming back (waste)", lost_sales:"Requested but not carried (lost sales)",
+    payment_methods_scoped:"Payment methods ({scope})",
+    scope_today:"today", best_sellers:"Best sellers",
     export_title:"Export", export_excel:"Download Excel workbook (all data, one file)", export_day:"Download day-by-day CSV", export_item:"Download item-by-item CSV",
     export_copy:"Copy summary as text", export_note:"The Excel file has both day and item data as separate tabs, with filters and a frozen header row. CSVs are plain backups.",
     reset_title:"Reset", reset_btn:"Clear all logged data", reset_confirm:"Tap again to confirm — this deletes everything",
@@ -543,20 +540,16 @@ const TRANSLATIONS = {
     cloud_error:"Cloud sync error — saved locally, will retry"
   },
   es: {
-    tab_log:"Registrar parada", tab_unsold:"Sin vender", tab_summary:"Resumen", today_label:"Hoy", qp_items:"por cobrar",
-    monthly_title:"Resumen mensual", monthly_tap:"Toca un mes para ver el detalle", monthly_no_data:"Aún no hay suficientes datos para mostrar meses",
-    pick_day_btn:"Comparar días específicos", day_breakdown:"{date}",
-    cal_selected_count:"{n} día{s} seleccionado{s}", cal_clear:"Borrar", cal_done:"Listo",
+    tab_log:"Registrar parada", tab_summary:"Resumen", today_label:"Hoy", qp_items:"por cobrar",
+    monthly_title:"Resumen mensual", monthly_no_data:"Aún no hay suficientes datos para mostrar meses",
     cal_go_today:"Ir a hoy", cal_close_btn:"Cerrar",
-    selection_title:"{n} día{s} seleccionado{s}", daily_graphic_title:"Desglose diario", monthly_graphic_title:"Por mes",
-    commission_short:"Comisión", waste_short:"Desperdicio",
     checkout_title:"Cierre de caja", cash_in_hand_label:"Efectivo en mano", minus_commission_label:"Menos tu comisión",
     owe_owner_label:"Le debes al dueño", owner_owes_you_label:"El dueño te debe",
     checkout_note:"El dinero de Square va directo al negocio — solo lo que cobraste físicamente en Efectivo, Zelle o Venmo se debe entregar, menos tu comisión.",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
-    stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas en la ruta hoy:",
+    stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas en la ruta hoy:", address_ph:"Agregar dirección (opcional)",
     top_sellers_at:"Más vendidos en {stop} — toque rápido", top_sellers_generic:"Más vendidos — toque rápido",
     no_menu:"No hay menú para {wd}. Elige uno arriba.",
     arrive_tap:"Toca al llegar", leave_tap:"Toca al salir", here_since:"Aquí desde las {t}",
@@ -570,17 +563,11 @@ const TRANSLATIONS = {
     float_prompt:"Cambio inicial que cargaste hoy:", float_ph:"ej. 60.00", set_btn:"Confirmar",
     started_with:"Empezaste con", cash_sales:"+ Ventas en efectivo", added_cash:"+ Agregado", change_given:"− Cambio entregado",
     change_edit:"Cambiar monto inicial", change_ph:"Monto ($)", give_btn:"− Dar", add2_btn:"+ Agregar",
-    arrivals_log:"Registro de tiempo de hoy (todas las paradas)", no_arrivals:"Aún no hay llegadas registradas hoy.",
-    total_time:"Tiempo total en el lugar", drive_to:"Manejando a {stop}", total_drive:"Tiempo total manejando",
-    unsold_label:"Lo que no se vendió hoy (todas las paradas)", sold_today:"vendido hoy: {n}",
-    across_days:"En {n} día{s} registrado{s}", today_stats:"Hoy", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
+    total_drive:"Tiempo total manejando",
+    today_stats:"Hoy", total_revenue:"INGRESOS TOTALES", your_commission:"TU COMISIÓN",
     waste_value:"VALOR DESPERDICIADO", time_on_site:"TIEMPO EN SITIO", square_fees:"CARGOS DE SQUARE",
-    real_fee_title:"Cargo real de Square", real_fee_title_scoped:"Cargo real de Square ({scope})", real_fee_note:"Según la tarifa real de Square: 2.6% + $0.10 por transacción",
-    charged_fee:"Cobraste (fijo $0.50/venta)", real_fee:"Square realmente cobró", fee_gap:"Tu diferencia", net_total:"Total neto",
-    txn_count:"Transacciones de Square",
-    payment_methods:"Métodos de pago (todos los días)", payment_methods_scoped:"Métodos de pago ({scope})",
-    scope_today:"hoy", scope_all_days:"todos los días", best_sellers:"Más vendidos",
-    waste_title:"Siempre regresa (desperdicio)", lost_sales:"Pedido pero no disponible (ventas perdidas)",
+    payment_methods_scoped:"Métodos de pago ({scope})",
+    scope_today:"hoy", best_sellers:"Más vendidos",
     export_title:"Exportar", export_excel:"Descargar libro de Excel (todo en un archivo)", export_day:"Descargar CSV por día", export_item:"Descargar CSV por artículo",
     export_copy:"Copiar resumen como texto", export_note:"El archivo de Excel tiene los datos de días y artículos en pestañas separadas, con filtros y encabezado fijo. Los CSV son solo respaldo.",
     reset_title:"Reiniciar", reset_btn:"Borrar todos los datos", reset_confirm:"Toca de nuevo para confirmar — esto borra todo",
@@ -599,20 +586,16 @@ const TRANSLATIONS = {
     cloud_error:"Error de sincronización — guardado localmente, se reintentará"
   },
   pt: {
-    tab_log:"Registrar parada", tab_unsold:"Não vendido", tab_summary:"Resumo", today_label:"Hoje", qp_items:"a receber",
-    monthly_title:"Resumo mensal", monthly_tap:"Toque em um mês para ver os detalhes", monthly_no_data:"Ainda não há dados suficientes para mostrar meses",
-    pick_day_btn:"Comparar dias específicos", day_breakdown:"{date}",
-    cal_selected_count:"{n} dia{s} selecionado{s}", cal_clear:"Limpar", cal_done:"Pronto",
+    tab_log:"Registrar parada", tab_summary:"Resumo", today_label:"Hoje", qp_items:"a receber",
+    monthly_title:"Resumo mensal", monthly_no_data:"Ainda não há dados suficientes para mostrar meses",
     cal_go_today:"Ir para hoje", cal_close_btn:"Fechar",
-    selection_title:"{n} dia{s} selecionado{s}", daily_graphic_title:"Detalhamento diário", monthly_graphic_title:"Por mês",
-    commission_short:"Comissão", waste_short:"Desperdício",
     checkout_title:"Fechamento de caixa", cash_in_hand_label:"Dinheiro em mãos", minus_commission_label:"Menos sua comissão",
     owe_owner_label:"Você deve ao dono", owner_owes_you_label:"O dono te deve",
     checkout_note:"O dinheiro do Square vai direto para o negócio — só o que você recebeu fisicamente em Dinheiro, Zelle ou Venmo precisa ser entregue, menos sua comissão.",
     revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
     menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
     auto_weekday:"Auto ({wd})",
-    stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas na rota hoje:",
+    stop_of:"PARADA {n} DE {total}", total_stops_row:"Total de paradas na rota hoje:", address_ph:"Adicionar endereço (opcional)",
     top_sellers_at:"Mais vendidos em {stop} — toque rápido", top_sellers_generic:"Mais vendidos — toque rápido",
     no_menu:"Nenhum cardápio para {wd}. Escolha um acima.",
     arrive_tap:"Toque ao chegar", leave_tap:"Toque ao sair", here_since:"Aqui desde as {t}",
@@ -626,17 +609,11 @@ const TRANSLATIONS = {
     float_prompt:"Troco inicial que você carregou hoje:", float_ph:"ex. 60.00", set_btn:"Confirmar",
     started_with:"Começou com", cash_sales:"+ Vendas em dinheiro", added_cash:"+ Adicionado", change_given:"− Troco dado",
     change_edit:"Alterar valor inicial", change_ph:"Valor ($)", give_btn:"− Dar", add2_btn:"+ Adicionar",
-    arrivals_log:"Registro de horários de hoje (todas as paradas)", no_arrivals:"Ainda não há chegadas registradas hoje.",
-    total_time:"Tempo total no local", drive_to:"Dirigindo para {stop}", total_drive:"Tempo total dirigindo",
-    unsold_label:"O que voltou sem vender hoje (todas as paradas)", sold_today:"vendido hoje: {n}",
-    across_days:"Em {n} dia{s} registrado{s}", today_stats:"Hoje", total_revenue:"FATURAMENTO TOTAL", your_commission:"SUA COMISSÃO",
+    total_drive:"Tempo total dirigindo",
+    today_stats:"Hoje", total_revenue:"FATURAMENTO TOTAL", your_commission:"SUA COMISSÃO",
     waste_value:"VALOR DE DESPERDÍCIO", time_on_site:"TEMPO NO LOCAL", square_fees:"TAXAS DO SQUARE",
-    real_fee_title:"Taxa real do Square", real_fee_title_scoped:"Taxa real do Square ({scope})", real_fee_note:"Baseado na taxa real do Square: 2,6% + $0,10 por transação",
-    charged_fee:"Você cobrou (fixo $0,50/venda)", real_fee:"O Square realmente cobrou", fee_gap:"Sua diferença", net_total:"Total líquido",
-    txn_count:"Transações do Square",
-    payment_methods:"Métodos de pagamento (todos os dias)", payment_methods_scoped:"Métodos de pagamento ({scope})",
-    scope_today:"hoje", scope_all_days:"todos os dias", best_sellers:"Mais vendidos",
-    waste_title:"Sempre volta (desperdício)", lost_sales:"Pedido mas não disponível (vendas perdidas)",
+    payment_methods_scoped:"Métodos de pagamento ({scope})",
+    scope_today:"hoje", best_sellers:"Mais vendidos",
     export_title:"Exportar", export_excel:"Baixar planilha do Excel (tudo em um arquivo)", export_day:"Baixar CSV por dia", export_item:"Baixar CSV por item",
     export_copy:"Copiar resumo como texto", export_note:"O arquivo do Excel tem os dados de dias e itens em abas separadas, com filtros e cabeçalho fixo. Os CSVs são apenas backup.",
     reset_title:"Redefinir", reset_btn:"Apagar todos os dados registrados", reset_confirm:"Toque de novo para confirmar — isso apaga tudo",
@@ -686,6 +663,7 @@ let state = {
   date: todayStr(),
   sessionRealDate: todayStr(),
   selectedMonth: null,
+  summaryBestSellersOpen: false,
   stopIndex: 0,
   defaultStopNames: null,
   day: null,
@@ -697,9 +675,8 @@ let state = {
   paymentSheetMinimized: false,
   timingOpen: false,
   calOpen: false,
-  calMode: 'nav',
-  selectedDays: [],
   calMonth: todayStr().slice(0,7),
+  monthlyDetailDate: null,
   lang: 'en',
   sellerName: '',
   cloudStatus: 'offline',
@@ -737,7 +714,7 @@ function toast(msg){
 }
 
 const SQUARE_FEE = 0.50;
-function makeStop(){ return { items:{}, requests:[], visits:[], payments:[], cashMoves:[] }; }
+function makeStop(){ return { items:{}, requests:[], visits:[], payments:[], cashMoves:[], address:'' }; }
 function emptyDay(dateStr, stopNames){
   const stops = {};
   for(let i=0;i<stopNames.length;i++){ stops[i] = makeStop(); }
@@ -765,6 +742,7 @@ function normalizeDay(d, fallbackNames){
     }
     if(!s.payments) s.payments = [];
     if(!s.cashMoves) s.cashMoves = [];
+    if(s.address === undefined) s.address = '';
   });
   if(!d.returns) d.returns = {};
   if(!d.extraStock) d.extraStock = {};
@@ -1411,24 +1389,6 @@ function clearStopPayments(){
   persistDay();
   toast('All payments at this stop were removed.');
 }
-function bumpReturn(itemName, delta){
-  if(!state.day.returns[itemName]) state.day.returns[itemName]=0;
-  state.day.returns[itemName] = Math.max(0, state.day.returns[itemName]+delta);
-  persistDay();
-}
-function confirmAssignedReturns(){
-  const assignment = assignmentForCurrentDay();
-  if(!assignment) return;
-  const returns = {};
-  assignmentLinesWithExtras().forEach(line=>{
-    const left = remainingAssigned(line.name);
-    if(left > 0) returns[line.name] = left;
-  });
-  state.day.returns = returns;
-  state.day.returnsConfirmedAt = nowTime();
-  persistDay();
-  toast('Remaining food saved as returns');
-}
 async function persistDay(){
   await saveDay(state.day);
   state.allDays[state.day.date] = state.day;
@@ -1437,6 +1397,10 @@ async function persistDay(){
 }
 async function renameStop(newName){
   state.day.stopNames[state.stopIndex] = newName;
+  await persistDay();
+}
+async function setStopAddress(newAddress){
+  state.day.stops[state.stopIndex].address = newAddress;
   await persistDay();
 }
 async function setStopCount(newCount){
@@ -1637,7 +1601,6 @@ async function render(){
 
   html += '<div class="tabs">'
     + '<div class="tab '+(state.tab==='log'?'active':'')+'" data-tab="log">'+T('tab_log')+'</div>'
-    + '<div class="tab '+(state.tab==='unsold'?'active':'')+'" data-tab="unsold">'+T('tab_unsold')+'</div>'
     + '<div class="tab '+(state.tab==='summary'?'active':'')+'" data-tab="summary">'+T('tab_summary')+'</div>'
   + '</div>';
 
@@ -1647,7 +1610,8 @@ async function render(){
       + '<div class="stopper-top">'
       +   '<button class="nav" id="prevStop">‹</button>'
       +   '<div class="stop-mid"><div class="stop-idx">'+T('stop_of',{n:state.stopIndex+1,total:state.day.stopNames.length})+'</div>'
-      +     '<input class="stop-name-input" id="stopNameInput" value="'+escapeAttr(stopName)+'"></div>'
+      +     '<input class="stop-name-input" id="stopNameInput" value="'+escapeAttr(stopName)+'">'
+      +     '<input class="stop-address-input" id="stopAddressInput" placeholder="'+T('address_ph')+'" value="'+escapeAttr(stop.address||'')+'"></div>'
       +   '<button class="nav" id="nextStop">›</button>'
       + '</div>'
       + '<div class="stopcount-row"><label>'+T('total_stops_row')+'</label>'
@@ -1825,35 +1789,6 @@ async function render(){
     }
     cashHtml += '</div>';
 
-    const visits = dayVisitsList(state.day);
-    const totalDwell = dayDwellMinutes(state.day);
-    const driveSegs = dayDriveSegments(state.day);
-    const totalDrive = dayDriveMinutes(state.day);
-    const driveByFrom = {};
-    driveSegs.forEach(s=>{ driveByFrom[s.fromStop] = s; });
-
-    html += '<div class="card"><h3>'+T('arrivals_log')+'</h3>';
-    if(visits.length===0){
-      html += '<div class="empty">'+T('no_arrivals')+'</div>';
-    } else {
-      state.day.stopNames.forEach(name=>{
-        visits.filter(v=>v.stop===name).forEach(v=>{
-          html += '<div class="pair-row"><span>'+escapeHtml(v.stop)+'</span>'
-            + '<span>'+v.arrive+' → '+(v.depart||'<span class="open">'+T('now_label')+'</span>')
-            + '  <span class="dur">'+(v.mins!==null?fmtDur(v.mins):'')+'</span></span></div>';
-        });
-        const seg = driveByFrom[name];
-        if(seg){
-          html += '<div class="pair-row drive-row"><span>'+T('drive_to',{stop:escapeHtml(seg.toStop)})+'</span>'
-            + '<span class="dur">'+fmtDur(seg.mins)+'</span></div>';
-        }
-      });
-      html += '<div class="pair-row" style="border-top:2px solid var(--border);margin-top:6px;padding-top:8px;">'
-        + '<span><strong>'+T('total_time')+'</strong></span><span class="dur">'+fmtDur(totalDwell)+'</span></div>';
-      html += '<div class="pair-row"><span><strong>'+T('total_drive')+'</strong></span><span class="dur">'+fmtDur(totalDrive)+'</span></div>';
-    }
-    html += '</div>';
-
     const qpRemaining = r2(stopRevenue(stop) - stopCollectedTotal(stop));
     const qpCount = stopItemCount(stop);
     if(qpCount > 0){
@@ -1910,44 +1845,6 @@ async function render(){
     html += '</div>';
   }
 
-  if(state.tab==='unsold'){
-    html += '<div class="panel">';
-    if(activeAssignment){
-      const activeLines = assignmentLinesWithExtras();
-      const assignedTotal = activeLines.reduce((sum,line)=>sum+(Number(line.assigned)||0),0);
-      const soldTotal = activeLines.reduce((sum,line)=>sum+soldTodayForItem(line.name),0);
-      const leftTotal = Math.max(0, assignedTotal-soldTotal);
-      html += '<div class="return-summary"><strong>End-of-day check</strong><span>Assigned '+assignedTotal+' · Sold '+soldTotal+' · <b>'+leftTotal+' left</b></span><p>When the route is finished, save the items left as returns for the owner.</p></div>';
-      const grouped = {};
-      activeLines.forEach(line=>{ (grouped[line.category] ||= []).push(line); });
-      Object.entries(grouped).forEach(([category, lines])=>{
-        html += '<div class="cat-label">'+TC(category)+'</div>';
-        lines.forEach(line=>{
-          const sold = soldTodayForItem(line.name), left = Math.max(0,(Number(line.assigned)||0)-sold);
-          html += '<div class="return-item"><div class="item-name">'+line.name+'</div><div class="return-numbers"><span><b>'+line.assigned+'</b> assigned</span><span><b>'+sold+'</b> sold</span><span class="return-left"><b>'+left+'</b> left</span></div></div>';
-        });
-      });
-      html += '<button class="confirm-returns" id="confirmAssignedReturns">'+(state.day.returnsConfirmedAt ? 'Update returns from items left' : 'Finish route: save items left as returns')+'</button>';
-      if(state.day.returnsConfirmedAt) html += '<p class="return-saved">Returns last saved at '+state.day.returnsConfirmedAt+'.</p>';
-    } else if(!menu){
-      html += '<div class="empty">'+T('no_menu',{wd:weekday})+'</div>';
-    } else {
-      html += '<div class="cat-label">'+T('unsold_label')+'</div>';
-      const sold = dayItemsSold(state.day);
-      Object.values(menu).flat().forEach(([name])=>{
-        const s = sold[name] || 0;
-        const ret = state.day.returns[name] || 0;
-        html += '<div class="eod-item"><div><div class="item-name">'+name+'</div><div class="eod-sold-hint">'+T('sold_today',{n:s})+'</div></div>'
-          + '<div class="counter">'
-          +   '<button class="minus" data-ritem="'+escapeAttr(name)+'" data-rdelta="-1">−</button>'
-          +   '<span class="count">'+ret+'</span>'
-          +   '<button class="plus" data-ritem="'+escapeAttr(name)+'" data-rdelta="1">+</button>'
-          + '</div></div>';
-      });
-    }
-    html += '</div>';
-  }
-
   if(state.tab==='summary'){
     html += renderSummary();
   }
@@ -1976,23 +1873,15 @@ function renderCalendar(){
   for(let d=1; d<=daysInMonth; d++){
     const ds = cy+'-'+String(cm).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     const cls = ['cal-day'];
-    const isSel = state.calMode === 'summary' ? state.selectedDays.includes(ds) : ds === state.date;
-    if(isSel) cls.push('sel');
+    if(ds === state.date) cls.push('sel');
     if(ds === today) cls.push('today');
     if(state.allDays[ds] && dayRevenue(state.allDays[ds]) > 0) cls.push('has');
     h += '<button class="'+cls.join(' ')+'" data-date="'+ds+'">'+d+'</button>';
   }
   h += '</div>';
-  if(state.calMode === 'summary'){
-    h += '<div class="cal-sel-count">'+T('cal_selected_count',{n:state.selectedDays.length,s:state.selectedDays.length===1?'':'s'})+'</div>';
-    h += '<div class="cal-actions">'
-      + '<button class="cal-close" id="calClear">'+T('cal_clear')+'</button>'
-      + '<button class="cal-today" id="calDone">'+T('cal_done')+'</button></div>';
-  } else {
-    h += '<div class="cal-actions">'
-      + '<button class="cal-today" id="calToday">'+T('cal_go_today')+'</button>'
-      + '<button class="cal-close" id="calClose">'+T('cal_close_btn')+'</button></div>';
-  }
+  h += '<div class="cal-actions">'
+    + '<button class="cal-today" id="calToday">'+T('cal_go_today')+'</button>'
+    + '<button class="cal-close" id="calClose">'+T('cal_close_btn')+'</button></div>';
   h += '</div></div>';
   return h;
 }
@@ -2020,81 +1909,54 @@ function groupDaysByMonth(dayList){
 
 function renderMonthlyCard(days){
   const groups = groupDaysByMonth(days);
-  const monthKeys = Object.keys(groups).sort().reverse();
+  const monthKeys = Object.keys(groups).sort();
   if(monthKeys.length < 1){
     return '<div class="card"><h3>'+T('monthly_title')+'</h3><div class="empty">'+T('monthly_no_data')+'</div></div>';
   }
 
   if(!state.selectedMonth || !monthKeys.includes(state.selectedMonth)){
-    state.selectedMonth = monthKeys[0];
+    state.selectedMonth = monthKeys[monthKeys.length-1];
   }
-
-  const monthRevenues = monthKeys.map(k=>({ key:k, rev: computeSummaryStats(groups[k]).totalRevenue }));
-  const maxRev = Math.max(...monthRevenues.map(m=>m.rev), 0.01);
-
-  let html = '<div class="card"><h3>'+T('monthly_title')+'</h3>';
-  monthRevenues.forEach(({key, rev})=>{
-    const isSel = key === state.selectedMonth;
-    html += '<button class="bar-row month-row'+(isSel?' sel':'')+'" data-month="'+key+'">'
-      + '<div class="top"><span>'+monthLabel(key)+'</span><span>'+fmtMoney(rev)+'</span></div>'
-      + '<div class="bar-track"><div class="bar-fill'+(isSel?' month-sel':'')+'" style="width:'+((rev/maxRev*100).toFixed(0))+'%"></div></div>'
-      + '</button>';
-  });
-  html += '<div class="export-note">'+T('monthly_tap')+'</div>';
+  const monthIndex = monthKeys.indexOf(state.selectedMonth);
 
   const monthStats = computeSummaryStats(groups[state.selectedMonth]);
-  html += '<div class="month-detail">'
+  let html = '<div class="card"><h3>'+T('monthly_title')+'</h3>'
+    + '<div class="month-nav">'
+    +   '<button class="cal-nav" id="monthPrev" '+(monthIndex<=0?'disabled':'')+'>‹</button>'
+    +   '<span class="cal-title">'+monthLabel(state.selectedMonth)+'</span>'
+    +   '<button class="cal-nav" id="monthNext" '+(monthIndex>=monthKeys.length-1?'disabled':'')+'>›</button>'
+    + '</div>'
     + '<div class="kpi-row">'
     +   '<div class="kpi"><div class="v">'+fmtMoney(monthStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
     +   '<div class="kpi gold"><div class="v">'+fmtMoney(monthStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
     +   '<div class="kpi warn"><div class="v">'+fmtMoney(monthStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
-    + '</div></div>';
-  html += '<button class="export-btn alt" id="pickDayBtn" style="margin-top:12px;">'+T('pick_day_btn')+'</button>';
-  html += '</div>';
+    + '</div>';
 
-  const selDays = (state.selectedDays||[]).slice().sort()
-    .map(ds=>state.allDays[ds]).filter(Boolean);
+  const monthDays = groups[state.selectedMonth].slice().sort((a,b)=>a.date<b.date?-1:1);
+  html += '<div class="month-detail"><div class="month-day-grid">';
+  monthDays.forEach(d=>{
+    const rev = dayRevenue(d);
+    const isSel = d.date === state.monthlyDetailDate;
+    html += '<button class="month-day-cell'+(isSel?' sel':'')+'" data-daydetail="'+d.date+'">'
+      + '<span class="d">'+Number(d.date.slice(8,10))+'</span>'
+      + '<span class="r">'+(rev>0?fmtMoney(rev):'—')+'</span>'
+      + '</button>';
+  });
+  html += '</div></div>';
 
-  if(selDays.length > 0){
-    const selStats = computeSummaryStats(selDays);
-    html += '<div class="card"><h3>'+T('selection_title',{n:selDays.length,s:selDays.length===1?'':'s'})+'</h3>'
+  const detailDay = state.monthlyDetailDate ? state.allDays[state.monthlyDetailDate] : null;
+  if(detailDay && monthKey(detailDay.date)===state.selectedMonth){
+    const dStats = computeSummaryStats([detailDay]);
+    html += '<div class="month-detail">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><strong>'+fmtDateShort(detailDay.date)+'</strong>'
+      +   '<button class="cal-close" id="monthDayClose" style="padding:4px 10px;">'+T('cal_close_btn')+'</button></div>'
       + '<div class="kpi-row">'
-      +   '<div class="kpi"><div class="v">'+fmtMoney(selStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
-      +   '<div class="kpi gold"><div class="v">'+fmtMoney(selStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
-      +   '<div class="kpi warn"><div class="v">'+fmtMoney(selStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
+      +   '<div class="kpi"><div class="v">'+fmtMoney(dStats.totalRevenue)+'</div><div class="k">'+T('total_revenue')+'</div></div>'
+      +   '<div class="kpi gold"><div class="v">'+fmtMoney(dStats.totalCommission)+'</div><div class="k">'+T('your_commission')+'</div></div>'
+      +   '<div class="kpi warn"><div class="v">'+fmtMoney(dStats.totalReturnedValue)+'</div><div class="k">'+T('waste_value')+'</div></div>'
       + '</div></div>';
-
-    if(selDays.length > 1){
-      const dailyMax = Math.max(...selDays.map(d=>dayRevenue(d)), 0.01);
-      html += '<div class="card"><h3>'+T('daily_graphic_title')+'</h3>';
-      selDays.forEach(d=>{
-        const dStats = computeSummaryStats([d]);
-        const rev = dStats.totalRevenue;
-        html += '<div class="bar-row day-multi-row">'
-          + '<div class="top"><span>'+fmtDateShort(d.date)+'</span><span>'+fmtMoney(rev)+'</span></div>'
-          + '<div class="bar-track"><div class="bar-fill" style="width:'+((rev/dailyMax*100).toFixed(0))+'%"></div></div>'
-          + '<div class="day-multi-sub">'
-          +   '<span>'+T('commission_short')+': '+fmtMoney(dStats.totalCommission)+'</span>'
-          +   '<span>'+T('waste_short')+': '+fmtMoney(dStats.totalReturnedValue)+'</span>'
-          + '</div>'
-          + '</div>';
-      });
-      html += '</div>';
-
-      const selGroups = groupDaysByMonth(selDays);
-      const selMonthKeys = Object.keys(selGroups).sort();
-      if(selMonthKeys.length > 1){
-        const monthlyInSel = selMonthKeys.map(k=>({key:k, rev: computeSummaryStats(selGroups[k]).totalRevenue}));
-        const monthlyMax = Math.max(...monthlyInSel.map(m=>m.rev), 0.01);
-        html += '<div class="card"><h3>'+T('monthly_graphic_title')+'</h3>';
-        monthlyInSel.forEach(({key,rev})=>{
-          html += '<div class="bar-row"><div class="top"><span>'+monthLabel(key)+'</span><span>'+fmtMoney(rev)+'</span></div>'
-            + '<div class="bar-track"><div class="bar-fill month-sel" style="width:'+((rev/monthlyMax*100).toFixed(0))+'%"></div></div></div>';
-        });
-        html += '</div>';
-      }
-    }
   }
+  html += '</div>';
   return html;
 }
 
@@ -2136,7 +1998,7 @@ function computeSummaryStats(dayList){
     cashInHand, oweOwner };
 }
 
-function renderStatsCards(stats, headerText, scopeLabel, showCheckout){
+function renderStatsCards(stats, headerText){
   let html = '';
   html += '<div class="card"><h3>'+headerText+'</h3>'
     + '<div class="kpi-row">'
@@ -2148,22 +2010,9 @@ function renderStatsCards(stats, headerText, scopeLabel, showCheckout){
     +   '<div class="kpi"><div class="v">'+fmtMoney(stats.totalFees)+'</div><div class="k">'+T('square_fees')+'</div></div>'
     + '</div></div>';
 
-  if(showCheckout && (stats.cashInHand > 0.005 || stats.totalCommission > 0.005)){
-    const owe = stats.oweOwner;
-    html += '<div class="card"><h3>'+T('checkout_title')+'</h3>'
-      + '<div class="pay-ledger">'
-      +   '<div><span>'+TP('Cash')+'</span><span>'+fmtMoney(stats.paymentAgg['Cash']||0)+'</span></div>'
-      +   '<div><span>Zelle</span><span>'+fmtMoney(stats.paymentAgg['Zelle']||0)+'</span></div>'
-      +   '<div><span>Venmo</span><span>'+fmtMoney(stats.paymentAgg['Venmo']||0)+'</span></div>'
-      +   '<div><span>'+T('cash_in_hand_label')+'</span><span>'+fmtMoney(stats.cashInHand)+'</span></div>'
-      +   '<div><span>'+T('minus_commission_label')+'</span><span>-'+fmtMoney(stats.totalCommission)+'</span></div>'
-      +   '<div class="'+(owe>=0?'owing':'settled')+'"><span>'+(owe>=0?T('owe_owner_label'):T('owner_owes_you_label'))+'</span><span>'+fmtMoney(Math.abs(owe))+'</span></div>'
-      + '</div>'
-      + '<div class="export-note">'+T('checkout_note')+'</div>'
-      + '</div>';
-  }
+  html += renderCheckoutCard(stats);
 
-  html += '<div class="card"><h3>'+T('payment_methods_scoped',{scope:scopeLabel})+'</h3>';
+  html += '<div class="card"><h3>'+T('payment_methods_scoped',{scope:T('scope_today')})+'</h3>';
   const payTotal = Object.values(stats.paymentAgg).reduce((a,b)=>a+b,0) || 1;
   PAYMENT_METHODS.forEach(m=>{
     const amt = stats.paymentAgg[m] || 0;
@@ -2172,53 +2021,42 @@ function renderStatsCards(stats, headerText, scopeLabel, showCheckout){
   });
   html += '</div>';
 
-  if(stats.totalSquareTxns > 0){
-    const gap = r2(stats.totalFees - stats.totalRealFee);
-    const squareCollected = stats.paymentAgg['Square'] || 0;
-    const netTotal = r2(squareCollected - stats.totalRealFee);
-    html += '<div class="card"><h3>'+T('real_fee_title_scoped',{scope:scopeLabel})+'</h3>'
-      + '<div class="pay-ledger">'
-      +   '<div><span>'+T('txn_count')+'</span><span>'+stats.totalSquareTxns+'</span></div>'
-      +   '<div><span>'+T('charged_fee')+'</span><span>'+fmtMoney(stats.totalFees)+'</span></div>'
-      +   '<div><span>'+T('real_fee')+'</span><span>'+fmtMoney(stats.totalRealFee)+'</span></div>'
-      +   '<div><span>'+T('net_total')+'</span><span>'+fmtMoney(netTotal)+'</span></div>'
-      +   '<div class="'+(gap>=0?'settled':'owing')+'"><span>'+T('fee_gap')+'</span><span>'+(gap>=0?'+':'')+fmtMoney(gap)+'</span></div>'
-      + '</div>'
-      + '<div class="export-note">'+T('real_fee_note')+'</div>'
-      + '</div>';
-  }
-
   const soldSorted = Object.entries(stats.soldAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(soldSorted.length){
     const maxSold = soldSorted[0][1];
-    html += '<div class="card"><h3>'+T('best_sellers')+'</h3>';
-    soldSorted.forEach(([name,qty])=>{
-      html += '<div class="bar-row"><div class="top"><span>'+name+'</span><span>'+qty+'</span></div>'
-        + '<div class="bar-track"><div class="bar-fill" style="width:'+((qty/maxSold*100).toFixed(0))+'%"></div></div></div>';
-    });
+    const open = !!state.summaryBestSellersOpen;
+    html += '<div class="card"><button class="card-toggle" id="bestSellersToggle" type="button"><h3>'+T('best_sellers')+'</h3><span class="chev">'+(open?'▾':'▸')+'</span></button>';
+    if(open){
+      soldSorted.forEach(([name,qty])=>{
+        html += '<div class="bar-row"><div class="top"><span>'+name+'</span><span>'+qty+'</span></div>'
+          + '<div class="bar-track"><div class="bar-fill" style="width:'+((qty/maxSold*100).toFixed(0))+'%"></div></div></div>';
+      });
+    }
     html += '</div>';
   }
 
-  const retSorted = Object.entries(stats.returnedAgg).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  if(retSorted.length){
-    const maxRet = retSorted[0][1];
-    html += '<div class="card"><h3>'+T('waste_title')+'</h3>';
-    retSorted.forEach(([name,qty])=>{
-      html += '<div class="bar-row"><div class="top"><span>'+name+'</span><span>'+qty+'</span></div>'
-        + '<div class="bar-track"><div class="bar-fill waste" style="width:'+((qty/maxRet*100).toFixed(0))+'%"></div></div></div>';
-    });
-    html += '</div>';
-  }
+  return html;
+}
 
-  const reqSorted = Object.entries(stats.requestAgg).sort((a,b)=>b[1]-a[1]);
-  if(reqSorted.length){
-    html += '<div class="card"><h3>'+T('lost_sales')+'</h3>';
-    reqSorted.forEach(([name,qty])=>{
-      html += '<span class="chip">'+escapeHtml(name)+' × '+qty+'</span>';
-    });
-    html += '</div>';
-  }
-
+function renderCheckoutCard(stats){
+  if(!(stats.cashInHand > 0.005 || stats.totalCommission > 0.005)) return '';
+  const owe = stats.oweOwner;
+  const owing = owe >= 0;
+  let html = '<div class="card"><h3>'+T('checkout_title')+'</h3>'
+    + '<div class="checkout-answer '+(owing?'owing':'settled')+'">'
+    +   '<span class="checkout-answer-label">'+(owing?T('owe_owner_label'):T('owner_owes_you_label'))+'</span>'
+    +   '<span class="checkout-answer-amount">'+fmtMoney(Math.abs(owe))+'</span>'
+    + '</div>'
+    + '<div class="pay-ledger">';
+  ['Cash','Zelle','Venmo'].forEach(m=>{
+    const amt = stats.paymentAgg[m] || 0;
+    if(amt > 0.005) html += '<div><span>'+TP(m)+'</span><span>'+fmtMoney(amt)+'</span></div>';
+  });
+  html += '<div><span>'+T('cash_in_hand_label')+'</span><span>'+fmtMoney(stats.cashInHand)+'</span></div>'
+    +   '<div><span>'+T('minus_commission_label')+'</span><span>-'+fmtMoney(stats.totalCommission)+'</span></div>'
+    + '</div>'
+    + '<div class="export-note">'+T('checkout_note')+'</div>'
+    + '</div>';
   return html;
 }
 
@@ -2231,10 +2069,7 @@ function renderSummary(){
   let html = '<div class="panel">';
 
   const todayStats = computeSummaryStats(state.day ? [state.day] : []);
-  html += renderStatsCards(todayStats, T('today_stats'), T('scope_today'), true);
-
-  const allStats = computeSummaryStats(days);
-  html += renderStatsCards(allStats, T('across_days',{n:days.length,s:days.length>1?'s':''}), T('scope_all_days'), false);
+  html += renderStatsCards(todayStats, T('today_stats'));
 
   html += renderMonthlyCard(days);
 
@@ -2451,10 +2286,10 @@ function attachHandlers(){
 
   const calOverlay = document.getElementById('calOverlay');
   if(calOverlay) calOverlay.addEventListener('click', (e)=>{
-    if(e.target.id === 'calOverlay'){ state.calOpen = false; state.calMode = 'nav'; render(); }
+    if(e.target.id === 'calOverlay'){ state.calOpen = false; render(); }
   });
   const calClose = document.getElementById('calClose');
-  if(calClose) calClose.addEventListener('click', ()=>{ state.calOpen = false; state.calMode = 'nav'; render(); });
+  if(calClose) calClose.addEventListener('click', ()=>{ state.calOpen = false; render(); });
   const calPrev = document.getElementById('calPrev');
   if(calPrev) calPrev.addEventListener('click', ()=>{
     let [y,m] = state.calMonth.split('-').map(Number);
@@ -2471,26 +2306,9 @@ function attachHandlers(){
   });
   const calToday = document.getElementById('calToday');
   if(calToday) calToday.addEventListener('click', ()=>{ selectDate(todayStr()); });
-  const calDone = document.getElementById('calDone');
-  if(calDone) calDone.addEventListener('click', ()=>{
-    state.calOpen = false; state.calMode = 'nav';
-    render();
-  });
-  const calClear = document.getElementById('calClear');
-  if(calClear) calClear.addEventListener('click', ()=>{
-    state.selectedDays = [];
-    render();
-  });
   document.querySelectorAll('.cal-day').forEach(b=>{
     b.addEventListener('click', ()=>{
-      if(state.calMode === 'summary'){
-        const ds = b.dataset.date;
-        const idx = state.selectedDays.indexOf(ds);
-        if(idx === -1) state.selectedDays.push(ds); else state.selectedDays.splice(idx,1);
-        render();
-      } else {
-        selectDate(b.dataset.date);
-      }
+      selectDate(b.dataset.date);
     });
   });
 
@@ -2532,6 +2350,8 @@ function attachHandlers(){
 
   const stopNameInput = document.getElementById('stopNameInput');
   if(stopNameInput) stopNameInput.addEventListener('change', e=>{ renameStop(e.target.value); });
+  const stopAddressInput = document.getElementById('stopAddressInput');
+  if(stopAddressInput) stopAddressInput.addEventListener('change', e=>{ setStopAddress(e.target.value); });
 
   ['stopCountInput','stopCountInput2'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2572,12 +2392,10 @@ function attachHandlers(){
     state.paymentSheetMinimized = false;
     render();
   });
-  document.querySelectorAll('[data-ritem]').forEach(b=>{
-    b.addEventListener('click', ()=>{ bumpReturn(b.dataset.ritem, parseInt(b.dataset.rdelta,10)); });
-  });
-  const confirmReturnsButton = document.getElementById('confirmAssignedReturns');
-  if(confirmReturnsButton) confirmReturnsButton.addEventListener('click', ()=>{
-    if(confirm('Save every remaining assigned item as a return?')) confirmAssignedReturns();
+  const bestSellersToggle = document.getElementById('bestSellersToggle');
+  if(bestSellersToggle) bestSellersToggle.addEventListener('click', ()=>{
+    state.summaryBestSellersOpen = !state.summaryBestSellersOpen;
+    render();
   });
 
   const reqAdd = document.getElementById('reqAdd');
@@ -2708,21 +2526,29 @@ function attachHandlers(){
     else { state.confirmReset = true; render(); setTimeout(()=>{ if(state.confirmReset){ state.confirmReset=false; render(); } }, 5000); }
   });
 
-  document.querySelectorAll('[data-month]').forEach(b=>{
+  const monthPrev = document.getElementById('monthPrev');
+  if(monthPrev) monthPrev.addEventListener('click', ()=>{
+    const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?1:-1);
+    const monthKeys = Object.keys(groupDaysByMonth(days)).sort();
+    const idx = monthKeys.indexOf(state.selectedMonth);
+    if(idx > 0){ state.selectedMonth = monthKeys[idx-1]; state.monthlyDetailDate = null; render(); }
+  });
+  const monthNext = document.getElementById('monthNext');
+  if(monthNext) monthNext.addEventListener('click', ()=>{
+    const days = Object.values(state.allDays).sort((a,b)=>a.date<b.date?1:-1);
+    const monthKeys = Object.keys(groupDaysByMonth(days)).sort();
+    const idx = monthKeys.indexOf(state.selectedMonth);
+    if(idx !== -1 && idx < monthKeys.length-1){ state.selectedMonth = monthKeys[idx+1]; state.monthlyDetailDate = null; render(); }
+  });
+  document.querySelectorAll('[data-daydetail]').forEach(b=>{
     b.addEventListener('click', ()=>{
-      state.selectedMonth = b.dataset.month;
+      const ds = b.dataset.daydetail;
+      state.monthlyDetailDate = state.monthlyDetailDate === ds ? null : ds;
       render();
     });
   });
-
-  const pickDayBtn = document.getElementById('pickDayBtn');
-  if(pickDayBtn) pickDayBtn.addEventListener('click', ()=>{
-    state.calMode = 'summary';
-    const last = state.selectedDays.length ? state.selectedDays[state.selectedDays.length-1] : null;
-    state.calMonth = (last || state.selectedMonth || todayStr()).slice(0,7);
-    state.calOpen = true;
-    render();
-  });
+  const monthDayClose = document.getElementById('monthDayClose');
+  if(monthDayClose) monthDayClose.addEventListener('click', ()=>{ state.monthlyDetailDate = null; render(); });
 
   const exportXlsx = document.getElementById('exportXlsx');
   if(exportXlsx) exportXlsx.addEventListener('click', downloadXLSX);
