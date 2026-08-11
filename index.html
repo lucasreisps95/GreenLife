@@ -411,6 +411,21 @@
   .month-row.sel .top span:first-child{color:var(--primary);font-weight:700;}
   .bar-fill.month-sel{background:linear-gradient(90deg,var(--lime),var(--teal));}
   .month-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--hairline);}
+  .month-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;}
+  .month-nav .cal-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;min-width:140px;text-align:center;}
+  .month-nav .cal-nav{width:36px;height:36px;border-radius:11px;border:none;background:var(--lime-soft);color:var(--primary-dark);font-size:17px;font-weight:700;cursor:pointer;}
+  .month-nav .cal-nav:disabled{opacity:0.35;cursor:default;}
+  .month-day-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px;}
+  .month-day-cell{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    min-height:58px;padding:9px 4px;border-radius:13px;border:1px solid var(--hairline);
+    background:rgba(255,255,255,0.55);cursor:pointer;font-family:inherit;
+  }
+  .month-day-cell .d{font-size:11px;color:var(--ink-soft);font-weight:700;letter-spacing:0.03em;}
+  .month-day-cell .r{font-size:13px;font-weight:700;color:var(--ink);font-family:'IBM Plex Mono',monospace;}
+  .month-day-cell.sel{background:var(--primary);border-color:transparent;}
+  .month-day-cell.sel .d{color:rgba(234,243,236,0.8);}
+  .month-day-cell.sel .r{color:#fff;}
   .bar-row .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;}
   .bar-track{height:8px;background:rgba(18,38,53,0.08);border-radius:6px;overflow:hidden;}
   .bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--primary));border-radius:6px;}
