@@ -355,6 +355,12 @@
   .pay-ledger > div:last-child{border-bottom:none;font-weight:700;padding-top:8px;}
   .pay-ledger .owing{color:var(--danger);}
   .pay-ledger .settled{color:var(--primary);}
+  .checkout-answer{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+    padding:14px 15px;border-radius:14px;margin-bottom:14px;background:rgba(255,255,255,0.5);}
+  .checkout-answer-label{font-size:15px;font-weight:600;color:var(--ink);}
+  .checkout-answer-amount{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.6px;white-space:nowrap;}
+  .checkout-answer.owing .checkout-answer-amount{color:var(--danger);}
+  .checkout-answer.settled .checkout-answer-amount{color:var(--primary);}
   .pay-ledger .over{color:var(--ocean);}
   .pay-fill{width:100%;padding:13px;margin-top:9px;border-radius:14px;border:none;
     background:linear-gradient(135deg,var(--primary),#17655C);color:#fff;font-weight:700;font-size:15px;box-shadow:var(--shadow);cursor:pointer;}
