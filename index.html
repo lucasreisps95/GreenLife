@@ -361,6 +361,7 @@
   .checkout-answer-amount{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.6px;white-space:nowrap;}
   .checkout-answer.owing .checkout-answer-amount{color:var(--danger);}
   .checkout-answer.settled .checkout-answer-amount{color:var(--primary);}
+  .checkout-fee-note{font-size:12px;color:var(--ink-soft);margin:-6px 0 14px;line-height:1.5;}
   .pay-ledger .over{color:var(--ocean);}
   .pay-fill{width:100%;padding:13px;margin-top:9px;border-radius:14px;border:none;
     background:linear-gradient(135deg,var(--primary),#17655C);color:#fff;font-weight:700;font-size:15px;box-shadow:var(--shadow);cursor:pointer;}
@@ -727,6 +728,8 @@ const TRANSLATIONS = {
     cal_go_today:"Go to today", cal_close_btn:"Close",
     checkout_title:"Checkout", cash_in_hand_label:"Cash in hand", minus_commission_label:"Minus your commission",
     owe_owner_label:"You owe the owner", owner_owes_you_label:"Owner owes you",
+    fee_gap_note_took_more:"Includes {amt} extra — Square took more than the flat fee you charged today.",
+    fee_gap_note_took_less:"You're owed {amt} back — you charged more than Square actually took today.",
     checkout_note:"Square money goes straight to the business — only what you physically collected in Cash, Zelle, or Venmo needs to be handed over, minus your commission.",
     revenue_today:"revenue today", commission_label:"your commission (30%)",
     menu_label:"Menu", stops_label:"Stops today", seller_label:"Seller",
@@ -774,6 +777,8 @@ const TRANSLATIONS = {
     cal_go_today:"Ir a hoy", cal_close_btn:"Cerrar",
     checkout_title:"Cierre de caja", cash_in_hand_label:"Efectivo en mano", minus_commission_label:"Menos tu comisión",
     owe_owner_label:"Le debes al dueño", owner_owes_you_label:"El dueño te debe",
+    fee_gap_note_took_more:"Incluye {amt} extra — Square cobró más que la tarifa fija que cobraste hoy.",
+    fee_gap_note_took_less:"Te deben {amt} de vuelta — cobraste más de lo que Square realmente tomó hoy.",
     checkout_note:"El dinero de Square va directo al negocio — solo lo que cobraste físicamente en Efectivo, Zelle o Venmo se debe entregar, menos tu comisión.",
     revenue_today:"ingresos de hoy", commission_label:"tu comisión (30%)",
     menu_label:"Menú", stops_label:"Paradas hoy", seller_label:"Vendedor",
@@ -821,6 +826,8 @@ const TRANSLATIONS = {
     cal_go_today:"Ir para hoje", cal_close_btn:"Fechar",
     checkout_title:"Fechamento de caixa", cash_in_hand_label:"Dinheiro em mãos", minus_commission_label:"Menos sua comissão",
     owe_owner_label:"Você deve ao dono", owner_owes_you_label:"O dono te deve",
+    fee_gap_note_took_more:"Inclui {amt} extra — o Square cobrou mais do que a taxa fixa que você cobrou hoje.",
+    fee_gap_note_took_less:"Devem {amt} de volta para você — você cobrou mais do que o Square realmente tirou hoje.",
     checkout_note:"O dinheiro do Square vai direto para o negócio — só o que você recebeu fisicamente em Dinheiro, Zelle ou Venmo precisa ser entregue, menos sua comissão.",
     revenue_today:"faturamento de hoje", commission_label:"sua comissão (30%)",
     menu_label:"Cardápio", stops_label:"Paradas hoje", seller_label:"Vendedor",
@@ -2307,12 +2314,18 @@ function renderCheckoutCard(stats){
   if(!(stats.cashInHand > 0.005 || stats.totalCommission > 0.005)) return '';
   const owe = stats.oweOwner;
   const owing = owe >= 0;
+  const feeGap = r2(stats.totalRealFee - stats.totalFees);
   let html = '<div class="card"><h3>'+T('checkout_title')+'</h3>'
     + '<div class="checkout-answer '+(owing?'owing':'settled')+'">'
     +   '<span class="checkout-answer-label">'+(owing?T('owe_owner_label'):T('owner_owes_you_label'))+'</span>'
     +   '<span class="checkout-answer-amount">'+fmtMoney(Math.abs(owe))+'</span>'
-    + '</div>'
-    + '<div class="pay-ledger">';
+    + '</div>';
+  if(Math.abs(feeGap) > 0.005){
+    html += '<div class="checkout-fee-note">'
+      + (feeGap > 0 ? T('fee_gap_note_took_more',{amt:fmtMoney(feeGap)}) : T('fee_gap_note_took_less',{amt:fmtMoney(Math.abs(feeGap))}))
+      + '</div>';
+  }
+  html += '<div class="pay-ledger">';
   ['Cash','Zelle','Venmo'].forEach(m=>{
     const amt = stats.paymentAgg[m] || 0;
     if(amt > 0.005) html += '<div><span>'+TP(m)+'</span><span>'+fmtMoney(amt)+'</span></div>';
