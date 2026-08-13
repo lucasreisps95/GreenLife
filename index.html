@@ -2245,7 +2245,8 @@ function computeSummaryStats(dayList){
   });
 
   const cashInHand = r2((paymentAgg['Cash']||0) + (paymentAgg['Zelle']||0) + (paymentAgg['Venmo']||0));
-  const oweOwner = r2(cashInHand - totalCommission);
+  const squareNetTotal = r2((paymentAgg['Square']||0) - totalRealFee);
+  const oweOwner = r2((totalRevenue - totalCommission) - squareNetTotal);
 
   return { totalRevenue, totalCommission, totalReturned, totalReturnedValue, totalDwell, totalFees,
     totalDrive, totalRealFee, totalSquareTxns, soldAgg, returnedAgg, requestAgg, paymentAgg,
